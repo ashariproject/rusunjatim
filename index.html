@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Rusun Provinsi Jawa Timur</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <h1>🏢 Database Rumah Susun</h1>
+                    <p class="subtitle">Provinsi Jawa Timur</p>
+                </div>
+                <div class="header-stats" id="headerStats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="statTotal">-</span>
+                        <span class="stat-label">Total Rusun</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="statMBR">-</span>
+                        <span class="stat-label">MBR</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="statPesertaDidik">-</span>
+                        <span class="stat-label">Peserta Didik</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="statPekerja">-</span>
+                        <span class="stat-label">Pekerja Industri</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="statASNTNIPOLRI">-</span>
+                        <span class="stat-label">ASN/TNI/POLRI</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+        <div class="container">
+            <button class="tab-btn active" data-tab="map">
+                <span class="icon">🗺️</span> Peta
+            </button>
+            <button class="tab-btn" data-tab="table">
+                <span class="icon">📊</span> Data Tabel
+            </button>
+            <button class="tab-btn" data-tab="form">
+                <span class="icon">📝</span> Form OSI
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+
+            <!-- Map Tab -->
+            <div class="tab-content active" id="mapTab">
+                <div class="content-grid">
+                    <!-- Filter Panel -->
+                    <aside class="filter-panel">
+                        <h3>Filter & Statistik</h3>
+
+                        <div class="filter-section">
+                            <label>Kabupaten/Kota</label>
+                            <select id="filterKabkota" class="filter-select">
+                                <option value="">Semua Kabupaten/Kota</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-section">
+                            <label>Tahun Anggaran</label>
+                            <div class="year-range">
+                                <input type="number" id="filterYearMin" placeholder="Min" class="year-input">
+                                <span>-</span>
+                                <input type="number" id="filterYearMax" placeholder="Max" class="year-input">
+                            </div>
+                        </div>
+
+                        <div class="filter-section">
+                            <label>Tipe Rusun</label>
+                            <select id="filterTipe" class="filter-select">
+                                <option value="">Semua Tipe</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-section">
+                            <label>Kategori Penerima</label>
+                            <select id="filterPenerima" class="filter-select">
+                                <option value="">Semua Kategori</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-section">
+                            <label>Status Koordinat</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" value="verified" checked> Terverifikasi
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" value="need_validation" checked> Perlu Validasi
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" value="missing"> Belum Ada
+                                </label>
+                            </div>
+                        </div>
+
+                        <button class="btn-reset" id="resetFilters">Reset Filter</button>
+
+                        <div class="stats-panel">
+                            <h4>Statistik Kabupaten/Kota</h4>
+                            <div id="kabkotaStats" class="stats-list"></div>
+                        </div>
+                    </aside>
+
+                    <!-- Map Container -->
+                    <div class="map-container">
+                        <div id="map"></div>
+                        <div class="map-legend">
+                            <h4>Legenda</h4>
+                            <div class="legend-item">
+                                <span class="legend-marker verified"></span>
+                                <span>Terverifikasi</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-marker need-validation"></span>
+                                <span>Perlu Validasi</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Tab -->
+            <div class="tab-content" id="tableTab">
+                <div class="table-controls">
+                    <input type="text" id="searchTable" placeholder="🔍 Cari data..." class="search-input">
+                    <button class="btn-export" id="exportExcel">📥 Export Excel</button>
+                </div>
+                <div class="table-wrapper">
+                    <table id="dataTable" class="data-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Tahun</th>
+                                <th>Nama Rusun</th>
+                                <th>Alamat</th>
+                                <th>Kab/Kota</th>
+                                <th>Koordinat</th>
+                                <th>Tipe</th>
+                                <th>Penerima</th>
+                                <th>Jumlah Unit</th>
+                                <th>Kondisi</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="pagination"></div>
+            </div>
+
+            <!-- Form Tab -->
+            <div class="tab-content" id="formTab">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2>Form Input Koordinat OSI</h2>
+                        <p>Untuk rusun yang belum memiliki koordinat GPS</p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-section">
+                            <label>Pilih Rusun</label>
+                            <select id="selectRusun" class="form-select">
+                                <option value="">-- Pilih Rusun --</option>
+                            </select>
+
+                            <div id="rusunInfo" class="rusun-info" style="display: none;">
+                                <h4>Informasi Rusun</h4>
+                                <div class="info-row">
+                                    <span class="info-label">Nama:</span>
+                                    <span id="infoNama">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Alamat:</span>
+                                    <span id="infoAlamat">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Kab/Kota:</span>
+                                    <span id="infoKabkota">-</span>
+                                </div>
+                            </div>
+
+                            <div class="coord-inputs">
+                                <div class="input-group">
+                                    <label>Latitude</label>
+                                    <input type="number" id="inputLat" step="0.000001" placeholder="-7.250445">
+                                </div>
+                                <div class="input-group">
+                                    <label>Longitude</label>
+                                    <input type="number" id="inputLng" step="0.000001" placeholder="112.768845">
+                                </div>
+                            </div>
+
+                            <button class="btn-primary" id="saveCoord">💾 Simpan Koordinat</button>
+                        </div>
+
+                        <div class="form-map-section">
+                            <h4>Klik pada peta untuk memilih lokasi</h4>
+                            <div id="formMap"></div>
+                        </div>
+                    </div>
+
+                    <div class="saved-data-section">
+                        <h3>Data yang Sudah Diinput</h3>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Rusun</th>
+                                        <th>Kab/Kota</th>
+                                        <th>Latitude</th>
+                                        <th>Longitude</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="savedDataBody">
+                                    <!-- Saved data will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <button class="btn-export" id="exportUpdatedData">📥 Export Data Baru (JSON)</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Database Rusun Provinsi Jawa Timur</p>
+        </div>
+    </footer>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+    <!-- SheetJS for Excel export -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="app.js"></script>
+</body>
+
+</html>
