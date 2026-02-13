@@ -9,9 +9,13 @@ let currentFilters = {
     yearMin: null,
     yearMax: null,
     tipe: '',
+    penerima: '', // Ensure this exists
+    satker: '', // New filter
     coordStatus: ['verified', 'need_validation'],
     searchQuery: ''
 };
+
+let charts = {}; // Store chart instances
 
 // LocalStorage key for saved coordinates
 const STORAGE_KEY = 'rusun_new_coords';
@@ -26,6 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         populateFilters();
         updateStatistics();
         renderTable();
+        initCharts(); // Init charts
         loadMissingCoordinatesForm();
         loadSavedData();
         attachEventListeners();
@@ -202,43 +207,66 @@ function createMarker(rusun) {
 
 // ===== Populate Filters =====
 function populateFilters() {
-    // Get unique kabkota, tipe, and penerima
+    // Get unique kabkota, tipe, penerima, and satker
     const kabkotaSet = new Set();
     const tipeSet = new Set();
     const penerimaSet = new Set();
+    const satkerSet = new Set();
 
     rusunData.forEach(rusun => {
         if (rusun.kabkota) kabkotaSet.add(rusun.kabkota);
         if (rusun.tipe_rusun) tipeSet.add(rusun.tipe_rusun);
         if (rusun.penerima) penerimaSet.add(rusun.penerima);
+        if (rusun.asset_satker) satkerSet.add(rusun.asset_satker);
     });
 
     // Populate kabkota dropdown
     const kabkotaSelect = document.getElementById('filterKabkota');
-    Array.from(kabkotaSet).sort().forEach(kabkota => {
-        const option = document.createElement('option');
-        option.value = kabkota;
-        option.textContent = kabkota;
-        kabkotaSelect.appendChild(option);
-    });
+    if (kabkotaSelect) {
+        kabkotaSelect.innerHTML = '<option value="">Semua Kabupaten/Kota</option>';
+        Array.from(kabkotaSet).sort().forEach(kabkota => {
+            const option = document.createElement('option');
+            option.value = kabkota;
+            option.textContent = kabkota;
+            kabkotaSelect.appendChild(option);
+        });
+    }
 
     // Populate tipe dropdown
     const tipeSelect = document.getElementById('filterTipe');
-    Array.from(tipeSet).sort().forEach(tipe => {
-        const option = document.createElement('option');
-        option.value = tipe;
-        option.textContent = tipe;
-        tipeSelect.appendChild(option);
-    });
+    if (tipeSelect) {
+        tipeSelect.innerHTML = '<option value="">Semua Tipe</option>';
+        Array.from(tipeSet).sort().forEach(tipe => {
+            const option = document.createElement('option');
+            option.value = tipe;
+            option.textContent = tipe;
+            tipeSelect.appendChild(option);
+        });
+    }
 
     // Populate penerima dropdown
     const penerimaSelect = document.getElementById('filterPenerima');
-    Array.from(penerimaSet).sort().forEach(penerima => {
-        const option = document.createElement('option');
-        option.value = penerima;
-        option.textContent = penerima;
-        penerimaSelect.appendChild(option);
-    });
+    if (penerimaSelect) {
+        penerimaSelect.innerHTML = '<option value="">Semua Kategori</option>';
+        Array.from(penerimaSet).sort().forEach(penerima => {
+            const option = document.createElement('option');
+            option.value = penerima;
+            option.textContent = penerima;
+            penerimaSelect.appendChild(option);
+        });
+    }
+
+    // Populate satker dropdown
+    const satkerSelect = document.getElementById('filterSatker');
+    if (satkerSelect) {
+        satkerSelect.innerHTML = '<option value="">Semua Satker</option>';
+        Array.from(satkerSet).sort().forEach(satker => {
+            const option = document.createElement('option');
+            option.value = satker;
+            option.textContent = satker;
+            satkerSelect.appendChild(option);
+        });
+    }
 }
 
 
@@ -280,8 +308,19 @@ function getFilteredData() {
             return false;
         }
 
+        // Filter by satker
+        if (currentFilters.satker && rusun.asset_satker !== currentFilters.satker) {
+            return false;
+        }
+
         // Filter by coordinate status
-        if (!currentFilters.coordStatus.includes(rusun.koordinat.status)) {
+        const hasCoords = rusun.koordinat && rusun.koordinat.lat && rusun.koordinat.lng;
+        let status = 'missing';
+        if (hasCoords) {
+            status = rusun.koordinat.status || 'verified';
+        }
+
+        if (!currentFilters.coordStatus.includes(status)) {
             return false;
         }
 
@@ -594,33 +633,49 @@ function attachEventListeners() {
         mapSearchInput.addEventListener('input', (e) => {
             currentFilters.searchQuery = e.target.value;
             updateMapMarkers();
+            setTimeout(() => updateCharts(getFilteredData()), 100);
         });
     }
 
     document.getElementById('filterKabkota').addEventListener('change', (e) => {
         currentFilters.kabkota = e.target.value;
         updateMapMarkers();
+        updateCharts(getFilteredData());
     });
 
     document.getElementById('filterYearMin').addEventListener('change', (e) => {
         currentFilters.yearMin = e.target.value ? parseInt(e.target.value) : null;
         updateMapMarkers();
+        updateCharts(getFilteredData());
     });
 
     document.getElementById('filterYearMax').addEventListener('change', (e) => {
         currentFilters.yearMax = e.target.value ? parseInt(e.target.value) : null;
         updateMapMarkers();
+        updateCharts(getFilteredData());
     });
 
     document.getElementById('filterTipe').addEventListener('change', (e) => {
         currentFilters.tipe = e.target.value;
         updateMapMarkers();
+        updateCharts(getFilteredData());
     });
 
     document.getElementById('filterPenerima').addEventListener('change', (e) => {
         currentFilters.penerima = e.target.value;
         updateMapMarkers();
+        updateCharts(getFilteredData());
     });
+
+    const filterSatker = document.getElementById('filterSatker');
+    if (filterSatker) {
+        filterSatker.addEventListener('change', (e) => {
+            currentFilters.satker = e.target.value;
+            updateMapMarkers();
+            renderTable();
+            updateCharts(getFilteredData());
+        });
+    }
 
     document.querySelectorAll('.checkbox-group input[type="checkbox"]').forEach(checkbox => {
         checkbox.addEventListener('change', () => {
@@ -628,6 +683,7 @@ function attachEventListeners() {
                 document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked')
             ).map(cb => cb.value);
             updateMapMarkers();
+            updateCharts(getFilteredData());
         });
     });
 
@@ -638,6 +694,7 @@ function attachEventListeners() {
             yearMax: null,
             tipe: '',
             penerima: '',
+            satker: '',
             coordStatus: ['verified', 'need_validation'],
             searchQuery: ''
         };
@@ -649,10 +706,14 @@ function attachEventListeners() {
         document.getElementById('filterYearMax').value = '';
         document.getElementById('filterTipe').value = '';
         document.getElementById('filterPenerima').value = '';
+        if (document.getElementById('filterSatker')) document.getElementById('filterSatker').value = '';
+
         document.querySelectorAll('.checkbox-group input[type="checkbox"]').forEach(cb => {
             cb.checked = cb.value !== 'missing';
         });
         updateMapMarkers();
+        renderTable();
+        updateCharts(rusunData);
     });
 
     // Table search
@@ -670,4 +731,74 @@ function attachEventListeners() {
     document.getElementById('exportUpdatedData').addEventListener('click', exportUpdatedData);
 
     // Fix map rendering when switching tabs - MOVED TO initializeTabs function to avoid duplicates
+}
+
+// ===== Initialize Charts =====
+function initCharts() {
+    const chartConfig = (type, title) => ({
+        type: type,
+        data: { labels: [], datasets: [{ label: title, data: [], backgroundColor: '#0d6efd' }] },
+        options: { responsive: true, maintainAspectRatio: false }
+    });
+
+    if (document.getElementById('chartKabkota')) {
+        charts.kabkota = new Chart(document.getElementById('chartKabkota'), chartConfig('bar', 'Jumlah Unit'));
+    }
+    if (document.getElementById('chartTipe')) {
+        charts.tipe = new Chart(document.getElementById('chartTipe'), {
+            type: 'doughnut',
+            data: { labels: [], datasets: [{ data: [], backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'] }] },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+    if (document.getElementById('chartSatker')) {
+        charts.satker = new Chart(document.getElementById('chartSatker'), chartConfig('bar', 'Jumlah Unit'));
+    }
+    if (document.getElementById('chartKondisi')) {
+        charts.kondisi = new Chart(document.getElementById('chartKondisi'), {
+            type: 'pie',
+            data: { labels: [], datasets: [{ data: [], backgroundColor: ['#28a745', '#ffc107', '#dc3545', '#6c757d'] }] },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+
+    updateCharts(rusunData);
+}
+
+// ===== Update Charts =====
+function updateCharts(data) {
+    if (!charts.kabkota) return;
+
+    // Helper to count frequencies
+    const countBy = (arr, key) => {
+        return arr.reduce((acc, curr) => {
+            const val = curr[key] || 'Tidak Diketahui';
+            acc[val] = (acc[val] || 0) + 1;
+            return acc;
+        }, {});
+    };
+
+    // Kabkota
+    const kabkotaCounts = countBy(data, 'kabkota');
+    charts.kabkota.data.labels = Object.keys(kabkotaCounts);
+    charts.kabkota.data.datasets[0].data = Object.values(kabkotaCounts);
+    charts.kabkota.update();
+
+    // Tipe
+    const tipeCounts = countBy(data, 'tipe_rusun');
+    charts.tipe.data.labels = Object.keys(tipeCounts);
+    charts.tipe.data.datasets[0].data = Object.values(tipeCounts);
+    charts.tipe.update();
+
+    // Satker
+    const satkerCounts = countBy(data, 'asset_satker');
+    charts.satker.data.labels = Object.keys(satkerCounts);
+    charts.satker.data.datasets[0].data = Object.values(satkerCounts);
+    charts.satker.update();
+
+    // Kondisi
+    const kondisiCounts = countBy(data, 'kondisi_bangunan');
+    charts.kondisi.data.labels = Object.keys(kondisiCounts);
+    charts.kondisi.data.datasets[0].data = Object.values(kondisiCounts);
+    charts.kondisi.update();
 }
