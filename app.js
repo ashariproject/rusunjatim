@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ===== Load Data =====
 async function loadData() {
     try {
-        const response = await fetch('rusun_data.json?v=2026-02-13-12');
+        const response = await fetch('rusun_data.json?v=2026-02-13-13');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         rusunData = data.rusun;
@@ -365,6 +365,52 @@ function updateStatistics() {
     document.getElementById('statPesertaDidik').textContent = pesertaDidik;
     document.getElementById('statPekerja').textContent = pekerjaIndustri;
     document.getElementById('statASNTNIPOLRI').textContent = asnTniPolri;
+
+    // Update Satker Legend
+    updateSatkerLegend();
+}
+
+// ===== Update Satker Legend =====
+function updateSatkerLegend() {
+    const legendContainer = document.getElementById('satker-legend');
+    if (!legendContainer) return;
+
+    // Count satker from *filtered* data or *all* data? 
+    // Usually legend reflects current view, but request said "jumlah masing-masing aset satker", implies total or filtered.
+    // Let's use rusunData (total) to match the request context of "info penting" usually meaning global stats.
+    // But if filters are active, map markers change. 
+    // Let's use *filtered* data to be consistent with the map.
+    // Wait, existing stats (MBR etc) use rusunData (global). 
+    // Let's use visible data (filteredData) if we want it to react to filters, or rusunData if global.
+    // Given it's a "Legend", it usually describes what's on the map.
+    // However, the user asked for "jumlah masing-masing", often implying a summary.
+    // Let's stick to global stats for now as it seems to be general info, 
+    // OR matches the logic of `updateStatistics` which uses `rusunData`.
+
+    // Actually, `updateMapMarkers` calls `getFilteredData`. 
+    // `updateStatistics` is called once at init. 
+
+    // Let's calculate based on `rusunData` to show total asset distribution.
+
+    const satkerCounts = {};
+    rusunData.forEach(r => {
+        const satker = r.asset_satker || 'Tidak Diketahui';
+        satkerCounts[satker] = (satkerCounts[satker] || 0) + 1;
+    });
+
+    legendContainer.innerHTML = '';
+
+    Object.entries(satkerCounts)
+        .sort((a, b) => b[1] - a[1]) // Sort by count desc
+        .forEach(([satker, count]) => {
+            const item = document.createElement('div');
+            item.className = 'satker-item';
+            item.innerHTML = `
+                <span>${satker}</span>
+                <span class="satker-count">${count}</span>
+            `;
+            legendContainer.appendChild(item);
+        });
 }
 
 

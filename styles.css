@@ -674,3 +674,21 @@ body {
         min-height: 300px;
     }
 }
+/* Satker Legend */
+.satker-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.satker-count {
+    background: var(--bg-body);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
