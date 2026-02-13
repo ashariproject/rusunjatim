@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ===== Load Data =====
 async function loadData() {
     try {
-        const response = await fetch('rusun_data.json?v=2026-02-13-15');
+        const response = await fetch('rusun_data.json?v=2026-02-13-16');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         rusunData = data.rusun;
@@ -786,40 +786,58 @@ function attachEventListeners() {
 }
 
 // ===== Initialize Charts =====
+// ===== Initialize Charts =====
 function initCharts() {
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js not loaded');
+        return;
+    }
+
     const chartConfig = (type, title) => ({
         type: type,
         data: { labels: [], datasets: [{ label: title, data: [], backgroundColor: '#0d6efd' }] },
-        options: { responsive: true, maintainAspectRatio: false }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: type !== 'bar' // Hide legend for bar charts if single dataset
+                }
+            }
+        }
     });
 
-    if (document.getElementById('chartKabkota')) {
-        charts.kabkota = new Chart(document.getElementById('chartKabkota'), chartConfig('bar', 'Jumlah Unit'));
-    }
-    if (document.getElementById('chartTipe')) {
-        charts.tipe = new Chart(document.getElementById('chartTipe'), {
-            type: 'doughnut',
-            data: { labels: [], datasets: [{ data: [], backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'] }] },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
-    }
-    if (document.getElementById('chartSatker')) {
-        charts.satker = new Chart(document.getElementById('chartSatker'), chartConfig('bar', 'Jumlah Unit'));
-    }
-    if (document.getElementById('chartKondisi')) {
-        charts.kondisi = new Chart(document.getElementById('chartKondisi'), {
-            type: 'pie',
-            data: { labels: [], datasets: [{ data: [], backgroundColor: ['#28a745', '#ffc107', '#dc3545', '#6c757d'] }] },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
-    }
+    try {
+        if (document.getElementById('chartKabkota')) {
+            charts.kabkota = new Chart(document.getElementById('chartKabkota'), chartConfig('bar', 'Jumlah Unit'));
+        }
+        if (document.getElementById('chartTipe')) {
+            charts.tipe = new Chart(document.getElementById('chartTipe'), {
+                type: 'doughnut',
+                data: { labels: [], datasets: [{ data: [], backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'] }] },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+        if (document.getElementById('chartSatker')) {
+            charts.satker = new Chart(document.getElementById('chartSatker'), chartConfig('bar', 'Jumlah Unit'));
+        }
+        if (document.getElementById('chartKondisi')) {
+            charts.kondisi = new Chart(document.getElementById('chartKondisi'), {
+                type: 'pie',
+                data: { labels: [], datasets: [{ data: [], backgroundColor: ['#28a745', '#ffc107', '#dc3545', '#6c757d'] }] },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
 
-    updateCharts(rusunData);
+        updateCharts(rusunData);
+    } catch (e) {
+        console.error('Error initializing charts:', e);
+    }
 }
 
 // ===== Update Charts =====
 function updateCharts(data) {
-    if (!charts.kabkota) return;
+    if (!data) return;
 
     // Helper to count frequencies
     const countBy = (arr, key) => {
@@ -831,26 +849,34 @@ function updateCharts(data) {
     };
 
     // Kabkota
-    const kabkotaCounts = countBy(data, 'kabkota');
-    charts.kabkota.data.labels = Object.keys(kabkotaCounts);
-    charts.kabkota.data.datasets[0].data = Object.values(kabkotaCounts);
-    charts.kabkota.update();
+    if (charts.kabkota) {
+        const kabkotaCounts = countBy(data, 'kabkota');
+        charts.kabkota.data.labels = Object.keys(kabkotaCounts);
+        charts.kabkota.data.datasets[0].data = Object.values(kabkotaCounts);
+        charts.kabkota.update();
+    }
 
     // Tipe
-    const tipeCounts = countBy(data, 'tipe_rusun');
-    charts.tipe.data.labels = Object.keys(tipeCounts);
-    charts.tipe.data.datasets[0].data = Object.values(tipeCounts);
-    charts.tipe.update();
+    if (charts.tipe) {
+        const tipeCounts = countBy(data, 'tipe_rusun');
+        charts.tipe.data.labels = Object.keys(tipeCounts);
+        charts.tipe.data.datasets[0].data = Object.values(tipeCounts);
+        charts.tipe.update();
+    }
 
     // Satker
-    const satkerCounts = countBy(data, 'asset_satker');
-    charts.satker.data.labels = Object.keys(satkerCounts);
-    charts.satker.data.datasets[0].data = Object.values(satkerCounts);
-    charts.satker.update();
+    if (charts.satker) {
+        const satkerCounts = countBy(data, 'asset_satker');
+        charts.satker.data.labels = Object.keys(satkerCounts);
+        charts.satker.data.datasets[0].data = Object.values(satkerCounts);
+        charts.satker.update();
+    }
 
     // Kondisi
-    const kondisiCounts = countBy(data, 'kondisi_bangunan');
-    charts.kondisi.data.labels = Object.keys(kondisiCounts);
-    charts.kondisi.data.datasets[0].data = Object.values(kondisiCounts);
-    charts.kondisi.update();
+    if (charts.kondisi) {
+        const kondisiCounts = countBy(data, 'kondisi_bangunan');
+        charts.kondisi.data.labels = Object.keys(kondisiCounts);
+        charts.kondisi.data.datasets[0].data = Object.values(kondisiCounts);
+        charts.kondisi.update();
+    }
 }
