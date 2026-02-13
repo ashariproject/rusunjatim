@@ -182,7 +182,7 @@ function createMarker(rusun) {
             </div>
             <div class="popup-row">
                 <span class="popup-label">Tipe:</span>
-                <span class="popup-value">${rusun.tipe_rusun || '-'}</span>
+                <span class="popup-value">${rusun.tipe_rusun || '-'} (${rusun.jumlah_lantai || '-'} Lantai)</span>
             </div>
             <div class="popup-row">
                 <span class="popup-label">Jumlah Unit:</span>
