@@ -4,9 +4,9 @@
     "sheet": "JATIM",
     "generated_date": "2026-02-12T14:33:43.928863",
     "total_rusun": 375,
-    "with_coordinates": 219,
+    "with_coordinates": 220,
     "need_validation": 43,
-    "missing_coordinates": 156
+    "missing_coordinates": 155
   },
   "rusun": [
     {
@@ -3169,9 +3169,9 @@
       "kabkota": "Kab. Ngawi",
       "penerima": "Peserta Didik (LPKB)",
       "koordinat": {
-        "lat": null,
-        "lng": null,
-        "status": "missing"
+        "lat": -7.465220635671026,
+        "lng": 111.22365716072444,
+        "status": "verified"
       },
       "tipe_rusun": "Barak",
       "varian": "Sangat Kecil",
