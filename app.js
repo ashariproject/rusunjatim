@@ -17,31 +17,37 @@ const STORAGE_KEY = 'rusun_new_coords';
 
 // ===== Initialize App =====
 document.addEventListener('DOMContentLoaded', async () => {
-    await loadData();
-    initializeTabs();
-    initializeMap();
-    initializeFormMap();
-    populateFilters();
-    updateStatistics();
-    renderTable();
-    loadMissingCoordinatesForm();
-    loadSavedData();
-    attachEventListeners();
+    try {
+        await loadData();
+        initializeTabs();
+        initializeMap();
+        initializeFormMap();
+        populateFilters();
+        updateStatistics();
+        renderTable();
+        loadMissingCoordinatesForm();
+        loadSavedData();
+        attachEventListeners();
+    } catch (e) {
+        console.error(e);
+    }
 });
 
 // ===== Load Data =====
 async function loadData() {
     try {
         const response = await fetch('rusun_data.json');
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         rusunData = data.rusun;
-        console.log('Data loaded:', rusunData.length, 'rusun');
+        console.log(`Data loaded successfully: ${rusunData.length} records found.`);
     } catch (error) {
         console.error('Error loading data:', error);
-        alert('Gagal memuat data. Pastikan file rusun_data.json tersedia.');
+        alert('Gagal memuat data. ' + error.message);
     }
 }
 
+// ===== Tab Navigation =====
 // ===== Tab Navigation =====
 function initializeTabs() {
     const tabBtns = document.querySelectorAll('.tab-btn');
@@ -49,7 +55,7 @@ function initializeTabs() {
 
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            const targetTab = btn.dataset.tab;
+            const targetTabId = btn.dataset.tab;
 
             // Remove active class from all
             tabBtns.forEach(b => b.classList.remove('active'));
@@ -57,14 +63,29 @@ function initializeTabs() {
 
             // Add active class to clicked
             btn.classList.add('active');
-            document.getElementById(targetTab + 'Tab').classList.add('active');
+            const targetContent = document.getElementById(targetTabId + 'Tab');
+            if (targetContent) {
+                targetContent.classList.add('active');
+            } else {
+
+            }
 
             // Invalidate map size when switching to map tab
-            if (targetTab === 'map' && map) {
-                setTimeout(() => map.invalidateSize(), 100);
+            if (targetTabId === 'map') {
+
+                setTimeout(() => {
+                    if (map) {
+                        map.invalidateSize();
+                        // Re-render markers to ensure they appear
+                        updateMapMarkers();
+                    }
+                }, 100);
             }
-            if (targetTab === 'form' && formMap) {
-                setTimeout(() => formMap.invalidateSize(), 100);
+            if (targetTabId === 'form') {
+
+                setTimeout(() => {
+                    if (formMap) formMap.invalidateSize();
+                }, 100);
             }
         });
     });
@@ -284,41 +305,8 @@ function updateStatistics() {
     document.getElementById('statPesertaDidik').textContent = pesertaDidik;
     document.getElementById('statPekerja').textContent = pekerjaIndustri;
     document.getElementById('statASNTNIPOLRI').textContent = asnTniPolri;
-
-    // Update kabkota statistics
-    updateKabkotaStats();
 }
 
-// ===== Update Kabkota Statistics =====
-function updateKabkotaStats() {
-    const kabkotaStats = {};
-
-    rusunData.forEach(rusun => {
-        const kabkota = rusun.kabkota || 'Tidak diketahui';
-        if (!kabkotaStats[kabkota]) {
-            kabkotaStats[kabkota] = { total: 0, withCoords: 0 };
-        }
-        kabkotaStats[kabkota].total++;
-        if (rusun.koordinat.lat && rusun.koordinat.lng) {
-            kabkotaStats[kabkota].withCoords++;
-        }
-    });
-
-    const statsContainer = document.getElementById('kabkotaStats');
-    statsContainer.innerHTML = '';
-
-    Object.entries(kabkotaStats)
-        .sort((a, b) => b[1].total - a[1].total)
-        .forEach(([kabkota, stats]) => {
-            const row = document.createElement('div');
-            row.className = 'stat-row';
-            row.innerHTML = `
-                <span>${kabkota}</span>
-                <span>${stats.withCoords}/${stats.total}</span>
-            `;
-            statsContainer.appendChild(row);
-        });
-}
 
 // ===== Render Table =====
 let currentPage = 1;
@@ -344,18 +332,25 @@ function renderTable() {
     const end = start + rowsPerPage;
     const pageData = tableData.slice(start, end);
 
-    pageData.forEach(rusun => {
+    if (pageData.length === 0) {
+        console.log('WARNING: No data to render for this page.');
+    }
+
+    pageData.forEach((rusun, index) => {
         const row = document.createElement('tr');
-        if (!rusun.koordinat.lat || !rusun.koordinat.lng) {
+        if (!rusun.koordinat || !rusun.koordinat.lat || !rusun.koordinat.lng) {
             row.classList.add('no-coords');
         }
 
-        const coordText = rusun.koordinat.lat && rusun.koordinat.lng
-            ? `${rusun.koordinat.lat.toFixed(6)}, ${rusun.koordinat.lng.toFixed(6)}`
+        const lat = rusun.koordinat?.lat;
+        const lng = rusun.koordinat?.lng;
+
+        const coordText = lat && lng
+            ? `${lat.toFixed(6)}, ${lng.toFixed(6)}`
             : 'Belum ada';
 
-        const actionBtn = rusun.koordinat.lat && rusun.koordinat.lng
-            ? `<a href="https://www.google.com/maps?q=${rusun.koordinat.lat},${rusun.koordinat.lng}" target="_blank" class="btn-link">📍 Maps</a>`
+        const actionBtn = lat && lng
+            ? `<a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="btn-link">📍 Maps</a>`
             : '<span style="color: #ef4444;">Belum ada</span>';
 
         row.innerHTML = `
@@ -641,23 +636,5 @@ function attachEventListeners() {
     document.getElementById('saveCoord').addEventListener('click', saveCoordinate);
     document.getElementById('exportUpdatedData').addEventListener('click', exportUpdatedData);
 
-    // Fix map rendering when switching tabs
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const targetId = btn.getAttribute('data-tab');
-
-            // Handle tab switching styling if not handled elsewhere (safe redundancy)
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(targetId).classList.add('active');
-
-            // Resize map if Form OSI tab is active
-            if (targetId === 'form-osi' && formMap) {
-                setTimeout(() => {
-                    formMap.invalidateSize();
-                }, 200);
-            }
-        });
-    });
+    // Fix map rendering when switching tabs - MOVED TO initializeTabs function to avoid duplicates
 }

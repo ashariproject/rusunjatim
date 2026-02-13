@@ -334,36 +334,6 @@ body {
     color: var(--text-primary);
 }
 
-/* Stats in Filter Panel */
-.stats-panel {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-color);
-}
-
-.stats-panel h4 {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.stat-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.625rem 0;
-    font-size: 0.875rem;
-    border-bottom: 1px solid var(--bg-body);
-    color: var(--text-secondary);
-}
-
-.stat-row span:last-child {
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
 /* ===== Map Container ===== */
 .map-container {
     background: var(--bg-surface);
@@ -445,7 +415,10 @@ body {
     border-radius: var(--radius-xl);
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-sm);
-    overflow: hidden;
+    overflow: auto;
+    /* Allow scrolling */
+    max-height: calc(100vh - 300px);
+    /* Fill available space */
 }
 
 .table-controls {
