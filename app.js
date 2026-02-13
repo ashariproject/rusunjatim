@@ -9,7 +9,8 @@ let currentFilters = {
     yearMin: null,
     yearMax: null,
     tipe: '',
-    coordStatus: ['verified', 'need_validation']
+    coordStatus: ['verified', 'need_validation'],
+    searchQuery: ''
 };
 
 // LocalStorage key for saved coordinates
@@ -233,9 +234,22 @@ function populateFilters() {
     });
 }
 
+
+
 // ===== Get Filtered Data =====
 function getFilteredData() {
     return rusunData.filter(rusun => {
+        // Filter by search query
+        if (currentFilters.searchQuery) {
+            const query = currentFilters.searchQuery.toLowerCase();
+            const matchesSearch = (
+                (rusun.nama_rusun && rusun.nama_rusun.toLowerCase().includes(query)) ||
+                (rusun.alamat && rusun.alamat.toLowerCase().includes(query)) ||
+                (rusun.kabkota && rusun.kabkota.toLowerCase().includes(query))
+            );
+            if (!matchesSearch) return false;
+        }
+
         // Filter by kabkota
         if (currentFilters.kabkota && rusun.kabkota !== currentFilters.kabkota) {
             return false;
@@ -568,6 +582,14 @@ function exportToExcel() {
 // ===== Attach Event Listeners =====
 function attachEventListeners() {
     // Filter listeners
+    const mapSearchInput = document.getElementById('mapSearch');
+    if (mapSearchInput) {
+        mapSearchInput.addEventListener('input', (e) => {
+            currentFilters.searchQuery = e.target.value;
+            updateMapMarkers();
+        });
+    }
+
     document.getElementById('filterKabkota').addEventListener('change', (e) => {
         currentFilters.kabkota = e.target.value;
         updateMapMarkers();
@@ -609,8 +631,12 @@ function attachEventListeners() {
             yearMax: null,
             tipe: '',
             penerima: '',
-            coordStatus: ['verified', 'need_validation']
+            coordStatus: ['verified', 'need_validation'],
+            searchQuery: ''
         };
+        const mapSearchInput = document.getElementById('mapSearch');
+        if (mapSearchInput) mapSearchInput.value = '';
+
         document.getElementById('filterKabkota').value = '';
         document.getElementById('filterYearMin').value = '';
         document.getElementById('filterYearMax').value = '';
