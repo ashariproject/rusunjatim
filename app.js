@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ===== Load Data =====
 async function loadData() {
     try {
-        const response = await fetch('rusun_data.json?v=2026-02-13-16');
+        const response = await fetch('rusun_data.json?v=2026-02-13-17');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         rusunData = data.rusun;
@@ -62,6 +62,7 @@ function initializeTabs() {
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const targetTabId = btn.dataset.tab;
+            console.log('Tab clicked:', targetTabId); // Debug logging
 
             // Remove active class from all
             tabBtns.forEach(b => b.classList.remove('active'));
@@ -788,6 +789,7 @@ function attachEventListeners() {
 // ===== Initialize Charts =====
 // ===== Initialize Charts =====
 function initCharts() {
+    console.log('Initializing charts...');
     if (typeof Chart === 'undefined') {
         console.error('Chart.js not loaded');
         return;
@@ -837,6 +839,7 @@ function initCharts() {
 
 // ===== Update Charts =====
 function updateCharts(data) {
+    console.log('Updating charts with data length:', data ? data.length : 0);
     if (!data) return;
 
     // Helper to count frequencies
