@@ -4,9 +4,9 @@
     "sheet": "JATIM",
     "generated_date": "2026-02-12T14:33:43.928863",
     "total_rusun": 375,
-    "with_coordinates": 218,
+    "with_coordinates": 219,
     "need_validation": 43,
-    "missing_coordinates": 157
+    "missing_coordinates": 156
   },
   "rusun": [
     {
@@ -6642,8 +6642,8 @@
       "kabkota": "Kab. Sidoarjo",
       "penerima": "Pekerja Industri",
       "koordinat": {
-        "lat": -7.461913464552887,
-        "lng": 112.72974358650714,
+        "lat": -7.461790130209426,
+        "lng": 112.72999751011048,
         "status": "verified"
       },
       "tipe_rusun": 27,
@@ -6803,9 +6803,9 @@
       "kabkota": "Kab. Sidoarjo",
       "penerima": "Pekerja Industri",
       "koordinat": {
-        "lat": null,
-        "lng": null,
-        "status": "missing"
+        "lat": -7.461636335955731,
+        "lng": 112.7296291011553,
+        "status": "verified"
       },
       "tipe_rusun": 27,
       "varian": 0,
