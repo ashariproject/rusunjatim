@@ -67,6 +67,9 @@
             <button class="tab-btn" data-tab="form">
                 <span class="icon">📝</span> Input Data
             </button>
+            <button class="tab-btn" data-tab="grafis-tab">
+                <span class="icon">📈</span> Data Grafis
+            </button>
         </div>
     </nav>
 
@@ -118,6 +121,13 @@
                         </div>
 
                         <div class="filter-section">
+                            <label>Asset Satker</label>
+                            <select id="filterSatker" class="filter-select">
+                                <option value="">Semua Satker</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-section">
                             <label>Status Koordinat</label>
                             <div class="checkbox-group">
                                 <label class="checkbox-label">
@@ -152,111 +162,137 @@
                     </div>
                 </div>
             </div>
+        </div>
+        </div>
 
-            <!-- Table Tab -->
-            <div class="tab-content" id="tableTab">
-                <div class="table-controls">
-                    <input type="text" id="searchTable" placeholder="🔍 Cari data..." class="search-input">
-                    <button class="btn-export" id="exportExcel">📥 Export Excel</button>
+        <!-- Grafis Tab Content -->
+        <div id="grafis-tab" class="tab-content">
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h3>Total Unit per Kabupaten/Kota</h3>
+                    <canvas id="chartKabkota"></canvas>
                 </div>
-                <div class="table-wrapper">
-                    <table id="dataTable" class="data-table">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Tahun</th>
-                                <th>Nama Rusun</th>
-                                <th>Alamat</th>
-                                <th>Kab/Kota</th>
-                                <th>Koordinat</th>
-                                <th>Tipe</th>
-                                <th>Penerima</th>
-                                <th>Jumlah Unit</th>
-                                <th>Kondisi</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                            <!-- Data will be populated by JavaScript -->
-                        </tbody>
-                    </table>
+                <div class="chart-container">
+                    <h3>Distribusi Tipe Rusun</h3>
+                    <canvas id="chartTipe"></canvas>
                 </div>
-                <div class="pagination" id="pagination"></div>
-            </div>
-
-            <!-- Form Tab -->
-            <div class="tab-content" id="formTab">
-                <div class="form-container">
-                    <div class="form-header">
-                        <h2>Form Input Data Koordinat</h2>
-                        <p>Untuk rusun yang belum memiliki koordinat GPS</p>
-                    </div>
-
-                    <div class="form-grid">
-                        <div class="form-section">
-                            <label>Pilih Rusun</label>
-                            <select id="selectRusun" class="form-select">
-                                <option value="">-- Pilih Rusun --</option>
-                            </select>
-
-                            <div id="rusunInfo" class="rusun-info" style="display: none;">
-                                <h4>Informasi Rusun</h4>
-                                <div class="info-row">
-                                    <span class="info-label">Nama:</span>
-                                    <span id="infoNama">-</span>
-                                </div>
-                                <div class="info-row">
-                                    <span class="info-label">Alamat:</span>
-                                    <span id="infoAlamat">-</span>
-                                </div>
-                                <div class="info-row">
-                                    <span class="info-label">Kab/Kota:</span>
-                                    <span id="infoKabkota">-</span>
-                                </div>
-                            </div>
-
-                            <div class="coord-inputs">
-                                <div class="input-group">
-                                    <label>Latitude</label>
-                                    <input type="number" id="inputLat" step="0.000001" placeholder="-7.250445">
-                                </div>
-                                <div class="input-group">
-                                    <label>Longitude</label>
-                                    <input type="number" id="inputLng" step="0.000001" placeholder="112.768845">
-                                </div>
-                            </div>
-
-                            <button class="btn-primary" id="saveCoord">💾 Simpan Koordinat</button>
-                        </div>
-
-                        <div class="form-map-section">
-                            <h4>Klik pada peta untuk memilih lokasi</h4>
-                            <div id="formMap"></div>
-                        </div>
-                    </div>
-
-                    <div class="saved-data-section">
-                        <h3>Data yang Sudah Diinput</h3>
-                        <div class="table-wrapper">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Nama Rusun</th>
-                                        <th>Kab/Kota</th>
-                                        <th>Latitude</th>
-                                        <th>Longitude</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="savedDataBody">
-                                    <!-- Saved data will be populated here -->
-                                </tbody>
-                            </table>
-                        </div>
-                        <button class="btn-export" id="exportUpdatedData">📥 Export Data Baru (JSON)</button>
-                    </div>
+                <div class="chart-container">
+                    <h3>Asset Satker</h3>
+                    <canvas id="chartSatker"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Kondisi Bangunan</h3>
+                    <canvas id="chartKondisi"></canvas>
                 </div>
             </div>
+        </div>
+        </div>
+        </div>
+
+        <!-- Table Tab -->
+        <div class="tab-content" id="tableTab">
+            <div class="table-controls">
+                <input type="text" id="searchTable" placeholder="🔍 Cari data..." class="search-input">
+                <button class="btn-export" id="exportExcel">📥 Export Excel</button>
+            </div>
+            <div class="table-wrapper">
+                <table id="dataTable" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tahun</th>
+                            <th>Nama Rusun</th>
+                            <th>Alamat</th>
+                            <th>Kab/Kota</th>
+                            <th>Koordinat</th>
+                            <th>Tipe</th>
+                            <th>Penerima</th>
+                            <th>Jumlah Unit</th>
+                            <th>Kondisi</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination" id="pagination"></div>
+        </div>
+
+        <!-- Form Tab -->
+        <div class="tab-content" id="formTab">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Form Input Data Koordinat</h2>
+                    <p>Untuk rusun yang belum memiliki koordinat GPS</p>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-section">
+                        <label>Pilih Rusun</label>
+                        <select id="selectRusun" class="form-select">
+                            <option value="">-- Pilih Rusun --</option>
+                        </select>
+
+                        <div id="rusunInfo" class="rusun-info" style="display: none;">
+                            <h4>Informasi Rusun</h4>
+                            <div class="info-row">
+                                <span class="info-label">Nama:</span>
+                                <span id="infoNama">-</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Alamat:</span>
+                                <span id="infoAlamat">-</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Kab/Kota:</span>
+                                <span id="infoKabkota">-</span>
+                            </div>
+                        </div>
+
+                        <div class="coord-inputs">
+                            <div class="input-group">
+                                <label>Latitude</label>
+                                <input type="number" id="inputLat" step="0.000001" placeholder="-7.250445">
+                            </div>
+                            <div class="input-group">
+                                <label>Longitude</label>
+                                <input type="number" id="inputLng" step="0.000001" placeholder="112.768845">
+                            </div>
+                        </div>
+
+                        <button class="btn-primary" id="saveCoord">💾 Simpan Koordinat</button>
+                    </div>
+
+                    <div class="form-map-section">
+                        <h4>Klik pada peta untuk memilih lokasi</h4>
+                        <div id="formMap"></div>
+                    </div>
+                </div>
+
+                <div class="saved-data-section">
+                    <h3>Data yang Sudah Diinput</h3>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Nama Rusun</th>
+                                    <th>Kab/Kota</th>
+                                    <th>Latitude</th>
+                                    <th>Longitude</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="savedDataBody">
+                                <!-- Saved data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn-export" id="exportUpdatedData">📥 Export Data Baru (JSON)</button>
+                </div>
+            </div>
+        </div>
 
         </div>
     </main>
@@ -274,9 +310,11 @@
 
     <!-- SheetJS for Excel export -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Custom JS -->
-    <script src="app.js?v=2026-02-13-9"></script>
+    <script src="app.js?v=2026-02-13-10"></script>
 </body>
 
 </html>
