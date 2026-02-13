@@ -155,6 +155,13 @@ function createMarker(rusun) {
     // Create popup content
     const popupContent = `
         <div class="popup-content">
+            <div class="popup-image-container" style="display: none;">
+                <img src="images/rusun/${rusun.id}.jpg" 
+                     alt="${rusun.nama_rusun}" 
+                     class="popup-image"
+                     onload="this.parentElement.style.display='block'"
+                     onerror="this.parentElement.style.display='none'">
+            </div>
             <h3>${rusun.nama_rusun || 'Tidak ada nama'}</h3>
             <div class="popup-row">
                 <span class="popup-label">Alamat:</span>

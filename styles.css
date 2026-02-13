@@ -616,3 +616,20 @@ body {
         flex: 0 0 auto;
     }
 }
+
+/* ===== Popup Image Styles ===== */
+.popup-image-container {
+    width: 100%;
+    margin-bottom: 0.75rem;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.popup-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    display: block;
+    background-color: var(--bg-body);
+}
