@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ===== Load Data =====
 async function loadData() {
     try {
-        const response = await fetch('rusun_data.json?v=2026-02-13-13');
+        const response = await fetch('rusun_data.json?v=2026-02-13-15');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         rusunData = data.rusun;
@@ -78,7 +78,6 @@ function initializeTabs() {
 
             // Invalidate map size when switching to map tab
             if (targetTabId === 'map') {
-
                 setTimeout(() => {
                     if (map) {
                         map.invalidateSize();
@@ -87,10 +86,17 @@ function initializeTabs() {
                     }
                 }, 100);
             }
-            if (targetTabId === 'form') {
 
+            if (targetTabId === 'form') {
                 setTimeout(() => {
                     if (formMap) formMap.invalidateSize();
+                }, 100);
+            }
+
+            // Update charts when switching to grafis tab
+            if (targetTabId === 'grafis') {
+                setTimeout(() => {
+                    updateCharts(getFilteredData());
                 }, 100);
             }
         });
