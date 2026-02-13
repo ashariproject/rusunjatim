@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ===== Load Data =====
 async function loadData() {
     try {
-        const response = await fetch('rusun_data.json?v=2026-02-13-5');
+        const response = await fetch('rusun_data.json?v=2026-02-13-6');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         rusunData = data.rusun;

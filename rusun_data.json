@@ -4,9 +4,9 @@
     "sheet": "JATIM",
     "generated_date": "2026-02-12T14:33:43.928863",
     "total_rusun": 375,
-    "with_coordinates": 217,
+    "with_coordinates": 218,
     "need_validation": 43,
-    "missing_coordinates": 158
+    "missing_coordinates": 157
   },
   "rusun": [
     {
@@ -8459,9 +8459,9 @@
       "kabkota": "Kab. Jombang",
       "penerima": "Peserta Didik (LPKB)",
       "koordinat": {
-        "lat": null,
-        "lng": null,
-        "status": "missing"
+        "lat": -7.644418649633328,
+        "lng": 112.26411679898548,
+        "status": "verified"
       },
       "tipe_rusun": "Barak",
       "varian": "Rembunai",
