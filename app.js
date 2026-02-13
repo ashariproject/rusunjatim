@@ -160,7 +160,7 @@ function createMarker(rusun) {
                      alt="${rusun.nama_rusun}" 
                      class="popup-image"
                      onload="this.parentElement.style.display='block'"
-                     onerror="this.parentElement.style.display='none'">
+                     onerror="this.src='images/rusun/${rusun.id}.JPG'; this.onerror=null;">
             </div>
             <h3>${rusun.nama_rusun || 'Tidak ada nama'}</h3>
             <div class="popup-row">
