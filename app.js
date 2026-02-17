@@ -801,17 +801,32 @@ function initCharts() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+                padding: { top: 10, bottom: 0, left: 0, right: 0 }
+            },
             plugins: {
                 legend: {
-                    display: type !== 'bar' // Hide legend for bar charts if single dataset
+                    display: type !== 'bar',
+                    // Responsive font size logic ideally, but setting a safe middle ground
+                    labels: { boxWidth: window.innerWidth < 768 ? 6 : 10, padding: 5, font: { size: window.innerWidth < 768 ? 9 : 11 } }
                 }
-            }
+            },
+            scales: type === 'bar' ? {
+                x: {
+                    ticks: {
+                        font: { size: window.innerWidth < 768 ? 8 : 10 },
+                        maxRotation: window.innerWidth < 768 ? 90 : 45,
+                        minRotation: window.innerWidth < 768 ? 90 : 0
+                    }
+                },
+                y: { ticks: { font: { size: window.innerWidth < 768 ? 8 : 10 } } }
+            } : {}
         }
     });
 
     try {
-        if (document.getElementById('chartKabkota')) {
-            charts.kabkota = new Chart(document.getElementById('chartKabkota'), chartConfig('bar', 'Jumlah Unit'));
+        if (document.getElementById('chartTahun')) {
+            charts.tahun = new Chart(document.getElementById('chartTahun'), chartConfig('bar', 'Jumlah Unit'));
         }
         if (document.getElementById('chartTipe')) {
             charts.tipe = new Chart(document.getElementById('chartTipe'), {
@@ -852,11 +867,35 @@ function updateCharts(data) {
     };
 
     // Kabkota
-    if (charts.kabkota) {
-        const kabkotaCounts = countBy(data, 'kabkota');
-        charts.kabkota.data.labels = Object.keys(kabkotaCounts);
-        charts.kabkota.data.datasets[0].data = Object.values(kabkotaCounts);
-        charts.kabkota.update();
+    // Kabkota - Sort and Top 10
+    // Tahun (Chronological Sort)
+    if (charts.tahun) {
+        // Prepare data with normalization
+        const normalizedData = data.map(item => {
+            let year = item.tahun_anggaran;
+            // Merge 'Stimulus 2009' into '2009'
+            if (year && typeof year === 'string' && year.includes('Stimulus 2009')) {
+                return { ...item, tahun_anggaran: '2009' };
+            }
+            return item;
+        });
+
+        let tahunCounts = countBy(normalizedData, 'tahun_anggaran');
+
+        // Convert to array and sort chronologically
+        const sorted = Object.entries(tahunCounts)
+            .sort((a, b) => {
+                const yearA = parseInt(a[0]);
+                const yearB = parseInt(b[0]);
+                if (isNaN(yearA)) return 1;
+                if (isNaN(yearB)) return -1;
+                return yearA - yearB;
+            });
+
+        charts.tahun.data.labels = sorted.map(([label]) => label);
+        charts.tahun.data.datasets[0].data = sorted.map(([, count]) => count);
+        charts.tahun.data.datasets[0].label = 'Jumlah Unit per Tahun';
+        charts.tahun.update();
     }
 
     // Tipe
@@ -868,10 +907,17 @@ function updateCharts(data) {
     }
 
     // Satker
+    // Satker - Sort and Top 10
     if (charts.satker) {
-        const satkerCounts = countBy(data, 'asset_satker');
-        charts.satker.data.labels = Object.keys(satkerCounts);
-        charts.satker.data.datasets[0].data = Object.values(satkerCounts);
+        let satkerCounts = countBy(data, 'asset_satker');
+
+        const sortedSatker = Object.entries(satkerCounts)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, 10);
+
+        charts.satker.data.labels = sortedSatker.map(([label]) => label);
+        charts.satker.data.datasets[0].data = sortedSatker.map(([, count]) => count);
+        charts.satker.data.datasets[0].label = 'Jumlah Unit (Top 10)';
         charts.satker.update();
     }
 

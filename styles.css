@@ -89,6 +89,7 @@ body {
     letter-spacing: -0.025em;
     background: linear-gradient(to right, var(--primary-dark), var(--primary-color));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0.25rem;
 }
@@ -632,30 +633,55 @@ body {
     object-fit: cover;
     display: block;
     background-color: var(--bg-body);
-}/* Charts Grid */
+}
+
+/* Charts Grid */
 .charts-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    padding: 1.5rem;
+    gap: 1rem;
+    padding: 1rem;
 }
 
 .chart-container {
     background: white;
-    padding: 1.5rem;
-    border-radius: var(--radius-md);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 0;
+    /* Remove padding from container to let header stretch */
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    /* Subtle shadow for cleaner look */
     border: 1px solid var(--border-color);
-    min-height: 350px;
+    min-height: 250px;
+    height: 38vh;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    /* For header border-radius */
+    transition: box-shadow 0.2s ease;
+}
+
+.chart-container:hover {
+    box-shadow: var(--shadow-md);
 }
 
 .chart-container h3 {
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-    color: var(--primary-color);
-    text-align: center;
+    margin: 0;
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    background-color: #f8fafc;
+    /* Subtle header bg */
+    border-bottom: 1px solid var(--border-color);
+    letter-spacing: -0.01em;
+}
+
+.chart-canvas-wrapper {
+    flex: 1;
+    padding: 1rem;
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 .chart-container canvas {
@@ -674,6 +700,7 @@ body {
         min-height: 300px;
     }
 }
+
 /* Satker Legend */
 .satker-item {
     display: flex;
@@ -725,7 +752,7 @@ body {
     border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
     /* Reset previous styles if any */
-    margin-bottom: 0; 
+    margin-bottom: 0;
     font-size: 1rem;
 }
 
@@ -743,4 +770,39 @@ body {
     font-weight: 600;
     color: white;
     border: none;
+}
+
+/* ===== Mobile Chart Grid (2x2) ===== */
+@media (max-width: 768px) {
+    .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 columns */
+        gap: 0.5rem;
+        /* Tight gap */
+        padding: 0.5rem;
+        overflow-x: hidden;
+        /* Disable horizontal scroll */
+        margin-right: 0;
+        padding-right: 0.5rem;
+    }
+
+    .chart-container {
+        width: 100%;
+        min-height: 180px;
+        /* Small height for 2x2 fit */
+        padding: 0.5rem;
+        margin-right: 0;
+    }
+
+    .chart-container h3 {
+        font-size: 0.8rem;
+        /* Smaller title */
+        margin-bottom: 0.5rem;
+    }
+
+    /* Hide scrollbars as we are not scrolling anymore */
+    .charts-grid::-webkit-scrollbar {
+        display: none;
+    }
 }
