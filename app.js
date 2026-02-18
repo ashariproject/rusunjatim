@@ -149,41 +149,6 @@ function updateMapMarkers() {
     console.log('Markers updated:', markers.length);
 }
 
-// ===== Image Handlers =====
-window.handleImageLoad = function (img) {
-    img.style.display = 'block';
-    const loader = img.parentElement.querySelector('.loading-text');
-    if (loader) loader.style.display = 'none';
-};
-
-window.handleImageError = function (img) {
-    // Prevent infinite loop if something goes wrong
-    if (img.dataset.retried === 'true') {
-        showErrorState(img);
-        return;
-    }
-
-    // Try .JPG if .jpg failed
-    if (img.src.endsWith('.jpg')) {
-        img.dataset.retried = 'true';
-        img.src = img.src.replace('.jpg', '.JPG');
-    } else {
-        showErrorState(img);
-    }
-};
-
-function showErrorState(img) {
-    img.style.display = 'none';
-    const loader = img.parentElement.querySelector('.loading-text');
-    if (loader) {
-        loader.innerText = 'Foto tidak tersedia';
-        loader.style.color = '#9ca3af'; // Gray text for cleaner look
-    }
-    img.parentElement.style.height = 'auto';
-    img.parentElement.style.minHeight = 'auto';
-    img.parentElement.style.padding = '1rem';
-}
-
 // ===== Create Marker =====
 function createMarker(rusun) {
     const { lat, lng, status } = rusun.koordinat;
@@ -199,17 +164,15 @@ function createMarker(rusun) {
 
     const marker = L.marker([lat, lng], { icon });
 
-    // Create popup content
+    // Create popup content - NO inline event handlers, use data attribute for id
     const popupContent = `
         <div class="popup-content">
             <div class="popup-image-container" style="min-height: 150px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; border-radius: 4px; overflow: hidden;">
                 <span class="loading-text" style="color: #666; font-size: 0.8rem;">Memuat foto...</span>
-                <img src="images/rusun/${rusun.id}.jpg" 
+                <img data-rusun-id="${rusun.id}"
                      alt="${rusun.nama_rusun}" 
-                     class="popup-image"
-                     style="display: none; width: 100%; height: auto;"
-                     onload="handleImageLoad(this)"
-                     onerror="handleImageError(this)">
+                     class="popup-image rusun-photo"
+                     style="display: none; width: 100%; height: auto;">
             </div>
             <h3>${rusun.nama_rusun || 'Tidak ada nama'}</h3>
             <div class="popup-row">
@@ -245,6 +208,44 @@ function createMarker(rusun) {
     `;
 
     marker.bindPopup(popupContent, { maxWidth: 300 });
+
+    // Use Leaflet's popupopen event to attach image handlers AFTER DOM is ready
+    marker.on('popupopen', function () {
+        const popup = marker.getPopup();
+        const el = popup.getElement();
+        if (!el) return;
+
+        const img = el.querySelector('.rusun-photo');
+        if (!img) return;
+
+        const rusunId = img.dataset.rusunId;
+        const loader = img.parentElement.querySelector('.loading-text');
+
+        img.onload = function () {
+            img.style.display = 'block';
+            if (loader) loader.style.display = 'none';
+        };
+
+        img.onerror = function () {
+            // Try uppercase extension first
+            if (!img.dataset.retried) {
+                img.dataset.retried = 'true';
+                img.src = 'images/rusun/' + rusunId + '.JPG';
+            } else {
+                // Both failed - show error state
+                img.style.display = 'none';
+                if (loader) {
+                    loader.innerText = 'Foto tidak tersedia';
+                    loader.style.color = '#9ca3af';
+                }
+                img.parentElement.style.minHeight = 'auto';
+                img.parentElement.style.padding = '1rem';
+            }
+        };
+
+        // Now set src to trigger loading
+        img.src = 'images/rusun/' + rusunId + '.jpg';
+    });
 
     return marker;
 }
