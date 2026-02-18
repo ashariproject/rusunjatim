@@ -167,13 +167,25 @@ function createMarker(rusun) {
     // Create popup content
     const popupContent = `
         <div class="popup-content">
-            <div class="popup-image-container" style="display: none;">
-                <img src="images/rusun/${rusun.id}.jpg" 
-                     alt="${rusun.nama_rusun}" 
-                     class="popup-image"
-                     onload="this.parentElement.style.display='block'"
-                     onerror="this.src='images/rusun/${rusun.id}.JPG'; this.onerror=null;">
-            </div>
+                <div class="popup-image-container" style="min-height: 150px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; border-radius: 4px; overflow: hidden;">
+                    <span class="loading-text" style="color: #666; font-size: 0.8rem;">Memuat foto...</span>
+                    <img src="images/rusun/${rusun.id}.jpg" 
+                         alt="${rusun.nama_rusun}" 
+                         class="popup-image"
+                         style="display: none; width: 100%; height: auto;"
+                         onload="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                         onerror="
+                            if (this.src.endsWith('.jpg')) {
+                                this.src = this.src.replace('.jpg', '.JPG');
+                            } else {
+                                this.style.display='none'; 
+                                this.previousElementSibling.innerText='Foto belum tersedia';
+                                this.parentElement.style.height='auto';
+                                this.parentElement.style.minHeight='auto';
+                                this.parentElement.style.padding='10px';
+                            }
+                         ">
+                </div>
             <h3>${rusun.nama_rusun || 'Tidak ada nama'}</h3>
             <div class="popup-row">
                 <span class="popup-label">Alamat:</span>
