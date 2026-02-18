@@ -149,6 +149,41 @@ function updateMapMarkers() {
     console.log('Markers updated:', markers.length);
 }
 
+// ===== Image Handlers =====
+window.handleImageLoad = function (img) {
+    img.style.display = 'block';
+    const loader = img.parentElement.querySelector('.loading-text');
+    if (loader) loader.style.display = 'none';
+};
+
+window.handleImageError = function (img) {
+    // Prevent infinite loop if something goes wrong
+    if (img.dataset.retried === 'true') {
+        showErrorState(img);
+        return;
+    }
+
+    // Try .JPG if .jpg failed
+    if (img.src.endsWith('.jpg')) {
+        img.dataset.retried = 'true';
+        img.src = img.src.replace('.jpg', '.JPG');
+    } else {
+        showErrorState(img);
+    }
+};
+
+function showErrorState(img) {
+    img.style.display = 'none';
+    const loader = img.parentElement.querySelector('.loading-text');
+    if (loader) {
+        loader.innerText = 'Foto tidak tersedia';
+        loader.style.color = '#9ca3af'; // Gray text for cleaner look
+    }
+    img.parentElement.style.height = 'auto';
+    img.parentElement.style.minHeight = 'auto';
+    img.parentElement.style.padding = '1rem';
+}
+
 // ===== Create Marker =====
 function createMarker(rusun) {
     const { lat, lng, status } = rusun.koordinat;
@@ -167,25 +202,15 @@ function createMarker(rusun) {
     // Create popup content
     const popupContent = `
         <div class="popup-content">
-                <div class="popup-image-container" style="min-height: 150px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; border-radius: 4px; overflow: hidden;">
-                    <span class="loading-text" style="color: #666; font-size: 0.8rem;">Memuat foto...</span>
-                    <img src="images/rusun/${rusun.id}.jpg" 
-                         alt="${rusun.nama_rusun}" 
-                         class="popup-image"
-                         style="display: none; width: 100%; height: auto;"
-                         onload="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                         onerror="
-                            if (this.src.endsWith('.jpg')) {
-                                this.src = this.src.replace('.jpg', '.JPG');
-                            } else {
-                                this.style.display='none'; 
-                                this.previousElementSibling.innerText='Foto belum tersedia';
-                                this.parentElement.style.height='auto';
-                                this.parentElement.style.minHeight='auto';
-                                this.parentElement.style.padding='10px';
-                            }
-                         ">
-                </div>
+            <div class="popup-image-container" style="min-height: 150px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; border-radius: 4px; overflow: hidden;">
+                <span class="loading-text" style="color: #666; font-size: 0.8rem;">Memuat foto...</span>
+                <img src="images/rusun/${rusun.id}.jpg" 
+                     alt="${rusun.nama_rusun}" 
+                     class="popup-image"
+                     style="display: none; width: 100%; height: auto;"
+                     onload="handleImageLoad(this)"
+                     onerror="handleImageError(this)">
+            </div>
             <h3>${rusun.nama_rusun || 'Tidak ada nama'}</h3>
             <div class="popup-row">
                 <span class="popup-label">Alamat:</span>
