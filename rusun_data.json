@@ -4,9 +4,9 @@
     "sheet": "JATIM",
     "generated_date": "2026-02-12T14:33:43.928863",
     "total_rusun": 375,
-    "with_coordinates": 220,
+    "with_coordinates": 221,
     "need_validation": 43,
-    "missing_coordinates": 155
+    "missing_coordinates": 154
   },
   "rusun": [
     {
@@ -432,9 +432,9 @@
       "kabkota": "Kab. Pasuruan",
       "penerima": "TNI",
       "koordinat": {
-        "lat": null,
-        "lng": null,
-        "status": "missing"
+        "lat": -7.706196141081048,
+        "lng": 112.99989264232858,
+        "status": "verified"
       },
       "tipe_rusun": 0,
       "varian": "Panjang",
