@@ -4,9 +4,9 @@
     "sheet": "JATIM",
     "generated_date": "2026-02-12T14:33:43.928863",
     "total_rusun": 375,
-    "with_coordinates": 222,
+    "with_coordinates": 223,
     "need_validation": 43,
-    "missing_coordinates": 153
+    "missing_coordinates": 152
   },
   "rusun": [
     {
@@ -8183,9 +8183,9 @@
       "kabkota": "Kab. Tuban",
       "penerima": "Peserta Didik (Perguruan Tinggi)",
       "koordinat": {
-        "lat": null,
-        "lng": null,
-        "status": "missing"
+        "lat": -6.9058956535379385,
+        "lng": 112.0790235301429,
+        "status": "verified"
       },
       "tipe_rusun": "Asrama",
       "varian": "Acarya 24",
