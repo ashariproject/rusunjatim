@@ -504,6 +504,25 @@ body {
     color: white;
 }
 
+/* Popup action buttons row */
+.popup-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* PDF Profile button */
+.btn-link-pdf {
+    background-color: #fff1f2;
+    color: #be123c;
+}
+
+.btn-link-pdf:hover {
+    background-color: #be123c;
+    color: white;
+}
+
 /* ===== Form Styles ===== */
 .form-container {
     background: var(--bg-surface);

@@ -203,7 +203,10 @@ function createMarker(rusun) {
                 <span class="popup-label">Koordinat:</span>
                 <span class="popup-value">${lat.toFixed(6)}, ${lng.toFixed(6)}</span>
             </div>
-            <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="btn-link" style="margin-top: 0.5rem;">📍 Lihat di Google Maps</a>
+            <div class="popup-actions">
+                <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="btn-link">📍 Lihat di Google Maps</a>
+                <a href="profile/${rusun.id}.pdf" target="_blank" class="btn-link btn-link-pdf" data-pdf-link style="display:none;">📄 Lihat Profil</a>
+            </div>
         </div>
     `;
 
@@ -220,6 +223,14 @@ function createMarker(rusun) {
 
         const rusunId = img.dataset.rusunId;
         const loader = img.parentElement.querySelector('.loading-text');
+
+        // Show PDF profile button if PDF exists
+        const pdfLink = el.querySelector('[data-pdf-link]');
+        if (pdfLink) {
+            fetch('profile/' + rusunId + '.pdf', { method: 'HEAD' })
+                .then(res => { if (res.ok) pdfLink.style.display = 'inline-flex'; })
+                .catch(() => { });
+        }
 
         img.onload = function () {
             img.style.display = 'block';
