@@ -2295,9 +2295,9 @@
       "kabkota": "Kota Pasuruan",
       "penerima": "Peserta Didik (LPKB)",
       "koordinat": {
-        "lat": null,
-        "lng": null,
-        "status": "missing"
+        "lat": -7.662001780034476,
+        "lng": 112.91394858373206,
+        "status": "verified"
       },
       "tipe_rusun": "Barak",
       "varian": "Sangat Kecil",
@@ -8206,8 +8206,8 @@
       "kabkota": "Kota Pasuruan",
       "penerima": "Peserta Didik (LPKB)",
       "koordinat": {
-        "lat": 112.740471,
-        "lng": -7.031173,
+        "lat": -7.662001780034476,
+        "lng": 112.91394858373206,
         "status": "verified"
       },
       "tipe_rusun": "Barak",
