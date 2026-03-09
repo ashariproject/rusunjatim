@@ -8344,9 +8344,9 @@
       "kabkota": "Kab. Ponorogo",
       "penerima": "Peserta Didik (LPKB)",
       "koordinat": {
-        "lat": null,
-        "lng": null,
-        "status": "missing"
+        "lat": -7.832066450346185,
+        "lng": 111.38184373186279,
+        "status": "verified"
       },
       "tipe_rusun": "Barak",
       "varian": "Rembunai",
