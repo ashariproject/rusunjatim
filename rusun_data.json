@@ -3652,9 +3652,9 @@
       "kabkota": "Kab. Nganjuk",
       "penerima": "Peserta Didik (LPKB)",
       "koordinat": {
-        "lat": null,
-        "lng": null,
-        "status": "missing"
+        "lat": -7.701356514021857,
+        "lng": 112.07500624932275,
+        "status": "verified"
       },
       "tipe_rusun": "Barak",
       "varian": "Sangat Kecil",
