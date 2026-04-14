@@ -3422,9 +3422,9 @@
       "kabkota": "Kab. Mojokerto",
       "penerima": "Peserta Didik (Perguruan Tinggi)",
       "koordinat": {
-        "lat": null,
-        "lng": null,
-        "status": "missing"
+        "lat": -7.492153124625259,
+        "lng": 112.46245742883886,
+        "status": "verified"
       },
       "tipe_rusun": 0,
       "varian": "Kecil",
