@@ -1674,9 +1674,9 @@
       "kabkota": "Kab. Ponorogo",
       "penerima": "Peserta Didik (LPKB)",
       "koordinat": {
-        "lat": null,
-        "lng": null,
-        "status": "missing"
+        "lat": -7.819383799930456,
+        "lng": 111.49816360824562,
+        "status": "verified"
       },
       "tipe_rusun": "Barak",
       "varian": "Sangat Kecil",
