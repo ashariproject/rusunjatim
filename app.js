@@ -22,6 +22,48 @@ const STORAGE_KEY = 'rusun_new_coords';
 
 // ===== Initialize App =====
 document.addEventListener('DOMContentLoaded', async () => {
+    // ===== Initialize Theme =====
+    const themeToggle = document.getElementById('themeToggle');
+    const iconLight = document.querySelector('.icon-light');
+    const iconDark = document.querySelector('.icon-dark');
+
+    function setTheme(isDark) {
+        if (isDark) {
+            document.documentElement.classList.add('dark');
+            if (iconLight) iconLight.style.display = 'none';
+            if (iconDark) iconDark.style.display = 'inline';
+        } else {
+            document.documentElement.classList.remove('dark');
+            if (iconLight) iconLight.style.display = 'inline';
+            if (iconDark) iconDark.style.display = 'none';
+        }
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        
+        // Update Chart.js defaults if object exists
+        if (typeof Chart !== 'undefined') {
+            Chart.defaults.color = isDark ? '#94a3b8' : '#64748b';
+            Chart.defaults.borderColor = isDark ? '#334155' : '#e2e8f0';
+            Object.values(charts).forEach(chart => {
+                if (chart) chart.update();
+            });
+        }
+    }
+
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        setTheme(true);
+    } else {
+        setTheme(false);
+    }
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            setTheme(!isDark);
+        });
+    }
+
     try {
         await loadData();
         initializeTabs();
@@ -167,45 +209,49 @@ function createMarker(rusun) {
     // Create popup content - NO inline event handlers, use data attribute for id
     const popupContent = `
         <div class="popup-content">
-            <div class="popup-image-container" style="min-height: 150px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; border-radius: 4px; overflow: hidden;">
-                <span class="loading-text" style="color: #666; font-size: 0.8rem;">Memuat foto...</span>
+            <div class="popup-image-container">
+                <span class="loading-text" style="color: #94a3b8; font-size: 0.8rem;">Memuat foto...</span>
                 <img data-rusun-id="${rusun.id}"
                      alt="${rusun.nama_rusun}" 
                      class="popup-image rusun-photo"
-                     style="display: none; width: 100%; height: auto;">
+                     style="display: none;">
             </div>
-            <h3>${rusun.nama_rusun || 'Tidak ada nama'}</h3>
-            <div class="popup-row">
-                <span class="popup-label">Alamat:</span>
-                <span class="popup-value">${rusun.alamat || '-'}</span>
-            </div>
-            <div class="popup-row">
-                <span class="popup-label">Kab/Kota:</span>
-                <span class="popup-value">${rusun.kabkota || '-'}</span>
-            </div>
-            <div class="popup-row">
-                <span class="popup-label">Tahun:</span>
-                <span class="popup-value">${rusun.tahun_anggaran || '-'}</span>
-            </div>
-            <div class="popup-row">
-                <span class="popup-label">Tipe:</span>
-                <span class="popup-value">${rusun.tipe_rusun || '-'} (${rusun.jumlah_lantai || '-'} Lantai)</span>
-            </div>
-            <div class="popup-row">
-                <span class="popup-label">Jumlah Unit:</span>
-                <span class="popup-value">${rusun.jumlah_unit || '-'}</span>
-            </div>
-            <div class="popup-row">
-                <span class="popup-label">Kondisi:</span>
-                <span class="popup-value">${rusun.kondisi_bangunan || '-'}</span>
-            </div>
-            <div class="popup-row">
-                <span class="popup-label">Koordinat:</span>
-                <span class="popup-value">${lat.toFixed(6)}, ${lng.toFixed(6)}</span>
-            </div>
-            <div class="popup-actions">
-                <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="btn-link">📍 Lihat di Google Maps</a>
-                <a href="profile/${rusun.id}.pdf" target="_blank" class="btn-link btn-link-pdf" data-pdf-link style="display:none;">📄 Lihat Profil</a>
+            <div class="popup-details">
+                <h3>${rusun.nama_rusun || 'Tidak ada nama'}</h3>
+                <table class="popup-table">
+                    <tr>
+                        <td>Alamat</td>
+                        <td>${rusun.alamat || '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Kab/Kota</td>
+                        <td>${rusun.kabkota || '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Tahun</td>
+                        <td>${rusun.tahun_anggaran || '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Tipe</td>
+                        <td>${rusun.tipe_rusun || '-'} (${rusun.jumlah_lantai || '-'} Lantai)</td>
+                    </tr>
+                    <tr>
+                        <td>Jumlah Unit</td>
+                        <td>${rusun.jumlah_unit || '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Kondisi</td>
+                        <td>${rusun.kondisi_bangunan || '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Koordinat</td>
+                        <td>${lat.toFixed(6)}, ${lng.toFixed(6)}</td>
+                    </tr>
+                </table>
+                <div class="popup-actions">
+                    <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="btn-link">📍 Lihat di Google Maps</a>
+                    <a href="profile/${rusun.id}.pdf" target="_blank" class="btn-link btn-link-pdf" data-pdf-link style="display:none;">📄 Lihat Profil</a>
+                </div>
             </div>
         </div>
     `;
