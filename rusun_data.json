@@ -3399,9 +3399,9 @@
       "kabkota": "Kota Madiun",
       "penerima": "Peserta Didik (Perguruan Tinggi)",
       "koordinat": {
-        "lat": null,
-        "lng": null,
-        "status": "missing"
+        "lat": -7.642528236840669,
+        "lng": 111.53722016126295,
+        "status": "verified"
       },
       "tipe_rusun": 0,
       "varian": "Kecil",
