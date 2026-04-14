@@ -3445,9 +3445,9 @@
       "kabkota": "Kab. Tuban",
       "penerima": "Peserta Didik (Perguruan Tinggi)",
       "koordinat": {
-        "lat": null,
-        "lng": null,
-        "status": "missing"
+        "lat": -6.8886628898943085,
+        "lng": 112.05175125999196,
+        "status": "verified"
       },
       "tipe_rusun": 0,
       "varian": "Kecil",
