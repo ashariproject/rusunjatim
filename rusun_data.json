@@ -5722,8 +5722,8 @@
       "kabkota": "Kab. Probolinggo",
       "penerima": "Peserta Didik (Perguruan Tinggi)",
       "koordinat": {
-        "lat": -7.786226,
-        "lng": 113.375707,
+        "lat": -7.786155418746129,
+        "lng": 113.37698529912946,
         "status": "verified"
       },
       "tipe_rusun": 24,
