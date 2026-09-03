@@ -56,13 +56,14 @@ services:
         aliases:
           - rusun-web
 
-  # 4. Cloudflare Tunnel (Host mode untuk akses langsung localhost:8088)
+  # 4. Cloudflare Tunnel (Tersambung ke rusun-network agar bisa akses rusun-web:80)
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: rusun_tunnel
     restart: unless-stopped
     command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN:-eyJhIjoiNDVmYzk5NjhjNTk4M2NkNDA5MDdlMWFlOWI2NDMyZjciLCJ0IjoiM2ViOWQ5M2MtMDdhYS00MzNkLWIwZjYtZTE3ZDAwM2M4YTA3IiwicyI6Ik56QXpObVl5WVRVdFptVmpOaTAwTkRjeExUZ3hZelF0Tm1ZeVlqVTRORGt5T0dGbSJ9}
-    network_mode: host
+    networks:
+      - rusun-network
 
 networks:
   rusun-network:
