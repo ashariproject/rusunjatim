@@ -33,6 +33,8 @@ services:
     volumes:
       - ./uploads:/app/uploads
       - ./images:/app/images
+      - ./backend/app:/app/app
+      - ./rusun_data.json:/app/rusun_data.json
     depends_on:
       postgres:
         condition: service_healthy
