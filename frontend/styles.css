@@ -737,3 +737,217 @@ html.dark .data-table tr.missing-coord {
 .leaflet-popup-tip {
     background: var(--bg-card) !important;
 }
+
+/* ===== Pines UI Proyek & Timeline Styles ===== */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 0.85rem;
+    box-shadow: var(--shadow-xs);
+}
+
+.card-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-heading);
+    margin-bottom: 0.65rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.layout-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+@media (max-width: 900px) {
+    .layout-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    line-height: 1;
+}
+
+.badge-primary {
+    background: var(--primary-light);
+    color: var(--primary);
+    border: 1px solid var(--primary-border);
+}
+
+.badge-success {
+    background: var(--emerald-light);
+    color: var(--emerald);
+    border: 1px solid rgba(5, 150, 105, 0.3);
+}
+
+.badge-info {
+    background: var(--indigo-light);
+    color: var(--indigo);
+    border: 1px solid rgba(79, 70, 229, 0.3);
+}
+
+.badge-warning {
+    background: var(--amber-light);
+    color: var(--amber);
+    border: 1px solid rgba(217, 119, 6, 0.3);
+}
+
+/* Timeline Components */
+.timeline-container {
+    position: relative;
+    padding: 0.5rem 0;
+    margin-left: 1rem;
+}
+
+.timeline-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -1px;
+    width: 2px;
+    background: var(--border-subtle);
+}
+
+.timeline-card {
+    position: relative;
+    margin-bottom: 0.85rem;
+    padding-left: 1.25rem;
+}
+
+.timeline-icon {
+    position: absolute;
+    left: -6px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 2px solid var(--bg-card);
+}
+
+.timeline-box {
+    background: var(--bg-muted);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.65rem 0.75rem;
+}
+
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+}
+
+.timeline-date {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
+
+.btn-outline {
+    background: var(--bg-card);
+    border-color: var(--border-subtle);
+    color: var(--text-heading);
+}
+
+.btn-outline:hover {
+    background: var(--bg-muted);
+    border-color: var(--border-card);
+}
+
+.btn-sm {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+}
+
+/* Custom Table for Proyek */
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+}
+
+.custom-table th {
+    background: var(--bg-muted);
+    color: var(--text-heading);
+    padding: 0.45rem 0.65rem;
+    text-align: left;
+    font-weight: 700;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.custom-table td {
+    padding: 0.45rem 0.65rem;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-body);
+}
+
+.custom-table tr:hover {
+    background: var(--bg-hover);
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    width: 100%;
+    max-width: 520px;
+    padding: 1.25rem;
+    box-shadow: var(--shadow-md);
+}
