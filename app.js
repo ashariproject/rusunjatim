@@ -65,6 +65,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
+        // Hanya jalankan jika berada di halaman peta / tabel utama
+        if (!document.getElementById('map') && !document.getElementById('dataTable')) {
+            return;
+        }
         await loadData();
         initializeTabs();
         initializeMap();
