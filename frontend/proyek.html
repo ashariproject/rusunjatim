@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="light">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Proyek & Timeline Rusun - BP3KP Jatim</title>
+    <title>Kronologis & Persuratan Proyek Rusun - BP3KP Jawa IV</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/styles.css">
+    <!-- Custom CSS (Pines Compact) -->
+    <link rel="stylesheet" href="/styles.css?v=pines-proyek-2">
 </head>
 <body>
 
@@ -19,18 +19,23 @@
     <header class="header">
         <div class="container header-content">
             <div class="logo-section">
-                <a href="/" style="text-decoration: none; font-size: 1.5rem; margin-right: 0.5rem;">⬅️</a>
+                <a href="/" style="text-decoration: none; font-size: 1.1rem; padding: 0.2rem 0.5rem; background: var(--bg-muted); border: 1px solid var(--border-subtle); border-radius: 6px; color: var(--text-heading);" title="Kembali ke Peta GIS">⬅️ Peta</a>
                 <div>
-                    <h1 id="proyekNamaHeader">Memuat Data Proyek...</h1>
-                    <p class="subtitle" id="proyekKodeHeader">Repository & Kronologis Timeline Usulan s.d. Pembangunan</p>
+                    <h1 id="proyekNamaHeader">Pembangunan Rumah Susun TNI AL Pasuruan</h1>
+                    <p class="subtitle" id="proyekKodeHeader">BP3KP - Balai Pelaksana Penyediaan Perumahan dan Kawasan Permukiman Jawa IV</p>
                 </div>
             </div>
             
-            <div class="header-actions">
-                <button id="themeToggle" class="btn btn-outline">🌓 Tema</button>
-                <a href="/" class="btn btn-outline">🗺️ Kembali ke Peta GIS</a>
-                <button id="quickAddBtn" class="btn btn-primary" onclick="openQuickActionModal()" style="display: none;">
-                    ⚡ + Catat Progres / Upload Surat
+            <div class="header-actions" style="display: flex; align-items: center; gap: 0.4rem;">
+                <button id="themeToggle" class="theme-toggle" title="Toggle Dark/Light Mode">
+                    <span class="icon-light">🌞</span>
+                    <span class="icon-dark" style="display: none;">🌙</span>
+                </button>
+                <button class="btn btn-primary" onclick="openQuickActionModal('kegiatan')">
+                    ➕ Catat Kegiatan / Rapat
+                </button>
+                <button class="btn btn-outline" onclick="openQuickActionModal('surat')">
+                    📄 Upload Surat
                 </button>
             </div>
         </div>
@@ -40,86 +45,87 @@
     <main class="main-content">
         <div class="container">
             
-            <!-- Proyek Summary Banner -->
-            <div class="card" style="margin-bottom: 1.5rem; border-left: 6px solid var(--primary);">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+            <!-- Proyek Summary Banner (Compact Pines Style) -->
+            <div class="card" style="margin-bottom: 0.75rem; border-left: 4px solid var(--primary);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem;">
                     <div>
-                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
                             <span class="badge badge-primary" id="badgeTahun">TA 2026</span>
-                            <span class="badge badge-info" id="badgeFase">Fase: Konstruksi</span>
-                            <span class="badge badge-success" id="badgeLokasi">Kab. Pasuruan</span>
+                            <span class="badge badge-warning" id="badgeFase">Tahap: Usulan & Kesiapan Lahan</span>
+                            <span class="badge badge-info" id="badgeStatusLelang">Belum Lelang</span>
                         </div>
-                        <h2 id="proyekNama" style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem;">-</h2>
-                        <p id="proyekDeskripsi" style="color: var(--text-muted); font-size: 0.95rem; max-width: 800px;">-</p>
+                        <h2 id="proyekNama" style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.25rem;">Pembangunan Rumah Susun TNI AL Pasuruan</h2>
+                        <p id="proyekDeskripsi" style="color: var(--text-muted); font-size: 0.775rem; max-width: 900px; line-height: 1.35;">
+                            Pembangunan Rumah Susun untuk Prajurit TNI AL Pasuruan berlokasi di Desa Gejug Jati, Kecamatan Lekok, Kabupaten Pasuruan. Saat ini dalam proses pemenuhan persyaratan kesiapan lahan dan administrasi usulan.
+                        </p>
                     </div>
 
-                    <!-- Progress Box -->
-                    <div style="background: var(--primary-light); padding: 1rem 1.5rem; border-radius: 10px; min-width: 220px; text-align: center;">
-                        <span style="font-size: 0.8rem; color: var(--primary); font-weight: 600; text-transform: uppercase;">Progres Fisik</span>
-                        <div id="progresText" style="font-size: 2rem; font-weight: 800; color: var(--primary); margin: 0.25rem 0;">0%</div>
-                        <div style="width: 100%; background: #cbd5e1; height: 8px; border-radius: 4px; overflow: hidden;">
-                            <div id="progresBar" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.5s;"></div>
+                    <!-- Ringkasan Lokasi Lahan -->
+                    <div style="background: var(--bg-muted); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.5rem 0.75rem; min-width: 260px;">
+                        <span style="font-size: 0.685rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Lokasi Rencana Rusun:</span>
+                        <div id="infoLokasi" style="font-weight: 700; font-size: 0.825rem; color: var(--text-heading); margin: 0.2rem 0;">
+                            📍 Desa Gejug Jati, Kecamatan Lekok, Kabupaten Pasuruan
                         </div>
-                    </div>
-                </div>
-
-                <hr style="border: 0; border-top: 1px solid var(--border); margin: 1.25rem 0;">
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.875rem;">
-                    <div>
-                        <span style="color: var(--text-muted); display: block;">Pagu Anggaran:</span>
-                        <strong id="infoPagu">-</strong>
-                    </div>
-                    <div>
-                        <span style="color: var(--text-muted); display: block;">Pelaksana / Kontraktor:</span>
-                        <strong id="infoKontraktor">-</strong>
-                    </div>
-                    <div>
-                        <span style="color: var(--text-muted); display: block;">Konsultan Manajemen:</span>
-                        <strong id="infoKonsultan">-</strong>
-                    </div>
-                    <div>
-                        <span style="color: var(--text-muted); display: block;">Lokasi Lahan:</span>
-                        <strong id="infoLokasi">-</strong>
+                        <span style="font-size: 0.7rem; color: var(--text-subtle);">Calon Penerima: Prajurit TNI AL Pasuruan</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Two Column Layout: Timeline vs Persuratan -->
-            <div class="layout-grid" style="grid-template-columns: 1fr 1fr;">
+            <!-- Two Column Layout: Kronologis Berbasis Waktu vs Persuratan & Dokumen Pendukung -->
+            <div class="layout-grid" style="grid-template-columns: 1.2fr 0.8fr; gap: 0.75rem;">
                 
-                <!-- 1. Vertical Timeline -->
+                <!-- 1. Kronologis Kegiatan (Waktu adalah Utama) -->
                 <div class="card">
                     <div class="card-title">
-                        <span>⏳ Timeline Kronologis Proyek</span>
-                        <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-muted);" id="timelineCount">0 Kejadian</span>
+                        <div style="display: flex; align-items: center; gap: 0.4rem;">
+                            <span>⏳ Kronologis Kegiatan & Progres</span>
+                            <span class="badge badge-primary" id="timelineCount">0 Kegiatan</span>
+                        </div>
+                        <!-- Filter Kategori Cepat -->
+                        <div style="display: flex; gap: 0.25rem; font-size: 0.7rem;">
+                            <button class="btn btn-outline btn-sm filter-time-btn active" onclick="filterTimeline('all', this)">Semua</button>
+                            <button class="btn btn-outline btn-sm filter-time-btn" onclick="filterTimeline('Rapat', this)">🗣️ Rapat</button>
+                            <button class="btn btn-outline btn-sm filter-time-btn" onclick="filterTimeline('Surat', this)">📩 Surat</button>
+                            <button class="btn btn-outline btn-sm filter-time-btn" onclick="filterTimeline('Persyaratan', this)">📋 Persyaratan</button>
+                        </div>
                     </div>
 
-                    <div class="timeline-container" id="timelineList">
-                        <p style="color: var(--text-muted);">Memuat riwayat timeline...</p>
+                    <!-- Timeline Feed -->
+                    <div class="timeline-container" id="timelineList" style="margin-top: 0.5rem;">
+                        <div style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); background: var(--bg-muted); border-radius: var(--radius-sm); border: 1px dashed var(--border-subtle);">
+                            <span style="font-size: 2rem; display: block; margin-bottom: 0.5rem;">📭</span>
+                            <strong style="color: var(--text-heading); font-size: 0.85rem;">Belum ada riwayat kegiatan tercatat</strong>
+                            <p style="font-size: 0.75rem; margin-top: 0.25rem;">Klik tombol "➕ Catat Kegiatan / Rapat" di atas untuk mencatat rapat, diskusi, pertemuan, atau pemenuhan persyaratan.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 2. Persuratan & Berkas Repository -->
+                <!-- 2. Dokumen Persuratan & Data Pendukung -->
                 <div class="card">
                     <div class="card-title">
-                        <span>📁 Berkas & Dokumen Persuratan</span>
-                        <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-muted);" id="suratCount">0 Berkas</span>
+                        <div style="display: flex; align-items: center; gap: 0.4rem;">
+                            <span>📁 Berkas Persuratan & Data Pendukung</span>
+                            <span class="badge badge-primary" id="suratCount">0 Berkas</span>
+                        </div>
+                        <button class="btn btn-outline btn-sm" onclick="openQuickActionModal('surat')">➕ Upload</button>
                     </div>
 
-                    <div class="table-responsive">
+                    <div style="overflow-x: auto; margin-top: 0.35rem;">
                         <table class="custom-table" id="tableSurat">
                             <thead>
                                 <tr>
-                                    <th>No. & Tgl Surat</th>
-                                    <th>Jenis / Perihal</th>
-                                    <th>Pengirim</th>
-                                    <th>Status</th>
+                                    <th>Tanggal & No. Surat</th>
+                                    <th>Jenis & Perihal</th>
+                                    <th>Pihak / Pengirim</th>
                                     <th>Berkas</th>
                                 </tr>
                             </thead>
                             <tbody id="suratTableBody">
-                                <tr><td colspan="5" style="text-align: center;">Memuat persuratan...</td></tr>
+                                <tr>
+                                    <td colspan="4" style="text-align: center; padding: 2rem 1rem; color: var(--text-muted);">
+                                        Belum ada dokumen persuratan yang diunggah.
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -130,91 +136,109 @@
         </div>
     </main>
 
-    <!-- Modal Quick Input Timeline & Upload Persuratan -->
-    <div id="quickModal" class="modal">
-        <div class="modal-content" style="max-width: 600px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-                <h3 style="font-size: 1.15rem; font-weight: 700;">⚡ Form Cepat Operator</h3>
-                <button onclick="closeQuickActionModal()" class="btn btn-sm btn-outline">✖</button>
+    <!-- Modal Form Cepat Operator (Pines Modal) -->
+    <div class="modal" id="quickModal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.4rem;">
+                <h3 style="font-size: 0.9rem; font-weight: 700; color: var(--text-heading);" id="modalTitle">➕ Catat Riwayat Kegiatan</h3>
+                <button onclick="closeQuickActionModal()" style="background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--text-muted);">&times;</button>
             </div>
 
-            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                <button id="tabFormTimeline" class="btn btn-primary btn-sm" onclick="switchQuickForm('timeline')">+ Catat Progres Timeline</button>
-                <button id="tabFormSurat" class="btn btn-outline btn-sm" onclick="switchQuickForm('surat')">+ Upload Persuratan PDF</button>
+            <!-- Tab Switcher Modal -->
+            <div style="display: flex; gap: 0.35rem; margin-bottom: 0.75rem;">
+                <button type="button" id="tabBtnKegiatan" class="btn btn-primary btn-sm" onclick="switchModalTab('kegiatan')">🗣️ Kegiatan / Rapat / Diskusi</button>
+                <button type="button" id="tabBtnSurat" class="btn btn-outline btn-sm" onclick="switchModalTab('surat')">📄 Dokumen / Surat</button>
             </div>
 
-            <!-- Form Timeline -->
-            <form id="formAddTimeline" onsubmit="submitTimelineEvent(event)">
-                <div class="filter-group">
-                    <label>Tanggal Kejadian</label>
-                    <input type="date" id="inputTglTimeline" class="form-control" required>
+            <!-- Form 1: Kegiatan / Rapat / Diskusi / Persyaratan -->
+            <form id="formKegiatan" onsubmit="submitKegiatanEvent(event)">
+                <div style="margin-bottom: 0.5rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.2rem;">Tanggal Kegiatan *</label>
+                    <input type="date" id="inputTglKegiatan" class="search-input" required>
                 </div>
-                <div class="filter-group">
-                    <label>Fase Kegiatan</label>
-                    <select id="inputFaseTimeline" class="form-control" required>
-                        <option value="Usulan">Usulan Masuk</option>
-                        <option value="Verifikasi">Verifikasi Lapangan</option>
-                        <option value="Perencanaan">DED & Perencanaan</option>
-                        <option value="Lelang">Lelang & Pengadaan</option>
-                        <option value="Konstruksi">Pekerjaan Konstruksi</option>
-                        <option value="Serah Terima">Serah Terima & BAST</option>
+
+                <div style="margin-bottom: 0.5rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.2rem;">Kategori Kegiatan *</label>
+                    <select id="inputKategoriKegiatan" class="filter-select" required>
+                        <option value="Rapat / Diskusi">🗣️ Rapat / Diskusi / Pertemuan</option>
+                        <option value="Surat Masuk">📩 Surat Masuk</option>
+                        <option value="Surat Keluar">📤 Surat Keluar</option>
+                        <option value="Persyaratan Lahan">📋 Persyaratan / Kesiapan Lahan</option>
+                        <option value="Verifikasi Lapangan">🔍 Verifikasi / Peninjauan Lapangan</option>
+                        <option value="Administrasi">📑 Administrasi & Perencanaan</option>
                     </select>
                 </div>
-                <div class="filter-group">
-                    <label>Judul Kegiatan / Milestone</label>
-                    <input type="text" id="inputJudulTimeline" class="form-control" placeholder="Contoh: Pengecoran Plat Lantai 2 Selesai" required>
+
+                <div style="margin-bottom: 0.5rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.2rem;">Judul Kegiatan / Topik Bahasan *</label>
+                    <input type="text" id="inputJudulKegiatan" class="search-input" placeholder="Contoh: Rapat Koordinasi Kesiapan Lahan bersama Pomal Pasuruan" required>
                 </div>
-                <div class="filter-group">
-                    <label>Progres Fisik Baru (%)</label>
-                    <input type="number" step="0.1" min="0" max="100" id="inputProgresTimeline" class="form-control" placeholder="65.0">
+
+                <div style="margin-bottom: 0.5rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.2rem;">Pihak / Peserta Terlibat</label>
+                    <input type="text" id="inputPihakKegiatan" class="search-input" placeholder="Contoh: Tim Balai BP3KP Jawa IV, Danlanal Pasuruan, ATR/BPN">
                 </div>
-                <div class="filter-group">
-                    <label>Catatan Detail Kronologis</label>
-                    <textarea id="inputCatatanTimeline" class="form-control" rows="3" placeholder="Tuliskan ringkasan hasil pengecekan / progres..."></textarea>
+
+                <div style="margin-bottom: 0.75rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.2rem;">Catatan Hasil / Kesimpulan Notulen</label>
+                    <textarea id="inputCatatanKegiatan" class="search-input" rows="3" style="height: auto; padding: 0.4rem;" placeholder="Tuliskan poin hasil pembahasan atau kelengkapan persyaratan..."></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">💾 Simpan ke Timeline</button>
+
+                <div style="display: flex; justify-content: flex-end; gap: 0.4rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeQuickActionModal()">Batal</button>
+                    <button type="submit" class="btn btn-primary">💾 Simpan Kegiatan</button>
+                </div>
             </form>
 
-            <!-- Form Surat -->
-            <form id="formAddSurat" onsubmit="submitPersuratan(event)" style="display: none;">
-                <div class="filter-group">
-                    <label>Nomor Surat</label>
-                    <input type="text" id="inputNoSurat" class="form-control" placeholder="Contoh: 600/BA.05/BP3KP/2026" required>
+            <!-- Form 2: Dokumen Persuratan -->
+            <form id="formSurat" onsubmit="submitSuratEvent(event)" style="display: none;">
+                <div style="margin-bottom: 0.5rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.2rem;">Nomor Surat *</label>
+                    <input type="text" id="inputNoSurat" class="search-input" placeholder="Contoh: B/142/VIII/2026/TNI-AL" required>
                 </div>
-                <div class="filter-group">
-                    <label>Tanggal Surat</label>
-                    <input type="date" id="inputTglSurat" class="form-control" required>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; margin-bottom: 0.5rem;">
+                    <div>
+                        <label style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.2rem;">Tanggal Surat *</label>
+                        <input type="date" id="inputTglSurat" class="search-input" required>
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.2rem;">Jenis Surat</label>
+                        <select id="inputJenisSurat" class="filter-select">
+                            <option value="Surat Permohonan Usulan">Surat Permohonan Usulan</option>
+                            <option value="Surat Masuk">Surat Masuk</option>
+                            <option value="Surat Keluar / Jawaban">Surat Keluar / Jawaban</option>
+                            <option value="Berita Acara">Berita Acara</option>
+                            <option value="Dokumen Persyaratan Lahan">Dokumen Persyaratan Lahan</option>
+                            <option value="Surat Keputusan / Disposisi">Surat Keputusan / Disposisi</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="filter-group">
-                    <label>Jenis Surat</label>
-                    <select id="inputJenisSurat" class="form-control" required>
-                        <option value="Surat Permohonan Usulan">Surat Permohonan Usulan</option>
-                        <option value="Berita Acara Verifikasi Lapangan">Berita Acara Verifikasi Lapangan</option>
-                        <option value="Rekomendasi Teknis">Rekomendasi Teknis</option>
-                        <option value="SK Penetapan Lokasi">SK Penetapan Lokasi</option>
-                        <option value="Surat Perjanjian Kerja (Kontrak)">Surat Perjanjian Kerja (Kontrak)</option>
-                        <option value="Berita Acara Serah Terima (BAST)">Berita Acara Serah Terima (BAST)</option>
-                        <option value="Lainnya">Lainnya</option>
-                    </select>
+
+                <div style="margin-bottom: 0.5rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.2rem;">Pihak Pengirim / Asal Surat</label>
+                    <input type="text" id="inputPengirimSurat" class="search-input" placeholder="Contoh: Komandan Lanal Pasuruan / Kepala Balai BP3KP IV">
                 </div>
-                <div class="filter-group">
-                    <label>Pengirim / Instansi</label>
-                    <input type="text" id="inputPengirimSurat" class="form-control" placeholder="Contoh: Lanal Pasuruan / Bupati Pasuruan">
+
+                <div style="margin-bottom: 0.5rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.2rem;">Perihal Surat *</label>
+                    <input type="text" id="inputPerihalSurat" class="search-input" placeholder="Perihal surat atau permohonan..." required>
                 </div>
-                <div class="filter-group">
-                    <label>Perihal Surat</label>
-                    <textarea id="inputPerihalSurat" class="form-control" rows="2" placeholder="Perihal surat..." required></textarea>
+
+                <div style="margin-bottom: 0.75rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.2rem;">Upload File Surat (PDF / Gambar)</label>
+                    <input type="file" id="inputFileSurat" class="search-input" accept=".pdf,.png,.jpg,.jpeg">
                 </div>
-                <div class="filter-group">
-                    <label>File Lampiran (PDF / Scan)</label>
-                    <input type="file" id="inputFileSurat" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+
+                <div style="display: flex; justify-content: flex-end; gap: 0.4rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeQuickActionModal()">Batal</button>
+                    <button type="submit" class="btn btn-primary">📤 Upload & Simpan</button>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">📤 Upload & Simpan Persuratan</button>
             </form>
         </div>
     </div>
 
     <!-- Script Integrasi Proyek (Pines Handler) -->
-    <script src="/proyek.js?v=2026-09-03-3"></script>
+    <script src="/proyek.js?v=2026-09-03-4"></script>
 </body>
 </html>

@@ -103,95 +103,33 @@ def seed_database():
                 tahun=2026,
                 slug="tnialpasuruan",
                 kabkota="Kab. Pasuruan",
-                lokasi_detail="Kompleks TNI AL Grati, Pasuruan",
-                status_fase="Konstruksi",
-                progres_fisik_persen=62.50,
-                pagu_anggaran=18500000000,
-                kontraktor="PT. Karya Cipta Utama",
-                konsultan="PT. Perencana Estetika Mandiri",
-                deskripsi="Pembangunan Rumah Susun 3 Lantai untuk Prajurit TNI AL Pasuruan guna meningkatkan kesejahteraan hunian prajurit dan keluarga."
+                lokasi_detail="Desa Gejug Jati, Kecamatan Lekok, Kabupaten Pasuruan",
+                status_fase="Pengusulan & Kesiapan Lahan",
+                progres_fisik_persen=0.0,
+                pagu_anggaran=0,
+                kontraktor=None,
+                konsultan=None,
+                deskripsi="Pembangunan Rumah Susun untuk Prajurit TNI AL Pasuruan berlokasi di Desa Gejug Jati, Kecamatan Lekok, Kabupaten Pasuruan. Saat ini dalam proses pemenuhan persyaratan kesiapan lahan dan administrasi usulan."
             )
             db.add(sample_proyek)
             db.commit()
             db.refresh(sample_proyek)
-
-            # Timeline Milestones
-            timelines = [
-                TimelineEvent(
-                    proyek_id=sample_proyek.id,
-                    tanggal=date(2025, 8, 15),
-                    fase="Usulan",
-                    judul="Surat Usulan Permohonan Rusun Masuk",
-                    catatan="Penerimaan surat usulan resmi permohonan bantuan pembangunan Rusun TNI AL Pasuruan kepada Kementerian PKP / Dinas Perumahan.",
-                    progres_saat_ini=0.0,
-                    created_by_id=admin_user.id
-                ),
-                TimelineEvent(
-                    proyek_id=sample_proyek.id,
-                    tanggal=date(2025, 10, 10),
-                    fase="Verifikasi",
-                    judul="Verifikasi Lapangan & Kesiapan Lahan",
-                    catatan="Tim Verifikasi BP3KP melaksanakan peninjauan langsung ke lokasi kesiapan lahan di Grati Pasuruan. Status lahan dinyatakan Clean & Clear (Sertifikat Hak Pakai TNI AL).",
-                    progres_saat_ini=10.0,
-                    created_by_id=admin_user.id
-                ),
-                TimelineEvent(
-                    proyek_id=sample_proyek.id,
-                    tanggal=date(2025, 12, 5),
-                    fase="Perencanaan",
-                    judul="Penyelesaian Dokumen DED & RAB",
-                    catatan="Detail Engineering Design (DED) disetujui, spesifikasi 3 Lantai Type 36 dengan kapasitas 44 unit hunian keluarga.",
-                    progres_saat_ini=25.0,
-                    created_by_id=admin_user.id
-                ),
-                TimelineEvent(
-                    proyek_id=sample_proyek.id,
-                    tanggal=date(2026, 2, 20),
-                    fase="Konstruksi",
-                    judul="Groundbreaking & Pekerjaan Struktur Lantai 2",
-                    catatan="Pekerjaan pondasi tiang pancang dan struktur lantai 1 selesai 100%. Saat ini pengerjaan pengecoran plat lantai 2 dan kolom.",
-                    progres_saat_ini=62.50,
-                    created_by_id=admin_user.id
-                )
-            ]
-            db.add_all(timelines)
-
-            # Persuratan Awal
-            surat_entries = [
-                Persuratan(
-                    proyek_id=sample_proyek.id,
-                    no_surat="B/142/VIII/2025/TNI-AL",
-                    tgl_surat=date(2025, 8, 10),
-                    jenis_surat="Surat Permohonan Usulan",
-                    pengirim="Komandan Lanal Pasuruan",
-                    perihal="Permohonan Bantuan Pembangunan Rumah Susun Prajurit TNI AL TA 2026",
-                    status_disposisi="Disetujui",
-                    uploaded_by_id=admin_user.id
-                ),
-                Persuratan(
-                    proyek_id=sample_proyek.id,
-                    no_surat="600/BA.12/BP3KP/2025",
-                    tgl_surat=date(2025, 10, 12),
-                    jenis_surat="Berita Acara Verifikasi Lapangan",
-                    pengirim="Tim Teknis Verifikasi BP3KP Jatim",
-                    perihal="Berita Acara Hasil Peninjauan Lapangan Kesiapan Lahan Calon Lokasi Rusun",
-                    status_disposisi="Selesai",
-                    uploaded_by_id=admin_user.id
-                ),
-                Persuratan(
-                    proyek_id=sample_proyek.id,
-                    no_surat="HK.02.01/SPK/BP3KP/04/2026",
-                    tgl_surat=date(2026, 1, 15),
-                    jenis_surat="Surat Perjanjian Kerja (Kontrak)",
-                    pengirim="PPK Rusun BP3KP Jatim",
-                    perihal="Kontrak Pelaksanaan Pekerjaan Konstruksi Rusun TNI AL Pasuruan TA 2026",
-                    status_disposisi="Arsip",
-                    uploaded_by_id=admin_user.id
-                )
-            ]
-            db.add_all(surat_entries)
+            print("✅ Proyek TNI AL Pasuruan berhasil didaftarkan (data kronologis bersih/kosong).")
+        else:
+            # Perbarui data eksisting
+            sample_proyek.lokasi_detail = "Desa Gejug Jati, Kecamatan Lekok, Kabupaten Pasuruan"
+            sample_proyek.status_fase = "Pengusulan & Kesiapan Lahan"
+            sample_proyek.progres_fisik_persen = 0.0
+            sample_proyek.pagu_anggaran = 0
+            sample_proyek.kontraktor = None
+            sample_proyek.konsultan = None
+            sample_proyek.deskripsi = "Pembangunan Rumah Susun untuk Prajurit TNI AL Pasuruan berlokasi di Desa Gejug Jati, Kecamatan Lekok, Kabupaten Pasuruan. Saat ini dalam proses pemenuhan persyaratan kesiapan lahan dan administrasi usulan."
+            
+            # Kosongkan riwayat dummy agar siap diinput data riil berbasis waktu
+            db.query(TimelineEvent).filter(TimelineEvent.proyek_id == sample_proyek.id).delete()
+            db.query(Persuratan).filter(Persuratan.proyek_id == sample_proyek.id).delete()
             db.commit()
-            print("✅ Sample Proyek Ongoing (2026/tnialpasuruan) seeded successfully!")
+            print("✅ Data proyek TNI AL Pasuruan diperbarui: lokasi Desa Gejug Jati Lekok, pagu/kontraktor dinonaktifkan, data kronologis dikosongkan.")
 
     except Exception as e:
         db.rollback()
