@@ -29,11 +29,19 @@ def seed_database():
             print("✅ Default Admin User created (admin / AdminRusun2026!)")
 
         # 2. Seed Master Rusun from rusun_data.json
-        json_path = os.getenv("DATA_JSON_PATH", "rusun_data.json")
-        if not os.path.exists(json_path):
-            json_path = os.path.join(os.path.dirname(__file__), "..", "..", "rusun_data.json")
+        candidate_paths = [
+            os.getenv("DATA_JSON_PATH", "rusun_data.json"),
+            "/app/rusun_data.json",
+            os.path.join(os.path.dirname(__file__), "..", "rusun_data.json"),
+            os.path.join(os.path.dirname(__file__), "..", "..", "rusun_data.json")
+        ]
+        json_path = None
+        for p in candidate_paths:
+            if os.path.exists(p):
+                json_path = p
+                break
 
-        if os.path.exists(json_path) and db.query(RusunMaster).count() == 0:
+        if json_path and db.query(RusunMaster).count() == 0:
             print(f"📦 Loading rusun data from {json_path}...")
             with open(json_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
