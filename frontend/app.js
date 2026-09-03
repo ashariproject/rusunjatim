@@ -1,653 +1,1026 @@
-// Rusun Jatim Frontend Unified JavaScript
-const API_BASE = '/api';
-
-// State Global
-let mapInstance = null;
+// Global variables
+let rusunData = [];
+let map = null;
+let formMap = null;
+let markers = [];
 let markerClusterGroup = null;
-let allRusunData = [];
-let filteredRusunData = [];
-let currentProyekData = null;
+let currentFilters = {
+    kabkota: '',
+    yearMin: null,
+    yearMax: null,
+    tipe: '',
+    penerima: '', // Ensure this exists
+    satker: '', // New filter
+    coordStatus: ['verified', 'need_validation'],
+    searchQuery: ''
+};
 
-// --- 1. THEME SWITCHER ---
-function initTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    
-    const themeBtn = document.getElementById('themeToggle');
-    if (themeBtn) {
-        themeBtn.addEventListener('click', () => {
-            const current = document.documentElement.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
+let charts = {}; // Store chart instances
+
+// LocalStorage key for saved coordinates
+const STORAGE_KEY = 'rusun_new_coords';
+
+// ===== Initialize App =====
+document.addEventListener('DOMContentLoaded', async () => {
+    // ===== Initialize Theme =====
+    const themeToggle = document.getElementById('themeToggle');
+    const iconLight = document.querySelector('.icon-light');
+    const iconDark = document.querySelector('.icon-dark');
+
+    function setTheme(isDark) {
+        if (isDark) {
+            document.documentElement.classList.add('dark');
+            if (iconLight) iconLight.style.display = 'none';
+            if (iconDark) iconDark.style.display = 'inline';
+        } else {
+            document.documentElement.classList.remove('dark');
+            if (iconLight) iconLight.style.display = 'inline';
+            if (iconDark) iconDark.style.display = 'none';
+        }
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        
+        // Update Chart.js defaults if object exists
+        if (typeof Chart !== 'undefined') {
+            Chart.defaults.color = isDark ? '#94a3b8' : '#64748b';
+            Chart.defaults.borderColor = isDark ? '#334155' : '#e2e8f0';
+            Object.values(charts).forEach(chart => {
+                if (chart) chart.update();
+            });
+        }
+    }
+
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        setTheme(true);
+    } else {
+        setTheme(false);
+    }
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            setTheme(!isDark);
+        });
+    }
+
+    try {
+        await loadData();
+        initializeTabs();
+        initializeMap();
+        initializeFormMap();
+        populateFilters();
+        updateStatistics();
+        renderTable();
+        initCharts(); // Init charts
+        loadMissingCoordinatesForm();
+        loadSavedData();
+        attachEventListeners();
+    } catch (e) {
+        console.error(e);
+    }
+});
+
+// ===== Load Data =====
+async function loadData() {
+    try {
+        const response = await fetch('rusun_data.json?v=2026-02-13-17');
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        rusunData = data.rusun;
+        console.log(`Data loaded successfully: ${rusunData.length} records found.`);
+    } catch (error) {
+        console.error('Error loading data:', error);
+        alert('Gagal memuat data. ' + error.message);
+    }
+}
+
+// ===== Tab Navigation =====
+// ===== Tab Navigation =====
+function initializeTabs() {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetTabId = btn.dataset.tab;
+            console.log('Tab clicked:', targetTabId); // Debug logging
+
+            // Remove active class from all
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+
+            // Add active class to clicked
+            btn.classList.add('active');
+            const targetContent = document.getElementById(targetTabId + 'Tab');
+            if (targetContent) {
+                targetContent.classList.add('active');
+            } else {
+
+            }
+
+            // Invalidate map size when switching to map tab
+            if (targetTabId === 'map') {
+                setTimeout(() => {
+                    if (map) {
+                        map.invalidateSize();
+                        // Re-render markers to ensure they appear
+                        updateMapMarkers();
+                    }
+                }, 100);
+            }
+
+            if (targetTabId === 'form') {
+                setTimeout(() => {
+                    if (formMap) formMap.invalidateSize();
+                }, 100);
+            }
+
+            // Update charts when switching to grafis tab
+            if (targetTabId === 'grafis') {
+                setTimeout(() => {
+                    updateCharts(getFilteredData());
+                }, 100);
+            }
+        });
+    });
+}
+
+// ===== Initialize Main Map =====
+function initializeMap() {
+    // Create map centered on East Java
+    map = L.map('map').setView([-7.5, 112.5], 8);
+
+    // Add OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
+    }).addTo(map);
+
+    // Initialize marker cluster group
+    markerClusterGroup = L.markerClusterGroup({
+        maxClusterRadius: 50,
+        spiderfyOnMaxZoom: true,
+        showCoverageOnHover: false
+    });
+
+    map.addLayer(markerClusterGroup);
+
+    // Add markers
+    updateMapMarkers();
+}
+
+// ===== Update Map Markers =====
+function updateMapMarkers() {
+    // Clear existing markers
+    markerClusterGroup.clearLayers();
+    markers = [];
+
+    // Filter data
+    const filteredData = getFilteredData();
+
+    // Add markers for rusun with coordinates
+    filteredData.forEach(rusun => {
+        if (rusun.koordinat.lat && rusun.koordinat.lng) {
+            const marker = createMarker(rusun);
+            markers.push(marker);
+            markerClusterGroup.addLayer(marker);
+        }
+    });
+
+    console.log('Markers updated:', markers.length);
+}
+
+// ===== Create Marker =====
+function createMarker(rusun) {
+    const { lat, lng, status } = rusun.koordinat;
+
+    // Custom icon based on status
+    const iconColor = status === 'verified' ? '#10b981' : '#f59e0b';
+    const icon = L.divIcon({
+        className: 'custom-marker',
+        html: `<div style="background-color: ${iconColor}; width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+
+    const marker = L.marker([lat, lng], { icon });
+
+    // Create popup content - NO inline event handlers, use data attribute for id
+    const popupContent = `
+        <div class="popup-content">
+            <div class="popup-image-container">
+                <span class="loading-text" style="color: #94a3b8; font-size: 0.8rem;">Memuat foto...</span>
+                <img data-rusun-id="${rusun.id}"
+                     alt="${rusun.nama_rusun}" 
+                     class="popup-image rusun-photo"
+                     style="display: none;">
+            </div>
+            <div class="popup-details">
+                <h3>${rusun.nama_rusun || 'Tidak ada nama'}</h3>
+                <table class="popup-table">
+                    <tr>
+                        <td>Alamat</td>
+                        <td>${rusun.alamat || '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Kab/Kota</td>
+                        <td>${rusun.kabkota || '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Tahun</td>
+                        <td>${rusun.tahun_anggaran || '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Tipe</td>
+                        <td>${rusun.tipe_rusun || '-'} (${rusun.jumlah_lantai || '-'} Lantai)</td>
+                    </tr>
+                    <tr>
+                        <td>Jumlah Unit</td>
+                        <td>${rusun.jumlah_unit || '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Kondisi</td>
+                        <td>${rusun.kondisi_bangunan || '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Koordinat</td>
+                        <td>${lat.toFixed(6)}, ${lng.toFixed(6)}</td>
+                    </tr>
+                </table>
+                <div class="popup-actions">
+                    <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="btn-link">📍 Lihat di Google Maps</a>
+                    <a href="profile/${rusun.id}.pdf" target="_blank" class="btn-link btn-link-pdf" data-pdf-link style="display:none;">📄 Lihat Profil</a>
+                </div>
+            </div>
+        </div>
+    `;
+
+    marker.bindPopup(popupContent, { maxWidth: 300 });
+
+    // Use Leaflet's popupopen event to attach image handlers AFTER DOM is ready
+    marker.on('popupopen', function () {
+        const popup = marker.getPopup();
+        const el = popup.getElement();
+        if (!el) return;
+
+        const img = el.querySelector('.rusun-photo');
+        if (!img) return;
+
+        const rusunId = img.dataset.rusunId;
+        const loader = img.parentElement.querySelector('.loading-text');
+
+        // Show PDF profile button if PDF exists
+        const pdfLink = el.querySelector('[data-pdf-link]');
+        if (pdfLink) {
+            fetch('profile/' + rusunId + '.pdf', { method: 'HEAD' })
+                .then(res => { if (res.ok) pdfLink.style.display = 'inline-flex'; })
+                .catch(() => { });
+        }
+
+        img.onload = function () {
+            img.style.display = 'block';
+            if (loader) loader.style.display = 'none';
+        };
+
+        img.onerror = function () {
+            // Try uppercase extension first
+            if (!img.dataset.retried) {
+                img.dataset.retried = 'true';
+                img.src = 'images/rusun/' + rusunId + '.JPG';
+            } else {
+                // Both failed - show error state
+                img.style.display = 'none';
+                if (loader) {
+                    loader.innerText = 'Foto tidak tersedia';
+                    loader.style.color = '#9ca3af';
+                }
+                img.parentElement.style.minHeight = 'auto';
+                img.parentElement.style.padding = '1rem';
+            }
+        };
+
+        // Now set src to trigger loading
+        img.src = 'images/rusun/' + rusunId + '.jpg';
+    });
+
+    return marker;
+}
+
+// ===== Populate Filters =====
+function populateFilters() {
+    // Get unique kabkota, tipe, penerima, and satker
+    const kabkotaSet = new Set();
+    const tipeSet = new Set();
+    const penerimaSet = new Set();
+    const satkerSet = new Set();
+
+    rusunData.forEach(rusun => {
+        if (rusun.kabkota) kabkotaSet.add(rusun.kabkota);
+        if (rusun.tipe_rusun) tipeSet.add(rusun.tipe_rusun);
+        if (rusun.penerima) penerimaSet.add(rusun.penerima);
+        if (rusun.asset_satker) satkerSet.add(rusun.asset_satker);
+    });
+
+    // Populate kabkota dropdown
+    const kabkotaSelect = document.getElementById('filterKabkota');
+    if (kabkotaSelect) {
+        kabkotaSelect.innerHTML = '<option value="">Semua Kabupaten/Kota</option>';
+        Array.from(kabkotaSet).sort().forEach(kabkota => {
+            const option = document.createElement('option');
+            option.value = kabkota;
+            option.textContent = kabkota;
+            kabkotaSelect.appendChild(option);
+        });
+    }
+
+    // Populate tipe dropdown
+    const tipeSelect = document.getElementById('filterTipe');
+    if (tipeSelect) {
+        tipeSelect.innerHTML = '<option value="">Semua Tipe</option>';
+        Array.from(tipeSet).sort().forEach(tipe => {
+            const option = document.createElement('option');
+            option.value = tipe;
+            option.textContent = tipe;
+            tipeSelect.appendChild(option);
+        });
+    }
+
+    // Populate penerima dropdown
+    const penerimaSelect = document.getElementById('filterPenerima');
+    if (penerimaSelect) {
+        penerimaSelect.innerHTML = '<option value="">Semua Kategori</option>';
+        Array.from(penerimaSet).sort().forEach(penerima => {
+            const option = document.createElement('option');
+            option.value = penerima;
+            option.textContent = penerima;
+            penerimaSelect.appendChild(option);
+        });
+    }
+
+    // Populate satker dropdown
+    const satkerSelect = document.getElementById('filterSatker');
+    if (satkerSelect) {
+        satkerSelect.innerHTML = '<option value="">Semua Satker</option>';
+        Array.from(satkerSet).sort().forEach(satker => {
+            const option = document.createElement('option');
+            option.value = satker;
+            option.textContent = satker;
+            satkerSelect.appendChild(option);
         });
     }
 }
 
-// --- 2. MAP INITIALIZATION & GIS ---
-function initMap() {
-    const mapContainer = document.getElementById('map');
-    if (!mapContainer) return;
 
-    // Center Jawa Timur
-    mapInstance = L.map('map').setView([-7.7, 112.5], 8);
+
+// ===== Get Filtered Data =====
+function getFilteredData() {
+    return rusunData.filter(rusun => {
+        // Filter by search query
+        if (currentFilters.searchQuery) {
+            const query = currentFilters.searchQuery.toLowerCase();
+            const matchesSearch = (
+                (rusun.nama_rusun && rusun.nama_rusun.toLowerCase().includes(query)) ||
+                (rusun.alamat && rusun.alamat.toLowerCase().includes(query)) ||
+                (rusun.kabkota && rusun.kabkota.toLowerCase().includes(query))
+            );
+            if (!matchesSearch) return false;
+        }
+
+        // Filter by kabkota
+        if (currentFilters.kabkota && rusun.kabkota !== currentFilters.kabkota) {
+            return false;
+        }
+
+        // Filter by year
+        if (currentFilters.yearMin && rusun.tahun_anggaran < currentFilters.yearMin) {
+            return false;
+        }
+        if (currentFilters.yearMax && rusun.tahun_anggaran > currentFilters.yearMax) {
+            return false;
+        }
+
+        // Filter by tipe
+        if (currentFilters.tipe && rusun.tipe_rusun !== currentFilters.tipe) {
+            return false;
+        }
+
+        // Filter by penerima
+        if (currentFilters.penerima && rusun.penerima !== currentFilters.penerima) {
+            return false;
+        }
+
+        // Filter by satker
+        if (currentFilters.satker && rusun.asset_satker !== currentFilters.satker) {
+            return false;
+        }
+
+        // Filter by coordinate status
+        const hasCoords = rusun.koordinat && rusun.koordinat.lat && rusun.koordinat.lng;
+        let status = 'missing';
+        if (hasCoords) {
+            status = rusun.koordinat.status || 'verified';
+        }
+
+        if (!currentFilters.coordStatus.includes(status)) {
+            return false;
+        }
+
+        return true;
+    });
+}
+
+// ===== Update Statistics =====
+// ===== Update Statistics =====
+function updateStatistics() {
+    // Count by recipient category from penerima field
+    let mbr = 0;
+    let pesertaDidik = 0;
+    let pekerjaIndustri = 0;
+    let asnTniPolri = 0;
+
+    rusunData.forEach((rusun) => {
+        const penerima = String(rusun.penerima || '').trim();
+
+        // Categorize based on penerima value
+        if (penerima === 'MBR') {
+            mbr++;
+        } else if (penerima.includes('Peserta Didik')) {
+            pesertaDidik++;
+        } else if (penerima === 'Pekerja Industri') {
+            pekerjaIndustri++;
+        } else if (penerima === 'TNI' || penerima === 'POLRI' || penerima.includes('ASN')) {
+            asnTniPolri++;
+        } else {
+            // Default to MBR if unknown or empty, but log it if needed
+            if (penerima) console.log('Uncategorized penerima:', penerima);
+            mbr++;
+        }
+    });
+
+    const statTotalEl = document.getElementById('statTotal');
+    if (statTotalEl) {
+        statTotalEl.textContent = rusunData.length;
+    }
+
+    document.getElementById('statMBR').textContent = mbr;
+    document.getElementById('statPesertaDidik').textContent = pesertaDidik;
+    document.getElementById('statPekerja').textContent = pekerjaIndustri;
+    document.getElementById('statASNTNIPOLRI').textContent = asnTniPolri;
+
+    // Update Satker Legend
+    updateSatkerLegend();
+}
+
+// ===== Update Satker Legend =====
+function updateSatkerLegend() {
+    const legendContainer = document.getElementById('satker-legend');
+    if (!legendContainer) return;
+
+    // Count satker from *filtered* data or *all* data? 
+    // Usually legend reflects current view, but request said "jumlah masing-masing aset satker", implies total or filtered.
+    // Let's use rusunData (total) to match the request context of "info penting" usually meaning global stats.
+    // But if filters are active, map markers change. 
+    // Let's use *filtered* data to be consistent with the map.
+    // Wait, existing stats (MBR etc) use rusunData (global). 
+    // Let's use visible data (filteredData) if we want it to react to filters, or rusunData if global.
+    // Given it's a "Legend", it usually describes what's on the map.
+    // However, the user asked for "jumlah masing-masing", often implying a summary.
+    // Let's stick to global stats for now as it seems to be general info, 
+    // OR matches the logic of `updateStatistics` which uses `rusunData`.
+
+    // Actually, `updateMapMarkers` calls `getFilteredData`. 
+    // `updateStatistics` is called once at init. 
+
+    // Let's calculate based on `rusunData` to show total asset distribution.
+
+    const satkerCounts = {};
+    rusunData.forEach(r => {
+        const satker = r.asset_satker || 'Tidak Diketahui';
+        satkerCounts[satker] = (satkerCounts[satker] || 0) + 1;
+    });
+
+    legendContainer.innerHTML = '';
+
+    Object.entries(satkerCounts)
+        .sort((a, b) => b[1] - a[1]) // Sort by count desc
+        .forEach(([satker, count]) => {
+            const item = document.createElement('div');
+            item.className = 'satker-item';
+            item.innerHTML = `
+                <span>${satker}</span>
+                <span class="satker-count">${count}</span>
+            `;
+            legendContainer.appendChild(item);
+        });
+}
+
+
+// ===== Render Table =====
+let currentPage = 1;
+const rowsPerPage = 50;
+let tableData = [];
+let searchQuery = '';
+
+function renderTable() {
+    tableData = rusunData.filter(rusun => {
+        if (!searchQuery) return true;
+        const query = searchQuery.toLowerCase();
+        return (
+            (rusun.nama_rusun && rusun.nama_rusun.toLowerCase().includes(query)) ||
+            (rusun.alamat && rusun.alamat.toLowerCase().includes(query)) ||
+            (rusun.kabkota && rusun.kabkota.toLowerCase().includes(query))
+        );
+    });
+
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const pageData = tableData.slice(start, end);
+
+    if (pageData.length === 0) {
+        console.log('WARNING: No data to render for this page.');
+    }
+
+    pageData.forEach((rusun, index) => {
+        const row = document.createElement('tr');
+        if (!rusun.koordinat || !rusun.koordinat.lat || !rusun.koordinat.lng) {
+            row.classList.add('no-coords');
+        }
+
+        const lat = rusun.koordinat?.lat;
+        const lng = rusun.koordinat?.lng;
+
+        const coordText = lat && lng
+            ? `${lat.toFixed(6)}, ${lng.toFixed(6)}`
+            : 'Belum ada';
+
+        const actionBtn = lat && lng
+            ? `<a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="btn-link">📍 Maps</a>`
+            : '<span style="color: #ef4444;">Belum ada</span>';
+
+        row.innerHTML = `
+            <td>${rusun.id}</td>
+            <td>${rusun.tahun_anggaran || '-'}</td>
+            <td>${rusun.nama_rusun || '-'}</td>
+            <td>${rusun.alamat || '-'}</td>
+            <td>${rusun.kabkota || '-'}</td>
+            <td>${coordText}</td>
+            <td>${rusun.tipe_rusun || '-'}</td>
+            <td>${rusun.penerima || '-'}</td>
+            <td>${rusun.jumlah_unit || '-'}</td>
+            <td>${rusun.kondisi_bangunan || '-'}</td>
+            <td>${actionBtn}</td>
+        `;
+
+        tbody.appendChild(row);
+    });
+
+    renderPagination();
+}
+
+// ===== Render Pagination =====
+function renderPagination() {
+    const totalPages = Math.ceil(tableData.length / rowsPerPage);
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'page-btn';
+        btn.textContent = i;
+        if (i === currentPage) btn.classList.add('active');
+        btn.addEventListener('click', () => {
+            currentPage = i;
+            renderTable();
+        });
+        pagination.appendChild(btn);
+    }
+}
+
+// ===== Initialize Form Map =====
+function initializeFormMap() {
+    formMap = L.map('formMap').setView([-7.5, 112.5], 8);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap contributors | BP3KP Jatim'
-    }).addTo(mapInstance);
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19
+    }).addTo(formMap);
 
-    markerClusterGroup = L.markerClusterGroup({
-        chunkedLoading: true,
-        maxClusterRadius: 45
-    });
-    mapInstance.addLayer(markerClusterGroup);
+    let tempMarker = null;
 
-    fetchRusunMasterData();
-    setupMapFilters();
-}
+    formMap.on('click', (e) => {
+        const { lat, lng } = e.latlng;
 
-async function fetchRusunMasterData() {
-    try {
-        const res = await fetch(`${API_BASE}/rusun`);
-        if (!res.ok) throw new Error('Gagal mengambil data rusun');
-        allRusunData = await res.json();
-        filteredRusunData = [...allRusunData];
-
-        populateFilterDropdowns(allRusunData);
-        updateMapMarkers(filteredRusunData);
-        updateSummaryStats(allRusunData);
-        renderMasterTable(filteredRusunData);
-        loadOngoingProjectsList();
-    } catch (err) {
-        console.warn('Backend API belum aktif, memuat fallback lokal...', err);
-        // Fallback to static JSON if accessed directly on file system
-        try {
-            const staticRes = await fetch('/rusun_data.json');
-            const staticData = await staticRes.json();
-            allRusunData = (staticData.rusun || []).map(r => ({
-                id: r.id,
-                nama_rusun: r.nama_rusun,
-                kabkota: r.kabkota,
-                alamat: r.alamat,
-                penerima: r.penerima,
-                tahun_anggaran: r.tahun_anggaran,
-                tipe_rusun: r.tipe_rusun,
-                jumlah_lantai: r.jumlah_lantai,
-                jumlah_unit: r.jumlah_unit,
-                latitude: r.koordinat ? r.koordinat.lat : null,
-                longitude: r.koordinat ? r.koordinat.lng : null,
-                status_koordinat: r.koordinat ? r.koordinat.status : 'missing',
-                foto_utama: `images/rusun/${r.id}.jpg`
-            }));
-            filteredRusunData = [...allRusunData];
-            populateFilterDropdowns(allRusunData);
-            updateMapMarkers(filteredRusunData);
-            updateSummaryStats(allRusunData);
-            renderMasterTable(filteredRusunData);
-        } catch (e) {
-            console.error('Gagal load data:', e);
+        // Remove previous marker
+        if (tempMarker) {
+            formMap.removeLayer(tempMarker);
         }
-    }
+
+        // Add new marker
+        tempMarker = L.marker([lat, lng]).addTo(formMap);
+
+        // Update input fields
+        document.getElementById('inputLat').value = lat.toFixed(6);
+        document.getElementById('inputLng').value = lng.toFixed(6);
+    });
 }
 
-function updateMapMarkers(data) {
-    if (!markerClusterGroup) return;
-    markerClusterGroup.clearLayers();
+// ===== Load Missing Coordinates Form =====
+function loadMissingCoordinatesForm() {
+    const select = document.getElementById('selectRusun');
+    const missingRusun = rusunData.filter(r => !r.koordinat.lat || !r.koordinat.lng);
 
-    const markers = [];
-    data.forEach(r => {
-        if (r.latitude && r.longitude) {
-            const lat = parseFloat(r.latitude);
-            const lng = parseFloat(r.longitude);
-            if (!isNaN(lat) && !isNaN(lng)) {
-                const markerColor = r.status_koordinat === 'verified' ? '#10b981' : '#f59e0b';
-                
-                const customIcon = L.divIcon({
-                    className: 'custom-map-pin',
-                    html: `<div style="background-color:${markerColor}; width:14px; height:14px; border-radius:50%; border:2px solid white; box-shadow:0 0 4px rgba(0,0,0,0.4);"></div>`,
-                    iconSize: [14, 14]
-                });
+    missingRusun.forEach(rusun => {
+        const option = document.createElement('option');
+        option.value = rusun.id;
+        option.textContent = `${rusun.nama_rusun || 'Tanpa nama'} - ${rusun.kabkota || ''}`;
+        select.appendChild(option);
+    });
 
-                const marker = L.marker([lat, lng], { icon: customIcon });
-                
-                const popupContent = `
-                    <div style="font-family:'Inter',sans-serif; min-width:240px; font-size:0.875rem;">
-                        <h4 style="color:var(--primary); font-size:0.95rem; margin-bottom:0.25rem;">${r.nama_rusun}</h4>
-                        <p style="color:#64748b; font-size:0.8rem; margin-bottom:0.5rem;">📍 ${r.kabkota || '-'} (TA ${r.tahun_anggaran || '-'})</p>
-                        <div style="font-size:0.8rem; line-height:1.4; margin-bottom:0.75rem;">
-                            <strong>Penerima:</strong> ${r.penerima || '-'}<br>
-                            <strong>Tipe/Unit:</strong> ${r.tipe_rusun || '-'} / ${r.jumlah_unit || '-'} unit<br>
-                            <strong>Alamat:</strong> ${r.alamat || '-'}
-                        </div>
-                        <div style="display:flex; gap:0.5rem;">
-                            <a href="https://maps.google.com/?q=${lat},${lng}" target="_blank" class="btn btn-sm btn-outline" style="text-decoration:none;">🗺️ G-Maps</a>
-                            <a href="/proyek/${r.tahun_anggaran || 2026}/rusun-${r.id}" class="btn btn-sm btn-primary" style="text-decoration:none;">📜 Timeline</a>
-                        </div>
-                    </div>
-                `;
-                marker.bindPopup(popupContent);
-                markers.push(marker);
-            }
+    select.addEventListener('change', (e) => {
+        const rusunId = parseInt(e.target.value);
+        const rusun = rusunData.find(r => r.id === rusunId);
+
+        if (rusun) {
+            document.getElementById('rusunInfo').style.display = 'block';
+            document.getElementById('infoNama').textContent = rusun.nama_rusun || '-';
+            document.getElementById('infoAlamat').textContent = rusun.alamat || '-';
+            document.getElementById('infoKabkota').textContent = rusun.kabkota || '-';
         }
     });
-
-    markerClusterGroup.addLayers(markers);
 }
 
-function populateFilterDropdowns(data) {
-    const kabKotaSet = new Set();
-    const tahunSet = new Set();
+// ===== Save Coordinate =====
+function saveCoordinate() {
+    const rusunId = parseInt(document.getElementById('selectRusun').value);
+    const lat = parseFloat(document.getElementById('inputLat').value);
+    const lng = parseFloat(document.getElementById('inputLng').value);
 
-    data.forEach(r => {
-        if (r.kabkota) kabKotaSet.add(r.kabkota.trim());
-        if (r.tahun_anggaran) tahunSet.add(r.tahun_anggaran);
-    });
-
-    const selectKab = document.getElementById('filterKabKota');
-    if (selectKab) {
-        [...kabKotaSet].sort().forEach(k => {
-            const opt = document.createElement('option');
-            opt.value = k;
-            opt.textContent = k;
-            selectKab.appendChild(opt);
-        });
-    }
-
-    const selectTahun = document.getElementById('filterTahun');
-    if (selectTahun) {
-        [...tahunSet].sort((a, b) => b - a).forEach(t => {
-            const opt = document.createElement('option');
-            opt.value = t;
-            opt.textContent = `Tahun ${t}`;
-            selectTahun.appendChild(opt);
-        });
-    }
-}
-
-function setupMapFilters() {
-    const searchInput = document.getElementById('searchInput');
-    const filterKab = document.getElementById('filterKabKota');
-    const filterTahun = document.getElementById('filterTahun');
-    const filterCoord = document.getElementById('filterStatusCoord');
-
-    const applyFilter = () => {
-        const s = (searchInput?.value || '').toLowerCase();
-        const k = filterKab?.value || '';
-        const t = filterTahun?.value || '';
-        const c = filterCoord?.value || '';
-
-        filteredRusunData = allRusunData.filter(r => {
-            const matchSearch = !s || 
-                (r.nama_rusun && r.nama_rusun.toLowerCase().includes(s)) ||
-                (r.alamat && r.alamat.toLowerCase().includes(s)) ||
-                (r.kabkota && r.kabkota.toLowerCase().includes(s));
-            
-            const matchKab = !k || (r.kabkota && r.kabkota.trim() === k);
-            const matchTahun = !t || (r.tahun_anggaran && String(r.tahun_anggaran) === String(t));
-            const matchCoord = !c || (r.status_koordinat === c);
-
-            return matchSearch && matchKab && matchTahun && matchCoord;
-        });
-
-        updateMapMarkers(filteredRusunData);
-        renderMasterTable(filteredRusunData);
-        updateSummaryStats(filteredRusunData);
-    };
-
-    searchInput?.addEventListener('input', applyFilter);
-    filterKab?.addEventListener('change', applyFilter);
-    filterTahun?.addEventListener('change', applyFilter);
-    filterCoord?.addEventListener('change', applyFilter);
-}
-
-function resetFilters() {
-    document.getElementById('searchInput').value = '';
-    document.getElementById('filterKabKota').value = '';
-    document.getElementById('filterTahun').value = '';
-    document.getElementById('filterStatusCoord').value = '';
-    filteredRusunData = [...allRusunData];
-    updateMapMarkers(filteredRusunData);
-    renderMasterTable(filteredRusunData);
-    updateSummaryStats(filteredRusunData);
-}
-
-function updateSummaryStats(data) {
-    const total = data.length;
-    const withCoords = data.filter(r => r.latitude && r.longitude).length;
-    const missing = total - withCoords;
-
-    const elTotal = document.getElementById('statTotalRusun');
-    const elWith = document.getElementById('statWithCoords');
-    const elMiss = document.getElementById('statMissingCoords');
-
-    if (elTotal) elTotal.textContent = total;
-    if (elWith) elWith.textContent = withCoords;
-    if (elMiss) elMiss.textContent = missing;
-}
-
-function renderMasterTable(data) {
-    const tbody = document.getElementById('masterTableBody');
-    if (!tbody) return;
-
-    if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:1.5rem; color:var(--text-muted);">Tidak ada data yang cocok.</td></tr>`;
+    if (!rusunId || !lat || !lng) {
+        alert('Pilih rusun dan isi koordinat dengan benar!');
         return;
     }
 
-    // Limit to first 100 in table for speed
-    const sliceData = data.slice(0, 100);
-    tbody.innerHTML = sliceData.map(r => `
-        <tr>
-            <td><strong>#${r.id}</strong></td>
-            <td><strong>${r.nama_rusun}</strong><br><small style="color:var(--text-muted);">${r.alamat || '-'}</small></td>
-            <td>${r.kabkota || '-'}</td>
-            <td>${r.penerima || '-'}</td>
-            <td>${r.tahun_anggaran || '-'}</td>
-            <td>${r.tipe_rusun || '-'}<br><small>${r.jumlah_tower ? r.jumlah_tower + ' Tower' : '-'}</small></td>
-            <td>${r.jumlah_unit ? r.jumlah_unit + ' Unit' : '-'}<br><small>${r.jumlah_lantai ? r.jumlah_lantai + ' Lt' : '-'}</small></td>
-            <td>
-                <span class="badge ${r.status_koordinat === 'verified' ? 'badge-success' : (r.status_koordinat === 'unverified' ? 'badge-warning' : 'badge-danger')}">
-                    ${r.status_koordinat || 'missing'}
-                </span>
-            </td>
-            <td>
-                <a href="/proyek/${r.tahun_anggaran || 2026}/rusun-${r.id}" class="btn btn-sm btn-outline">Timeline</a>
-            </td>
-        </tr>
-    `).join('');
+    const rusun = rusunData.find(r => r.id === rusunId);
+    if (!rusun) {
+        alert('Rusun tidak ditemukan!');
+        return;
+    }
+
+    // Get existing saved data
+    let savedData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+    // Check if already exists
+    const existingIndex = savedData.findIndex(d => d.id === rusunId);
+    if (existingIndex >= 0) {
+        savedData[existingIndex] = { id: rusunId, lat, lng, nama: rusun.nama_rusun, kabkota: rusun.kabkota };
+    } else {
+        savedData.push({ id: rusunId, lat, lng, nama: rusun.nama_rusun, kabkota: rusun.kabkota });
+    }
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(savedData));
+
+    alert('Koordinat berhasil disimpan!');
+    loadSavedData();
+
+    // Reset form
+    document.getElementById('selectRusun').value = '';
+    document.getElementById('inputLat').value = '';
+    document.getElementById('inputLng').value = '';
+    document.getElementById('rusunInfo').style.display = 'none';
 }
 
-// --- 3. ONGOING PROJECTS & TIMELINE PAGE ---
-async function loadOngoingProjectsList() {
-    const container = document.getElementById('ongoingProjectsList');
-    if (!container) return;
+// ===== Load Saved Data =====
+function loadSavedData() {
+    const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    const tbody = document.getElementById('savedDataBody');
+    tbody.innerHTML = '';
+
+    if (savedData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #6b7280;">Belum ada data yang disimpan</td></tr>';
+        return;
+    }
+
+    savedData.forEach((data, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${data.nama || '-'}</td>
+            <td>${data.kabkota || '-'}</td>
+            <td>${data.lat.toFixed(6)}</td>
+            <td>${data.lng.toFixed(6)}</td>
+            <td><button class="btn-link" onclick="deleteSavedData(${index})" style="background: #ef4444;">🗑️ Hapus</button></td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// ===== Delete Saved Data =====
+function deleteSavedData(index) {
+    let savedData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    savedData.splice(index, 1);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(savedData));
+    loadSavedData();
+}
+
+// ===== Export Updated Data =====
+function exportUpdatedData() {
+    const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+    if (savedData.length === 0) {
+        alert('Tidak ada data baru untuk di-export!');
+        return;
+    }
+
+    const dataStr = JSON.stringify(savedData, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `rusun_koordinat_baru_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// ===== Export to Excel =====
+function exportToExcel() {
+    const ws = XLSX.utils.json_to_sheet(rusunData.map(r => ({
+        'No': r.id,
+        'Tahun Anggaran': r.tahun_anggaran,
+        'Nama Paket': r.nama_paket,
+        'Nama Rusun': r.nama_rusun,
+        'Alamat': r.alamat,
+        'Kab/Kota': r.kabkota,
+        'Latitude': r.koordinat.lat,
+        'Longitude': r.koordinat.lng,
+        'Status Koordinat': r.koordinat.status,
+        'Tipe Rusun': r.tipe_rusun,
+        'Penerima': r.penerima,
+        'Varian': r.varian,
+        'Jumlah Lantai': r.jumlah_lantai,
+        'Jumlah Tower': r.jumlah_tower,
+        'Jumlah Unit': r.jumlah_unit,
+        'Kapasitas Hunian': r.kapasitas_hunian,
+        'Kondisi Bangunan': r.kondisi_bangunan,
+        'Status Lahan': r.status_lahan,
+        'Asset Satker': r.asset_satker
+    })));
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Data Rusun');
+    XLSX.writeFile(wb, `database_rusun_jatim_${new Date().toISOString().split('T')[0]}.xlsx`);
+}
+
+// ===== Attach Event Listeners =====
+function attachEventListeners() {
+    // Filter listeners
+    const mapSearchInput = document.getElementById('mapSearch');
+    if (mapSearchInput) {
+        mapSearchInput.addEventListener('input', (e) => {
+            currentFilters.searchQuery = e.target.value;
+            updateMapMarkers();
+            setTimeout(() => updateCharts(getFilteredData()), 100);
+        });
+    }
+
+    document.getElementById('filterKabkota').addEventListener('change', (e) => {
+        currentFilters.kabkota = e.target.value;
+        updateMapMarkers();
+        updateCharts(getFilteredData());
+    });
+
+    document.getElementById('filterYearMin').addEventListener('change', (e) => {
+        currentFilters.yearMin = e.target.value ? parseInt(e.target.value) : null;
+        updateMapMarkers();
+        updateCharts(getFilteredData());
+    });
+
+    document.getElementById('filterYearMax').addEventListener('change', (e) => {
+        currentFilters.yearMax = e.target.value ? parseInt(e.target.value) : null;
+        updateMapMarkers();
+        updateCharts(getFilteredData());
+    });
+
+    document.getElementById('filterTipe').addEventListener('change', (e) => {
+        currentFilters.tipe = e.target.value;
+        updateMapMarkers();
+        updateCharts(getFilteredData());
+    });
+
+    document.getElementById('filterPenerima').addEventListener('change', (e) => {
+        currentFilters.penerima = e.target.value;
+        updateMapMarkers();
+        updateCharts(getFilteredData());
+    });
+
+    const filterSatker = document.getElementById('filterSatker');
+    if (filterSatker) {
+        filterSatker.addEventListener('change', (e) => {
+            currentFilters.satker = e.target.value;
+            updateMapMarkers();
+            renderTable();
+            updateCharts(getFilteredData());
+        });
+    }
+
+    document.querySelectorAll('.checkbox-group input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            currentFilters.coordStatus = Array.from(
+                document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked')
+            ).map(cb => cb.value);
+            updateMapMarkers();
+            updateCharts(getFilteredData());
+        });
+    });
+
+    document.getElementById('resetFilters').addEventListener('click', () => {
+        currentFilters = {
+            kabkota: '',
+            yearMin: null,
+            yearMax: null,
+            tipe: '',
+            penerima: '',
+            satker: '',
+            coordStatus: ['verified', 'need_validation'],
+            searchQuery: ''
+        };
+        const mapSearchInput = document.getElementById('mapSearch');
+        if (mapSearchInput) mapSearchInput.value = '';
+
+        document.getElementById('filterKabkota').value = '';
+        document.getElementById('filterYearMin').value = '';
+        document.getElementById('filterYearMax').value = '';
+        document.getElementById('filterTipe').value = '';
+        document.getElementById('filterPenerima').value = '';
+        if (document.getElementById('filterSatker')) document.getElementById('filterSatker').value = '';
+
+        document.querySelectorAll('.checkbox-group input[type="checkbox"]').forEach(cb => {
+            cb.checked = cb.value !== 'missing';
+        });
+        updateMapMarkers();
+        renderTable();
+        updateCharts(rusunData);
+    });
+
+    // Table search
+    document.getElementById('searchTable').addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        currentPage = 1;
+        renderTable();
+    });
+
+    // Export Excel
+    document.getElementById('exportExcel').addEventListener('click', exportToExcel);
+
+    // Form listeners
+    document.getElementById('saveCoord').addEventListener('click', saveCoordinate);
+    document.getElementById('exportUpdatedData').addEventListener('click', exportUpdatedData);
+
+    // Fix map rendering when switching tabs - MOVED TO initializeTabs function to avoid duplicates
+}
+
+// ===== Initialize Charts =====
+// ===== Initialize Charts =====
+function initCharts() {
+    console.log('Initializing charts...');
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js not loaded');
+        return;
+    }
+
+    const chartConfig = (type, title) => ({
+        type: type,
+        data: { labels: [], datasets: [{ label: title, data: [], backgroundColor: '#0d6efd' }] },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: { top: 10, bottom: 0, left: 0, right: 0 }
+            },
+            plugins: {
+                legend: {
+                    display: type !== 'bar',
+                    // Responsive font size logic ideally, but setting a safe middle ground
+                    labels: { boxWidth: window.innerWidth < 768 ? 6 : 10, padding: 5, font: { size: window.innerWidth < 768 ? 9 : 11 } }
+                }
+            },
+            scales: type === 'bar' ? {
+                x: {
+                    ticks: {
+                        font: { size: window.innerWidth < 768 ? 8 : 10 },
+                        maxRotation: window.innerWidth < 768 ? 90 : 45,
+                        minRotation: window.innerWidth < 768 ? 90 : 0
+                    }
+                },
+                y: { ticks: { font: { size: window.innerWidth < 768 ? 8 : 10 } } }
+            } : {}
+        }
+    });
 
     try {
-        const res = await fetch(`${API_BASE}/proyek`);
-        if (!res.ok) throw new Error('Gagal');
-        const list = await res.json();
-        
-        if (list.length === 0) {
-            container.innerHTML = `<p style="color:var(--text-muted); padding:1rem;">Belum ada data proyek ongoing.</p>`;
-            return;
+        if (document.getElementById('chartTahun')) {
+            charts.tahun = new Chart(document.getElementById('chartTahun'), chartConfig('bar', 'Jumlah Unit'));
+        }
+        if (document.getElementById('chartTipe')) {
+            charts.tipe = new Chart(document.getElementById('chartTipe'), {
+                type: 'doughnut',
+                data: { labels: [], datasets: [{ data: [], backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'] }] },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+        if (document.getElementById('chartSatker')) {
+            charts.satker = new Chart(document.getElementById('chartSatker'), chartConfig('bar', 'Jumlah Unit'));
+        }
+        if (document.getElementById('chartKondisi')) {
+            charts.kondisi = new Chart(document.getElementById('chartKondisi'), {
+                type: 'pie',
+                data: { labels: [], datasets: [{ data: [], backgroundColor: ['#28a745', '#ffc107', '#dc3545', '#6c757d'] }] },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
         }
 
-        container.innerHTML = list.map(p => `
-            <div class="card" style="border-left:4px solid var(--primary); display:flex; flex-direction:column; justify-content:space-between;">
-                <div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
-                        <span class="badge badge-primary">TA ${p.tahun}</span>
-                        <span class="badge badge-info">${p.status_fase}</span>
-                    </div>
-                    <h3 style="font-size:1.1rem; margin-bottom:0.5rem;">${p.nama_proyek}</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">📍 ${p.kabkota || '-'}</p>
-                    <div style="margin-bottom:0.75rem;">
-                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:0.25rem;">
-                            <span>Progres Fisik</span>
-                            <strong>${p.progres_fisik_persen || 0}%</strong>
-                        </div>
-                        <div style="background:#cbd5e1; height:6px; border-radius:3px; overflow:hidden;">
-                            <div style="width:${p.progres_fisik_persen || 0}%; height:100%; background:var(--primary);"></div>
-                        </div>
-                    </div>
-                </div>
-                <a href="/proyek/${p.tahun}/${p.slug}" class="btn btn-sm btn-primary" style="margin-top:0.75rem; text-align:center; justify-content:center;">
-                    📜 Buka Timeline & Persuratan
-                </a>
-            </div>
-        `).join('');
+        updateCharts(rusunData);
     } catch (e) {
-        console.warn('Proyek ongoing load error:', e);
+        console.error('Error initializing charts:', e);
     }
 }
 
-async function initProyekDetailPage() {
-    initTheme();
-    checkLoginState();
+// ===== Update Charts =====
+function updateCharts(data) {
+    console.log('Updating charts with data length:', data ? data.length : 0);
+    if (!data) return;
 
-    // Parse /proyek/:tahun/:slug from window.location.pathname
-    const pathParts = window.location.pathname.split('/').filter(Boolean);
-    let tahun = 2026;
-    let slug = 'tnialpasuruan';
-
-    if (pathParts.length >= 3 && pathParts[0] === 'proyek') {
-        tahun = parseInt(pathParts[1]);
-        slug = pathParts[2];
-    }
-
-    try {
-        const res = await fetch(`${API_BASE}/proyek/${tahun}/${slug}`);
-        if (!res.ok) throw new Error('Proyek tidak ditemukan');
-        currentProyekData = await res.json();
-        renderProyekDetail(currentProyekData);
-    } catch (err) {
-        console.error('Error load detail proyek:', err);
-        document.getElementById('proyekNamaHeader').textContent = `Proyek ${slug.toUpperCase()} (TA ${tahun})`;
-        document.getElementById('proyekNama').textContent = `Pembangunan Rumah Susun (${slug})`;
-        document.getElementById('timelineList').innerHTML = `<p style="color:var(--text-muted);">Data timeline proyek belum tercatat di database.</p>`;
-    }
-}
-
-function renderProyekDetail(p) {
-    document.getElementById('proyekNamaHeader').textContent = p.nama_proyek;
-    document.getElementById('proyekKodeHeader').textContent = `${p.kode_proyek} • Repository Usulan s.d. Pembangunan`;
-    
-    document.getElementById('badgeTahun').textContent = `TA ${p.tahun}`;
-    document.getElementById('badgeFase').textContent = `Fase: ${p.status_fase}`;
-    document.getElementById('badgeLokasi').textContent = p.kabkota || 'Jawa Timur';
-    
-    document.getElementById('proyekNama').textContent = p.nama_proyek;
-    document.getElementById('proyekDeskripsi').textContent = p.deskripsi || 'Tidak ada keterangan tambahan.';
-    
-    const progres = p.progres_fisik_persen || 0;
-    document.getElementById('progresText').textContent = `${progres}%`;
-    document.getElementById('progresBar').style.width = `${progres}%`;
-
-    document.getElementById('infoPagu').textContent = p.pagu_anggaran ? `Rp ${p.pagu_anggaran.toLocaleString('id-ID')}` : '-';
-    document.getElementById('infoKontraktor').textContent = p.kontraktor || '-';
-    document.getElementById('infoKonsultan').textContent = p.konsultan || '-';
-    document.getElementById('infoLokasi').textContent = p.lokasi_detail || p.kabkota || '-';
-
-    // Render Timeline
-    const timelineContainer = document.getElementById('timelineList');
-    const timelines = p.timelines || [];
-    document.getElementById('timelineCount').textContent = `${timelines.length} Kejadian / Milestone`;
-
-    if (timelines.length === 0) {
-        timelineContainer.innerHTML = `<p style="color:var(--text-muted); padding:1rem 0;">Belum ada catatan timeline.</p>`;
-    } else {
-        timelineContainer.innerHTML = timelines.map(item => `
-            <div class="timeline-card">
-                <div class="timeline-icon"></div>
-                <div class="timeline-box">
-                    <div class="timeline-header">
-                        <span class="badge badge-info">${item.fase}</span>
-                        <span class="timeline-date">📅 ${item.tanggal}</span>
-                    </div>
-                    <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:0.35rem;">${item.judul}</h4>
-                    <p style="font-size:0.875rem; color:var(--text-main); line-height:1.4;">${item.catatan || ''}</p>
-                    ${item.progres_saat_ini !== null ? `<small style="color:var(--primary); font-weight:600; display:block; margin-top:0.35rem;">Progres Fisik: ${item.progres_saat_ini}%</small>` : ''}
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // Render Persuratan
-    const suratTbody = document.getElementById('suratTableBody');
-    const suratList = p.surat_list || [];
-    document.getElementById('suratCount').textContent = `${suratList.length} Berkas`;
-
-    if (suratList.length === 0) {
-        suratTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:1.5rem; color:var(--text-muted);">Belum ada berkas persuratan tersimpan.</td></tr>`;
-    } else {
-        suratTbody.innerHTML = suratList.map(s => `
-            <tr>
-                <td><strong>${s.no_surat}</strong><br><small style="color:var(--text-muted);">${s.tgl_surat}</small></td>
-                <td><strong>${s.jenis_surat}</strong><br><small>${s.perihal}</small></td>
-                <td>${s.pengirim || '-'}</td>
-                <td><span class="badge badge-success">${s.status_disposisi || 'Selesai'}</span></td>
-                <td>
-                    ${s.file_path ? `<a href="${s.file_path}" target="_blank" class="btn btn-sm btn-outline">📥 Lihat PDF</a>` : '<span style="color:var(--text-muted); font-size:0.8rem;">Tidak ada file</span>'}
-                </td>
-            </tr>
-        `).join('');
-    }
-}
-
-// --- 4. QUICK MODAL & OPERATOR ACTIONS ---
-function openQuickActionModal() {
-    const modal = document.getElementById('quickModal');
-    if (modal) modal.classList.add('show');
-}
-
-function closeQuickActionModal() {
-    const modal = document.getElementById('quickModal');
-    if (modal) modal.classList.remove('show');
-}
-
-function switchQuickForm(type) {
-    const btnTime = document.getElementById('tabFormTimeline');
-    const btnSurat = document.getElementById('tabFormSurat');
-    const formTime = document.getElementById('formAddTimeline');
-    const formSurat = document.getElementById('formAddSurat');
-
-    if (type === 'timeline') {
-        btnTime.className = 'btn btn-primary btn-sm';
-        btnSurat.className = 'btn btn-outline btn-sm';
-        formTime.style.display = 'block';
-        formSurat.style.display = 'none';
-    } else {
-        btnTime.className = 'btn btn-outline btn-sm';
-        btnSurat.className = 'btn btn-primary btn-sm';
-        formTime.style.display = 'none';
-        formSurat.style.display = 'block';
-    }
-}
-
-async function submitTimelineEvent(e) {
-    e.preventDefault();
-    if (!currentProyekData) return;
-
-    const token = localStorage.getItem('token');
-    const payload = {
-        proyek_id: currentProyekData.id,
-        tanggal: document.getElementById('inputTglTimeline').value,
-        fase: document.getElementById('inputFaseTimeline').value,
-        judul: document.getElementById('inputJudulTimeline').value,
-        progres_saat_ini: parseFloat(document.getElementById('inputProgresTimeline').value) || null,
-        catatan: document.getElementById('inputCatatanTimeline').value
+    // Helper to count frequencies
+    const countBy = (arr, key) => {
+        return arr.reduce((acc, curr) => {
+            const val = curr[key] || 'Tidak Diketahui';
+            acc[val] = (acc[val] || 0) + 1;
+            return acc;
+        }, {});
     };
 
-    try {
-        const res = await fetch(`${API_BASE}/proyek/${currentProyekData.id}/timeline`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(payload)
+    // Kabkota
+    // Kabkota - Sort and Top 10
+    // Tahun (Chronological Sort)
+    if (charts.tahun) {
+        // Prepare data with normalization
+        const normalizedData = data.map(item => {
+            let year = item.tahun_anggaran;
+            // Merge 'Stimulus 2009' into '2009'
+            if (year && typeof year === 'string' && year.includes('Stimulus 2009')) {
+                return { ...item, tahun_anggaran: '2009' };
+            }
+            return item;
         });
 
-        if (!res.ok) throw new Error('Gagal mencatat timeline');
-        alert('✅ Catatan timeline berhasil disimpan!');
-        closeQuickActionModal();
-        window.location.reload();
-    } catch (err) {
-        alert('Gagal: ' + err.message);
+        let tahunCounts = countBy(normalizedData, 'tahun_anggaran');
+
+        // Convert to array and sort chronologically
+        const sorted = Object.entries(tahunCounts)
+            .sort((a, b) => {
+                const yearA = parseInt(a[0]);
+                const yearB = parseInt(b[0]);
+                if (isNaN(yearA)) return 1;
+                if (isNaN(yearB)) return -1;
+                return yearA - yearB;
+            });
+
+        charts.tahun.data.labels = sorted.map(([label]) => label);
+        charts.tahun.data.datasets[0].data = sorted.map(([, count]) => count);
+        charts.tahun.data.datasets[0].label = 'Jumlah Unit per Tahun';
+        charts.tahun.update();
+    }
+
+    // Tipe
+    if (charts.tipe) {
+        const tipeCounts = countBy(data, 'tipe_rusun');
+        charts.tipe.data.labels = Object.keys(tipeCounts);
+        charts.tipe.data.datasets[0].data = Object.values(tipeCounts);
+        charts.tipe.update();
+    }
+
+    // Satker
+    // Satker - Sort and Top 10
+    if (charts.satker) {
+        let satkerCounts = countBy(data, 'asset_satker');
+
+        const sortedSatker = Object.entries(satkerCounts)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, 10);
+
+        charts.satker.data.labels = sortedSatker.map(([label]) => label);
+        charts.satker.data.datasets[0].data = sortedSatker.map(([, count]) => count);
+        charts.satker.data.datasets[0].label = 'Jumlah Unit (Top 10)';
+        charts.satker.update();
+    }
+
+    // Kondisi
+    if (charts.kondisi) {
+        const kondisiCounts = countBy(data, 'kondisi_bangunan');
+        charts.kondisi.data.labels = Object.keys(kondisiCounts);
+        charts.kondisi.data.datasets[0].data = Object.values(kondisiCounts);
+        charts.kondisi.update();
     }
 }
-
-async function submitPersuratan(e) {
-    e.preventDefault();
-    if (!currentProyekData) return;
-
-    const token = localStorage.getItem('token');
-    const formData = new FormData();
-    formData.append('proyek_id', currentProyekData.id);
-    formData.append('no_surat', document.getElementById('inputNoSurat').value);
-    formData.append('tgl_surat', document.getElementById('inputTglSurat').value);
-    formData.append('jenis_surat', document.getElementById('inputJenisSurat').value);
-    formData.append('pengirim', document.getElementById('inputPengirimSurat').value);
-    formData.append('perihal', document.getElementById('inputPerihalSurat').value);
-
-    const fileInput = document.getElementById('inputFileSurat');
-    if (fileInput.files[0]) {
-        formData.append('file', fileInput.files[0]);
-    }
-
-    try {
-        const res = await fetch(`${API_BASE}/persuratan/upload`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            body: formData
-        });
-
-        if (!res.ok) throw new Error('Gagal upload surat');
-        alert('✅ Berkas persuratan berhasil disimpan!');
-        closeQuickActionModal();
-        window.location.reload();
-    } catch (err) {
-        alert('Gagal: ' + err.message);
-    }
-}
-
-// --- 5. AUTH & ADMIN INTEGRATION ---
-function checkLoginState() {
-    const token = localStorage.getItem('token');
-    const user = JSON.parse(localStorage.getItem('user') || 'null');
-    const quickBtn = document.getElementById('quickAddBtn');
-    const adminNavBtn = document.getElementById('adminNavBtn');
-
-    if (token && user) {
-        if (quickBtn) quickBtn.style.display = 'inline-flex';
-        if (adminNavBtn) {
-            adminNavBtn.textContent = `👤 ${user.nama_lengkap || user.username} (${user.role})`;
-            adminNavBtn.href = '/admin.html';
-        }
-    }
-}
-
-async function handleLoginSubmit(e) {
-    e.preventDefault();
-    const u = document.getElementById('loginUsername').value;
-    const p = document.getElementById('loginPassword').value;
-    const errDiv = document.getElementById('loginError');
-
-    const form = new URLSearchParams();
-    form.append('username', u);
-    form.append('password', p);
-
-    try {
-        const res = await fetch(`${API_BASE}/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: form.toString()
-        });
-
-        if (!res.ok) throw new Error('Username atau password tidak sesuai');
-        const data = await res.json();
-        
-        localStorage.setItem('token', data.access_token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        
-        window.location.href = '/admin.html';
-    } catch (err) {
-        if (errDiv) {
-            errDiv.textContent = err.message;
-            errDiv.style.display = 'block';
-        }
-    }
-}
-
-function handleLogout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.location.href = '/admin.html';
-}
-
-function initAdminPage() {
-    initTheme();
-    const token = localStorage.getItem('token');
-    const user = JSON.parse(localStorage.getItem('user') || 'null');
-
-    const loginSection = document.getElementById('loginSection');
-    const dashSection = document.getElementById('dashboardSection');
-    const btnLogout = document.getElementById('btnLogout');
-    const userStatus = document.getElementById('userLoginStatus');
-
-    if (token && user) {
-        loginSection.style.display = 'none';
-        dashSection.style.display = 'block';
-        if (btnLogout) btnLogout.style.display = 'inline-flex';
-        if (userStatus) userStatus.textContent = `Login sebagai: ${user.nama_lengkap || user.username} [${user.role.toUpperCase()}]`;
-        loadAdminProyekTable();
-    } else {
-        loginSection.style.display = 'block';
-        dashSection.style.display = 'none';
-        if (btnLogout) btnLogout.style.display = 'none';
-    }
-}
-
-async function loadAdminProyekTable() {
-    const tbody = document.getElementById('adminProyekTableBody');
-    if (!tbody) return;
-
-    try {
-        const res = await fetch(`${API_BASE}/proyek`);
-        const list = await res.json();
-        
-        tbody.innerHTML = list.map(p => `
-            <tr>
-                <td><strong>${p.kode_proyek}</strong><br><small>TA ${p.tahun}</small></td>
-                <td><strong>${p.nama_proyek}</strong><br><small style="color:var(--text-muted);">${p.slug}</small></td>
-                <td>${p.kabkota || '-'}</td>
-                <td><span class="badge badge-info">${p.status_fase}</span> (${p.progres_fisik_persen || 0}%)</td>
-                <td>
-                    <a href="/proyek/${p.tahun}/${p.slug}" class="btn btn-sm btn-primary">Buka</a>
-                </td>
-            </tr>
-        `).join('');
-    } catch (e) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Gagal memuat list proyek</td></tr>`;
-    }
-}
-
-async function handleCreateProyek(e) {
-    e.preventDefault();
-    const token = localStorage.getItem('token');
-    
-    const payload = {
-        kode_proyek: document.getElementById('newKodeProyek').value,
-        nama_proyek: document.getElementById('newNamaProyek').value,
-        tahun: parseInt(document.getElementById('newTahunProyek').value),
-        slug: document.getElementById('newSlugProyek').value.toLowerCase().replace(/[^a-z0-9-]/g, ''),
-        kabkota: document.getElementById('newKabKotaProyek').value,
-        status_fase: document.getElementById('newFaseProyek').value,
-        pagu_anggaran: parseInt(document.getElementById('newPaguProyek').value) || 0,
-        deskripsi: document.getElementById('newDeskripsiProyek').value
-    };
-
-    try {
-        const res = await fetch(`${API_BASE}/proyek`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) throw new Error('Gagal membuat proyek baru');
-        alert('✅ Proyek baru berhasil dibuat!');
-        window.location.href = `/proyek/${payload.tahun}/${payload.slug}`;
-    } catch (err) {
-        alert('Error: ' + err.message);
-    }
-}
-
-function switchMainTab(tabName) {
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
-
-    const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.textContent.toLowerCase().includes(tabName.toLowerCase()));
-    if (activeBtn) activeBtn.classList.add('active');
-
-    const pane = document.getElementById(`tab-${tabName}`);
-    if (pane) pane.style.display = 'block';
-
-    if (tabName === 'map' && mapInstance) {
-        setTimeout(() => mapInstance.invalidateSize(), 200);
-    }
-}
-
-// Auto Init on Page Load
-document.addEventListener('DOMContentLoaded', () => {
-    initTheme();
-    checkLoginState();
-    if (document.getElementById('map')) {
-        initMap();
-    }
-});
