@@ -31,7 +31,7 @@ def seed_database():
                 password_hash=get_password_hash(admin_pwd),
                 nama_lengkap="Administrator BP3KP Jatim",
                 role="admin",
-                instansi="BP3KP Jawa Timur"
+                instansi="BP3KP - Balai Pelaksana Penyediaan Perumahan dan Kawasan Permukiman Jawa IV"
             )
             db.add(admin_user)
             db.commit()
