@@ -31,7 +31,7 @@ class RusunMaster(Base):
     __tablename__ = "rusun_master"
 
     id = Column(Integer, primary_key=True, index=True)
-    tahun_anggaran = Column(Integer, index=True, nullable=True)
+    tahun_anggaran = Column(String(50), index=True, nullable=True)
     nama_paket = Column(String(255), nullable=True)
     nama_rusun = Column(String(255), nullable=False, index=True)
     alamat = Column(Text, nullable=True)

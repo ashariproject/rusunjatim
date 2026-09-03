@@ -32,7 +32,7 @@ class TokenData(BaseModel):
 
 # --- Rusun Master Schemas ---
 class RusunBase(BaseModel):
-    tahun_anggaran: Optional[int] = None
+    tahun_anggaran: Optional[Any] = None
     nama_paket: Optional[str] = None
     nama_rusun: str
     alamat: Optional[str] = None
@@ -57,7 +57,7 @@ class RusunCreate(RusunBase):
     pass
 
 class RusunUpdate(BaseModel):
-    tahun_anggaran: Optional[int] = None
+    tahun_anggaran: Optional[Any] = None
     nama_paket: Optional[str] = None
     nama_rusun: Optional[str] = None
     alamat: Optional[str] = None

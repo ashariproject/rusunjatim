@@ -1,6 +1,7 @@
 import os
 import json
 from datetime import date
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 from .database import engine, Base, SessionLocal
 from .models import User, RusunMaster, ProyekOngoing, TimelineEvent, Persuratan
@@ -8,6 +9,15 @@ from .auth import get_password_hash
 
 def seed_database():
     Base.metadata.create_all(bind=engine)
+    
+    # Pastikan tipe kolom tahun_anggaran adalah VARCHAR(50) untuk multi-years budget (misal 2024-2025)
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("ALTER TABLE rusun_master ALTER COLUMN tahun_anggaran TYPE VARCHAR(50);"))
+            conn.commit()
+    except Exception:
+        pass
+
     db: Session = SessionLocal()
     
     try:
@@ -55,7 +65,7 @@ def seed_database():
                     
                     rusun_entry = RusunMaster(
                         id=item.get("id"),
-                        tahun_anggaran=item.get("tahun_anggaran"),
+                        tahun_anggaran=str(item.get("tahun_anggaran")) if item.get("tahun_anggaran") is not None else None,
                         nama_paket=item.get("nama_paket"),
                         nama_rusun=item.get("nama_rusun", "Tanpa Nama"),
                         alamat=item.get("alamat"),
