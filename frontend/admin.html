@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Operator & Admin - Database Rusun Jatim</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo-section">
+                <a href="/" style="text-decoration: none; font-size: 1.5rem; margin-right: 0.5rem;">🏢</a>
+                <div>
+                    <h1>Panel Operator & Admin BP3KP</h1>
+                    <p class="subtitle" id="userLoginStatus">Kelola Master Data, Proyek Ongoing, dan Persuratan</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <button id="themeToggle" class="btn btn-outline">🌓 Tema</button>
+                <a href="/" class="btn btn-outline">🗺️ Kembali ke Web Utama</a>
+                <button id="btnLogout" class="btn btn-outline" style="display: none; color: var(--danger); border-color: var(--danger);" onclick="handleLogout()">🚪 Keluar</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            
+            <!-- Login Box (If Not Logged In) -->
+            <div id="loginSection" style="max-width: 450px; margin: 3rem auto;">
+                <div class="card">
+                    <h2 style="font-size: 1.3rem; margin-bottom: 0.5rem; text-align: center;">🔐 Login Petugas / Operator</h2>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-bottom: 1.5rem;">
+                        Masukkan kredensial akun untuk mengelola data
+                    </p>
+
+                    <form id="adminLoginForm" onsubmit="handleLoginSubmit(event)">
+                        <div class="filter-group">
+                            <label>Username</label>
+                            <input type="text" id="loginUsername" class="form-control" placeholder="admin" required>
+                        </div>
+                        <div class="filter-group">
+                            <label>Password</label>
+                            <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+                        </div>
+                        <div id="loginError" style="color: var(--danger); font-size: 0.85rem; margin-bottom: 1rem; display: none;"></div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Masuk ke Sistem</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Admin Dashboard (Visible after login) -->
+            <div id="dashboardSection" style="display: none;">
+                <div class="layout-grid" style="grid-template-columns: 350px 1fr;">
+                    
+                    <!-- Left: Create Proyek Ongoing Form -->
+                    <div class="card">
+                        <div class="card-title">+ Buat Proyek Ongoing Baru</div>
+                        <form id="formCreateProyek" onsubmit="handleCreateProyek(event)">
+                            <div class="filter-group">
+                                <label>Kode Proyek</label>
+                                <input type="text" id="newKodeProyek" class="form-control" placeholder="Contoh: PRJ-2026-TNI-PAS" required>
+                            </div>
+                            <div class="filter-group">
+                                <label>Nama Proyek Rusun</label>
+                                <input type="text" id="newNamaProyek" class="form-control" placeholder="Contoh: Rusun TNI AL Pasuruan" required>
+                            </div>
+                            <div class="filter-group">
+                                <label>Tahun Anggaran</label>
+                                <input type="number" id="newTahunProyek" class="form-control" value="2026" required>
+                            </div>
+                            <div class="filter-group">
+                                <label>URL Slug</label>
+                                <input type="text" id="newSlugProyek" class="form-control" placeholder="tnialpasuruan" required>
+                                <small style="color: var(--text-muted); font-size: 0.75rem;">Akses link: rusunjatim.my.id/proyek/2026/<b>slug</b></small>
+                            </div>
+                            <div class="filter-group">
+                                <label>Kabupaten / Kota</label>
+                                <input type="text" id="newKabKotaProyek" class="form-control" placeholder="Kab. Pasuruan">
+                            </div>
+                            <div class="filter-group">
+                                <label>Fase Awal</label>
+                                <select id="newFaseProyek" class="form-control">
+                                    <option value="Usulan">Usulan</option>
+                                    <option value="Verifikasi">Verifikasi Lapangan</option>
+                                    <option value="Perencanaan">Perencanaan / DED</option>
+                                    <option value="Konstruksi">Konstruksi</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Pagu Anggaran (Rp)</label>
+                                <input type="number" id="newPaguProyek" class="form-control" placeholder="18500000000">
+                            </div>
+                            <div class="filter-group">
+                                <label>Ringkasan Kebutuhan</label>
+                                <textarea id="newDeskripsiProyek" class="form-control" rows="2"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">💾 Simpan Proyek</button>
+                        </form>
+                    </div>
+
+                    <!-- Right: Manage Existing Projects -->
+                    <div class="card">
+                        <div class="card-title">
+                            <span>Daftar Proyek Ongoing</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="custom-table" id="adminProyekTable">
+                                <thead>
+                                    <tr>
+                                        <th>Kode / Tahun</th>
+                                        <th>Nama Proyek</th>
+                                        <th>Kab/Kota</th>
+                                        <th>Fase & Progres</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminProyekTableBody">
+                                    <tr><td colspan="5" style="text-align: center;">Memuat daftar proyek...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Script Integrasi Admin -->
+    <script src="/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initAdminPage();
+        });
+    </script>
+</body>
+</html>

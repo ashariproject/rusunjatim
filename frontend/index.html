@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Rumah Susun Jawa Timur (BP3KP)</title>
+    
+    <!-- Leaflet & MarkerCluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo-section">
+                <span style="font-size: 2rem;">🏢</span>
+                <div>
+                    <h1>Database Rumah Susun Jawa Timur</h1>
+                    <p class="subtitle">BP3KP - Dinas Perumahan Rakyat, Kawasan Permukiman dan Cipta Karya Prov. Jatim</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <button id="themeToggle" class="btn btn-outline" title="Ganti Mode Gelap/Terang">🌓 Tema</button>
+                <a href="/proyek/2026/tnialpasuruan" class="btn btn-outline" style="border-color: var(--primary); color: var(--primary);">
+                    🚀 Proyek Ongoing (2026)
+                </a>
+                <a href="/admin.html" id="adminNavBtn" class="btn btn-primary">
+                    🔐 Login Admin / Operator
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+        <div class="container tab-nav-wrapper">
+            <button class="tab-btn active" onclick="switchMainTab('map')">🗺️ Peta GIS Rusun</button>
+            <button class="tab-btn" onclick="switchMainTab('table')">📊 Data Master (372 Rusun)</button>
+            <button class="tab-btn" onclick="switchMainTab('ongoing')">⏳ Proyek Ongoing & Timeline</button>
+            <button class="tab-btn" onclick="switchMainTab('stats')">📈 Statistik & Rekap Wilayah</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            
+            <!-- 1. MAP VIEW TAB -->
+            <div id="tab-map" class="tab-pane active">
+                <div class="layout-grid">
+                    <!-- Sidebar Filters -->
+                    <aside>
+                        <div class="card">
+                            <div class="card-title">
+                                <span>Filter & Pencarian</span>
+                                <button class="btn btn-sm btn-outline" onclick="resetFilters()">Reset</button>
+                            </div>
+
+                            <div class="filter-group">
+                                <label>Cari Rusun</label>
+                                <input type="text" id="searchInput" class="form-control" placeholder="🔍 Nama rusun, alamat, kab/kota...">
+                            </div>
+
+                            <div class="filter-group">
+                                <label>Kabupaten / Kota</label>
+                                <select id="filterKabKota" class="form-control">
+                                    <option value="">Semua Kab/Kota</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-group">
+                                <label>Tahun Anggaran</label>
+                                <select id="filterTahun" class="form-control">
+                                    <option value="">Semua Tahun</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-group">
+                                <label>Status Koordinat</label>
+                                <select id="filterStatusCoord" class="form-control">
+                                    <option value="">Semua Status</option>
+                                    <option value="verified">🟢 Terverifikasi</option>
+                                    <option value="unverified">🟠 Perlu Validasi</option>
+                                    <option value="missing">⚪ Belum Ada Koordinat</option>
+                                </select>
+                            </div>
+
+                            <hr style="border: 0; border-top: 1px solid var(--border); margin: 1rem 0;">
+
+                            <div class="stats-summary">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span style="font-size: 0.85rem; color: var(--text-muted);">Total Rusun:</span>
+                                    <strong id="statTotalRusun">-</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span style="font-size: 0.85rem; color: var(--text-muted);">Dengan Koordinat:</span>
+                                    <strong id="statWithCoords" style="color: var(--success);">-</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span style="font-size: 0.85rem; color: var(--text-muted);">Belum Ada Koordinat:</span>
+                                    <strong id="statMissingCoords" style="color: var(--danger);">-</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Map Display -->
+                    <div>
+                        <div id="map"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. TABLE VIEW TAB -->
+            <div id="tab-table" class="tab-pane" style="display: none;">
+                <div class="card">
+                    <div class="card-title">
+                        <span>Database Master Rumah Susun Jawa Timur</span>
+                        <input type="text" id="tableSearch" class="form-control" placeholder="Cari di tabel..." style="max-width: 300px;">
+                    </div>
+                    <div class="table-responsive">
+                        <table class="custom-table" id="masterTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nama Rusun</th>
+                                    <th>Kab/Kota</th>
+                                    <th>Penerima</th>
+                                    <th>Tahun</th>
+                                    <th>Tipe/Tower</th>
+                                    <th>Unit/Lantai</th>
+                                    <th>Status Koordinat</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="masterTableBody">
+                                <tr><td colspan="9" style="text-align: center;">Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. ONGOING PROJECTS TAB -->
+            <div id="tab-ongoing" class="tab-pane" style="display: none;">
+                <div class="card">
+                    <div class="card-title">
+                        <span>Daftar Proyek Rusun On-Going (Tahun Berjalan)</span>
+                        <a href="/admin.html" class="btn btn-sm btn-primary">+ Tambah Proyek Baru</a>
+                    </div>
+                    <div id="ongoingProjectsList" class="layout-grid" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
+                        <!-- Dynamic ongoing project cards loaded by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. STATS TAB -->
+            <div id="tab-stats" class="tab-pane" style="display: none;">
+                <div class="card">
+                    <div class="card-title">Rekapitulasi Sebaran Rusun per Kabupaten/Kota</div>
+                    <div id="statsBreakdown" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem;">
+                        <!-- Breakdown loaded by JS -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: var(--bg-card); border-top: 1px solid var(--border); padding: 1.5rem 0; text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: auto;">
+        <div class="container">
+            © 2026 BP3KP - Pemerintah Provinsi Jawa Timur | Domain: <strong>rusunjatim.my.id</strong>
+        </div>
+    </footer>
+
+    <!-- Leaflet & JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+| ID | Nama Rusun | Kabupaten/Kota |
+|:---|:---|:---|
+| 1 | Pemkab Gresik (Pekerja Kebomas) | Kab. Gresik |
+| 3 | Universitas Negeri Malang | Kota Malang |
+| 8 | Ponpes Bahrul Ulum Kab Jombang | Kab. Jombang |
+| 10 | Ponpes Salafiyah Syafiiah Kab Situbondo | Kab. Situbondo |
+| 12 | TNI Mabes TNI AD KODAM V Brawijaya Sidoarjo Yonif 515/By Blitar (Pindah lokasi ke Blitar) | Kota Blitar |
+| 13 | TNI Mabes TNI AD KODAM V Brawijaya | Kab. Lumajang |
+| 14 | TNI Mabes TNI AD KOSTRAD Madivif II Singosari Kab Malang | Kab. Malang |
+| 15 | TNI Mabes TNI AD KOSTRAD Yon Arhanudri 2/2 Kota Malang | Kota Malang |
+| 16 | TNI Mabes TNI AD KOSTRAD Yon Armed 12/1/2 Kab Ngawi | Kab. Ngawi |
+| 17 | TNI Mabes TNI AD KOSTRAD Yonif 509/9/2 Kab Jember | Kab. Jember |
+| 18 | TNI Mabes TNI AD KOSTRAD Yonif 515/9/2 Kab Jember | Kab. Jember |
+| 21 | TNI Mabes TNI AU Lanud Abdurrahman Saleh Kota Malang | Kota Malang |
+| 22 | Man Ma'had Ulul Albab Kab. Lamongan | Kab. Lamongan |
+| 23 | Yayasan Sosial Pendidikan dan Dakwah Islamiyah Miftahul Ulum Kab. Lumajang | Kab. Lumajang |
+| 24 | PP. Al Fatah Kab Mojokerto | Kab. Mojokerto |
+| 25 | PP. Al Hidayah Kota Batu | Kota Batu |
+| 26 | PP. Al Hikmah Kab Sumenep | Kab. Sumenep |
+| 27 | PP. Al Ikhlash Kab. Gresik | Kab. Gresik |
+| 28 | PP. Al Ishlah Kab. Lamongan | Kab. Lamongan |
+| 29 | PP. Al Jihad Kab. Lamongan | Kab. Lamongan |
+| 30 | PP. Al Mujtama' Al Islami Yayasan Al Mujtama Kab Pamekasan | Kab. Pamekasan |
+| 31 | PP. Al Munawwariyah Kab. Malang | Kab. Malang |
+| 32 | PP. Al-Barokah Kab. Lamongan | Kab. Lamongan |
+| 33 | PP. Annuqayah (INSTIKA) Kab Sumenep | Kab. Sumenep |
+| 34 | PP. Annur Al Huda Kab. Malang | Kab. Malang |
+| 36 | PP. Badridduja Kab Probolinggo | Kab. Probolinggo |
+| 37 | PP. Bahrul Ulum Kab. Bondowoso | Kab. Bondowoso |
+| 38 | PP. Bustanul Huffadz Assaidiyah Kab Sampang | Kab. Sampang |
+| 39 | PP. Bustanul Mu'talimat Al Blitary Kota Blitar | Kota Blitar |
+| 40 | PP. Bustanul Ulum Kab. Sampang | Kab. Sampang |
+| 42 | PP. Darul Ulum Banyuanyar Kab. Pamekasan | Kab. Pamekasan |
+| 43 | PP. Darussalam Dungmas Kab. Bojonegoro | Kab. Bojonegoro |
+| 44 | PP. Darussalam Kab Kediri | Kab. Kediri |
+| 45 | PP. Darussalam Kab. Banyuwangi | Kab. Banyuwangi |
+| 46 | PP. Daruttaqwa Kab. Gresik | Kab. Gresik |
+| 47 | PP. Daruttauhid Al Hasaniyyah Kab Tuban | Kab. Tuban |
+| 48 | PP. Hidayatul Mubtadi-aat Kota Kediri | Kota Kediri |
+| 49 | PP. Mambaul Ma'arif Badri Kab. Jombang | Kab. Jombang |
+| 50 | PP. Manbaul Ulum Kab. Banyuwangi | Kab. Banyuwangi |
+| 51 | PP. Mansya'ul Huda Kab. Banyuwangi | Kab. Banyuwangi |
+| 52 | PP. Maskumambang Kab. Gresik | Kab. Gresik |
+| 53 | PP. Matholi'ul Anwar Kab. Lamongan | Kab. Lamongan |
+| 54 | PP. Miftahul Khoir Kab Sampang | Kab. Sampang |
+| 55 | PP. Miftahul Ulum Kab. Situbondo | Kab. Situbondo |
+| 56 | PP. Modern Hidayatul Hasan Kab. Lumajang | Kab. Lumajang |
+| 58 | PP. Nurul Fatah Kab Bondowoso | Kab. Bondowoso |
+| 59 | PP. Nurul Qodim Kab. Probolinggo | Kab. Probolinggo |
+| 60 | PP. Nurul Ulum Kab Trenggalek | Kab. Trenggalek |
+| 61 | PP. Queen Al Falah Kab. Kediri | Kab. Kediri |
+| 62 | PP. Salafiyah Nurul Huda Kab. Malang | Kab. Malang |
+| 63 | PP. Shirothul Fuqoha' Kab. Malang | Kab. Malang |
+| 64 | PP. Subulul Huda Kab. Madiun | Kab. Madiun |
+| 65 | PP. Syaikh Abdul Qodir Al Jaelani Kab Probolinggo | Kab. Probolinggo |
+| 66 | PP. Tanjung Rejo Kab Situbondo | Kab. Situbondo |
+| 68 | Universitas Islam Kadiri (UNISKA) Kota Kediri | Kota Kediri |
+| 70 | IKIP PGRI Madiun | Kab. Madiun |
+| 71 | LPI Al-Hamidy Banyuanyar Pamekasan | Kab. Pamekasan |
+| 75 | PP Nurul Jadid Probolinggo | Kab. Probolinggo |
+| 76 | PP. Ahlus-shofa Wal Wafa Sidoarjo | Kab. Sidoarjo |
+| 77 | PP. Al Anwar Bangkalan | Kab. Bangkalan |
+| 78 | PP. Al Falah Blitar (nama yayasan berubah menjadi Yayasan Falahuddaroini) | Kab. Blitar |
+| 79 | PP. Al Falah Gresik | Kab. Gresik |
+| 80 | PP. Al Falah Pamekasan | Kab. Pamekasan |
+| 81 | PP. Al Falah Situbondo | Kab. Situbondo |
+| 82 | PP. Al Fatah Magetan | Kab. Magetan |
+| 84 | PP. Al Hidayah An Nuriyah Gresik | Kab. Gresik |
+| 86 | PP. Al Islah Tuban | Kab. Tuban |
+| 87 | PP. Al Karimi Gresik | Kab. Gresik |
+| 88 | PP. Al Mutamakkin Bojonegoro | Kab. Bojonegoro |
+| 89 | PP. Al-Asyariyah Sumenep | Kab. Sumenep |
+| 90 | PP. Al-Ikhlas Pasuruan | Kota Pasuruan |
+| 92 | PP. Al-Khodijah Mojokerto | Kab. Mojokerto |
+| 93 | PP. Al-Muqri Sumenep | Kab. Sumenep |
+| 94 | PP. As sahidul Kabir Pamekasan | Kab. Pamekasan |
+| 95 | PP. Assa'idiyah Bangkalan (Salafiyah Saidiyah) | Kab. Bangkalan |
+| 98 | PP. Attaroqqi Karongan Sampang | Kab. Sampang |
+| 102 | PP. Bumi Shalawat Progresif Sidoarjo | Kab. Sidoarjo |
+| 103 | PP. Bustanul Ulum Pamekasan | Kab. Pamekasan |
+| 105 | PP. Darul Falah Ponorogo | Kab. Ponorogo |
+| 106 | PP. Darul Ulum Asrama As-syafiiyah Jombang | Kab. Jombang |
+| 107 | PP. Darul Ulum Lamongan | Kab. Lamongan |
+| 108 | PP. Darul Ulum Sampang | Kab. Sampang |
+| 109 | PP. Darussalam Mekar Agung Madiun | Kab. Madiun |
+| 110 | PP. Darut Tauhid Sampang | Kab. Sampang |
+| 111 | PP. Fatchul Ulum Mojokerto | Kab. Mojokerto |
+| 112 | PP. Hamalatul Quran Jombang | Kab. Jombang |
+| 113 | PP. Hidayatul Mubtadiin Lumajang | Kab. Lumajang |
+| 114 | PP. Hidayatul Mubtadiin Tulungagung | Kab. Tulungagung |
+| 115 | PP. Hidayatul Muttaqin Malang | Kab. Malang |
+| 116 | PP. Idhotun Nasy'in Lamongan | Kab. Lamongan |
+| 118 | PP. K.H Syamsuddin Ponorogo | Kab. Ponorogo |
+| 119 | PP. Mambaul Huda Al Mubaroq Sidoarjo | Kab. Sidoarjo |
+| 120 | PP. Mambaul Ikhsan Gresik | Kab. Gresik |
+| 121 | PP. Mambaul Ulum Malang | Kab. Malang |
+| 122 | PP. Manbaul Ulum Bondowoso | Kab. Bondowoso |
+| 123 | PP. Matlabul Ulum Jambu Sumenep | Kab. Sumenep |
+| 126 | PP. Nurul Anwar Lamongan | Kab. Lamongan |
+| 127 | PP. Nurul Huda Banyuwangi | Kab. Banyuwangi |
+| 130 | PP. Nurut Taqwa Situbondo | Kab. Situbondo |
+| 133 | PP. Roudlotul Ulum Lumajang | Kab. Lumajang |
+| 134 | PP. Sabilul Muttaqin Mojokerto | Kab. Mojokerto |
+| 135 | PP. Salafiyah Syafiiyah Sukorejo Sumberwringin Bondowoso | Kab. Bondowoso |
+| 137 | PP. Sunan Ampel Banyuwangi | Kab. Banyuwangi |
+| 139 | PP. Tarbiyatun Nasyiin Jombang | Kab. Jombang |
+| 140 | PP. Tebu Ireng Jombang | Kab. Jombang |
+| 141 | PP. Teknologi Al Maarif Malang | Kab. Malang |
+| 143 | PP. Yayasan Zahrotul Islam Probolinggo | Kab. Probolinggo |
+| 144 | Sekolah Tinggi Islam (STI) Al Karimiyyah Berjigapura Sumenep | Kab. Sumenep |
+| 145 | Sekolah Tinggi Islam Blambangan Banyuwangi | Kab. Banyuwangi |
+| 146 | STAI Raden Rahmat Malang | Kab. Malang |
+| 147 | STAIFAS Jember | Kab. Jember |
+| 151 | Univ. Islam Lamongan | Kab. Lamongan |
+| 152 | Univ. Nusantara PGRI Kediri | Kota Kediri |
+| 153 | Univ. PGRI Banyuwangi | Kab. Banyuwangi |
+| 154 | Univ. Yudharta Pasuruan | Kab. Pasuruan |
+| 155 | Yayasan Pendidikan Da'wah Islamiyah Miftaul Ulum PP. Miftahul Ulum Karangdurin Sampang | Kab. Sampang |
+| 156 | Yayasan Pendidikan Da'wah Sosial Ekonomi PP. Miftahul Ulum Sumber Bunga Sampang | Kab. Sampang |
+| 158 | Yayasan PP. Al Hidayah Salafiyah Syafi'iyah Sumenep | Kab. Sumenep |
+| 162 | YPP. Al Falah Trenggalek | Kab. Trenggalek |
+| 163 | YPP. Darul Amin Pamekasan | Kab. Pamekasan |
+| 283 | IKAHA Jombang | Kab. Jombang |
+| 293 | Kodam V/ Brawijaya Malang | Kota Malang |
+| 295 | Lanud TNI AU Iswahyudi Madiun | Kota Madiun |
+| 297 | PP. Al-Ghazali Dukuh Dempok Wuluhan Jember | Kab. Jember |
+| 298 | PP. Gontor Ponorogo | Kab. Ponorogo |
+| 300 | PP. Al Amin Kediri Ngasinan Rejomulyo Kota Kediri Prov. Jatim | Kota Kediri |
+| 301 | PP. Al Falah Purtri Kabupaten Kediri | Kab. Kediri |
+| 302 | PP. Al Ihsan Kab. Sampang | Kab. Sampang |
+| 303 | PP. Al Islah Gresik Jl. Pesantren RT. 14 RW. 5 Bungah Kab. Gresik Prov. Jatim | Kab. Gresik |
+| 305 | PP. Al-Hikmah Tambak Beras Desa Tambakrejo Kab. Jombang Prov. Jatim | Kab. Jombang |
+| 306 | PP. Al-Kamal Blitar Kunir Wonodadi Kota Blitar Prov. Jatim | Kota Blitar |
+| 307 | PP. Al-Urwatul Wutsqo Kab. Jombang | Kab. Jombang |
+| 308 | PP. An Nur 1 Kab. Malang | Kab. Malang |
+| 309 | PP. Lirboyo Kediri Jl. HK Abdul Karim Lirboyo Mojoroto Kota Kediri Prov. Jatim | Kota Kediri |
+| 310 | Univ. Muhammadiyah Kab. Ponorogo | Kab. Ponorogo |
+| 311 | Univ. Muhammadiyah Kab. Sidoarjo | Kab. Sidoarjo |
+| 332 | Yayasan Riyadlut Thullab (Pondok Pesantren Riyadlut Thullab) | Kab. Pasuruan |
+| 335 | Institut Darussalam Gontor Ponorogo | Kab. Ponorogo |
+| 337 | Pemkab Gresik (Pekerja Bambe) | Kab. Gresik |
+| 339 | Univ. Negeri Jember | Kab. Jember |

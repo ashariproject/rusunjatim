@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Proyek & Timeline Rusun - BP3KP Jatim</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo-section">
+                <a href="/" style="text-decoration: none; font-size: 1.5rem; margin-right: 0.5rem;">⬅️</a>
+                <div>
+                    <h1 id="proyekNamaHeader">Memuat Data Proyek...</h1>
+                    <p class="subtitle" id="proyekKodeHeader">Repository & Kronologis Timeline Usulan s.d. Pembangunan</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <button id="themeToggle" class="btn btn-outline">🌓 Tema</button>
+                <a href="/" class="btn btn-outline">🗺️ Kembali ke Peta GIS</a>
+                <button id="quickAddBtn" class="btn btn-primary" onclick="openQuickActionModal()" style="display: none;">
+                    ⚡ + Catat Progres / Upload Surat
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            
+            <!-- Proyek Summary Banner -->
+            <div class="card" style="margin-bottom: 1.5rem; border-left: 6px solid var(--primary);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                            <span class="badge badge-primary" id="badgeTahun">TA 2026</span>
+                            <span class="badge badge-info" id="badgeFase">Fase: Konstruksi</span>
+                            <span class="badge badge-success" id="badgeLokasi">Kab. Pasuruan</span>
+                        </div>
+                        <h2 id="proyekNama" style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem;">-</h2>
+                        <p id="proyekDeskripsi" style="color: var(--text-muted); font-size: 0.95rem; max-width: 800px;">-</p>
+                    </div>
+
+                    <!-- Progress Box -->
+                    <div style="background: var(--primary-light); padding: 1rem 1.5rem; border-radius: 10px; min-width: 220px; text-align: center;">
+                        <span style="font-size: 0.8rem; color: var(--primary); font-weight: 600; text-transform: uppercase;">Progres Fisik</span>
+                        <div id="progresText" style="font-size: 2rem; font-weight: 800; color: var(--primary); margin: 0.25rem 0;">0%</div>
+                        <div style="width: 100%; background: #cbd5e1; height: 8px; border-radius: 4px; overflow: hidden;">
+                            <div id="progresBar" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.5s;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid var(--border); margin: 1.25rem 0;">
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.875rem;">
+                    <div>
+                        <span style="color: var(--text-muted); display: block;">Pagu Anggaran:</span>
+                        <strong id="infoPagu">-</strong>
+                    </div>
+                    <div>
+                        <span style="color: var(--text-muted); display: block;">Pelaksana / Kontraktor:</span>
+                        <strong id="infoKontraktor">-</strong>
+                    </div>
+                    <div>
+                        <span style="color: var(--text-muted); display: block;">Konsultan Manajemen:</span>
+                        <strong id="infoKonsultan">-</strong>
+                    </div>
+                    <div>
+                        <span style="color: var(--text-muted); display: block;">Lokasi Lahan:</span>
+                        <strong id="infoLokasi">-</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two Column Layout: Timeline vs Persuratan -->
+            <div class="layout-grid" style="grid-template-columns: 1fr 1fr;">
+                
+                <!-- 1. Vertical Timeline -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>⏳ Timeline Kronologis Proyek</span>
+                        <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-muted);" id="timelineCount">0 Kejadian</span>
+                    </div>
+
+                    <div class="timeline-container" id="timelineList">
+                        <p style="color: var(--text-muted);">Memuat riwayat timeline...</p>
+                    </div>
+                </div>
+
+                <!-- 2. Persuratan & Berkas Repository -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>📁 Berkas & Dokumen Persuratan</span>
+                        <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-muted);" id="suratCount">0 Berkas</span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="custom-table" id="tableSurat">
+                            <thead>
+                                <tr>
+                                    <th>No. & Tgl Surat</th>
+                                    <th>Jenis / Perihal</th>
+                                    <th>Pengirim</th>
+                                    <th>Status</th>
+                                    <th>Berkas</th>
+                                </tr>
+                            </thead>
+                            <tbody id="suratTableBody">
+                                <tr><td colspan="5" style="text-align: center;">Memuat persuratan...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal Quick Input Timeline & Upload Persuratan -->
+    <div id="quickModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <h3 style="font-size: 1.15rem; font-weight: 700;">⚡ Form Cepat Operator</h3>
+                <button onclick="closeQuickActionModal()" class="btn btn-sm btn-outline">✖</button>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                <button id="tabFormTimeline" class="btn btn-primary btn-sm" onclick="switchQuickForm('timeline')">+ Catat Progres Timeline</button>
+                <button id="tabFormSurat" class="btn btn-outline btn-sm" onclick="switchQuickForm('surat')">+ Upload Persuratan PDF</button>
+            </div>
+
+            <!-- Form Timeline -->
+            <form id="formAddTimeline" onsubmit="submitTimelineEvent(event)">
+                <div class="filter-group">
+                    <label>Tanggal Kejadian</label>
+                    <input type="date" id="inputTglTimeline" class="form-control" required>
+                </div>
+                <div class="filter-group">
+                    <label>Fase Kegiatan</label>
+                    <select id="inputFaseTimeline" class="form-control" required>
+                        <option value="Usulan">Usulan Masuk</option>
+                        <option value="Verifikasi">Verifikasi Lapangan</option>
+                        <option value="Perencanaan">DED & Perencanaan</option>
+                        <option value="Lelang">Lelang & Pengadaan</option>
+                        <option value="Konstruksi">Pekerjaan Konstruksi</option>
+                        <option value="Serah Terima">Serah Terima & BAST</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Judul Kegiatan / Milestone</label>
+                    <input type="text" id="inputJudulTimeline" class="form-control" placeholder="Contoh: Pengecoran Plat Lantai 2 Selesai" required>
+                </div>
+                <div class="filter-group">
+                    <label>Progres Fisik Baru (%)</label>
+                    <input type="number" step="0.1" min="0" max="100" id="inputProgresTimeline" class="form-control" placeholder="65.0">
+                </div>
+                <div class="filter-group">
+                    <label>Catatan Detail Kronologis</label>
+                    <textarea id="inputCatatanTimeline" class="form-control" rows="3" placeholder="Tuliskan ringkasan hasil pengecekan / progres..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">💾 Simpan ke Timeline</button>
+            </form>
+
+            <!-- Form Surat -->
+            <form id="formAddSurat" onsubmit="submitPersuratan(event)" style="display: none;">
+                <div class="filter-group">
+                    <label>Nomor Surat</label>
+                    <input type="text" id="inputNoSurat" class="form-control" placeholder="Contoh: 600/BA.05/BP3KP/2026" required>
+                </div>
+                <div class="filter-group">
+                    <label>Tanggal Surat</label>
+                    <input type="date" id="inputTglSurat" class="form-control" required>
+                </div>
+                <div class="filter-group">
+                    <label>Jenis Surat</label>
+                    <select id="inputJenisSurat" class="form-control" required>
+                        <option value="Surat Permohonan Usulan">Surat Permohonan Usulan</option>
+                        <option value="Berita Acara Verifikasi Lapangan">Berita Acara Verifikasi Lapangan</option>
+                        <option value="Rekomendasi Teknis">Rekomendasi Teknis</option>
+                        <option value="SK Penetapan Lokasi">SK Penetapan Lokasi</option>
+                        <option value="Surat Perjanjian Kerja (Kontrak)">Surat Perjanjian Kerja (Kontrak)</option>
+                        <option value="Berita Acara Serah Terima (BAST)">Berita Acara Serah Terima (BAST)</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Pengirim / Instansi</label>
+                    <input type="text" id="inputPengirimSurat" class="form-control" placeholder="Contoh: Lanal Pasuruan / Bupati Pasuruan">
+                </div>
+                <div class="filter-group">
+                    <label>Perihal Surat</label>
+                    <textarea id="inputPerihalSurat" class="form-control" rows="2" placeholder="Perihal surat..." required></textarea>
+                </div>
+                <div class="filter-group">
+                    <label>File Lampiran (PDF / Scan)</label>
+                    <input type="file" id="inputFileSurat" class="form-control" accept=".pdf,.png,.jpg,.jpeg">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">📤 Upload & Simpan Persuratan</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script Integrasi Proyek -->
+    <script src="/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initProyekDetailPage();
+        });
+    </script>
+</body>
+</html>

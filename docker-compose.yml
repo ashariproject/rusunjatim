@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  # 1. Database Relasional PostgreSQL
+  postgres:
+    image: postgres:16-alpine
+    container_name: rusun_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-rusun_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rusunjatim_secure_pass2026}
+      POSTGRES_DB: ${POSTGRES_DB:-rusunjatim_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - rusun-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rusun_admin -d rusunjatim_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. Backend Dinamis Python FastAPI
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: rusun_backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-rusun_admin}:${POSTGRES_PASSWORD:-rusunjatim_secure_pass2026}@postgres:5432/${POSTGRES_DB:-rusunjatim_db}
+      JWT_SECRET: ${JWT_SECRET:-rusunjatim_super_secret_jwt_key_bp3kp_2026}
+      DEFAULT_ADMIN_PASSWORD: ${DEFAULT_ADMIN_PASSWORD:-AdminRusun2026!}
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - ./uploads:/app/uploads
+      - ./images:/app/images
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - rusun-network
+
+  # 3. Web App Frontend & Nginx Gateway
+  frontend:
+    image: nginx:alpine
+    container_name: rusun_frontend
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8088}:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+    networks:
+      rusun-network:
+        aliases:
+          - rusun-web
+
+  # 4. Cloudflare Tunnel (Menghubungkan domain rusunjatim.my.id ke Homeserver)
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: rusun_tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN:-eyJhIjoiNDVmYzk5NjhjNTk4M2NkNDA5MDdlMWFlOWI2NDMyZjciLCJ0IjoiM2ViOWQ5M2MtMDdhYS00MzNkLWIwZjYtZTE3ZDAwM2M4YTA3IiwicyI6Ik56QXpObVl5WVRVdFptVmpOaTAwTkRjeExUZ3hZelF0Tm1ZeVlqVTRORGt5T0dGbSJ9}
+    depends_on:
+      - frontend
+    networks:
+      - rusun-network
+
+networks:
+  rusun-network:
+    name: rusun_network
+    driver: bridge
+
+volumes:
+  postgres_data:
+    name: rusun_postgres_data
