@@ -312,10 +312,13 @@ function createMarker(rusun) {
                 // Both failed - show compact error state
                 img.style.display = 'none';
                 if (loader) {
-                    loader.innerText = 'Foto belum tersedia';
+                    loader.innerHTML = '<span style="font-size: 1.25rem; display: block; margin-bottom: 0.2rem; opacity: 0.65;">📷</span><span>Data Foto belum tersedia</span>';
                     loader.style.color = 'var(--text-muted)';
+                    loader.style.fontSize = '0.725rem';
+                    loader.style.fontWeight = '600';
+                    loader.style.textAlign = 'center';
                 }
-                img.parentElement.style.height = '50px';
+                img.parentElement.style.height = '85px';
                 popup.update();
             }
         };
