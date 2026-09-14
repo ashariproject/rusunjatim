@@ -1049,7 +1049,7 @@
       "tahun_anggaran": 2013,
       "nama_paket": null,
       "nama_rusun": "PP. Daruttaqwa Kab. Gresik",
-      "alamat": "Jl. KH. Syafi\u00e2\u20ac\u2122i Gang Syaikhuna Suci Manyar Kab. Gresik Prov. Jatim",
+      "alamat": "Jl. KH. Syafiâ€™i Gang Syaikhuna Suci Manyar Kab. Gresik Prov. Jatim",
       "kabkota": "Kab. Gresik",
       "penerima": "Peserta Didik (LPKB)",
       "koordinat": {
@@ -2916,9 +2916,9 @@
       "kabkota": "Kab. Banyuwangi",
       "penerima": "Peserta Didik (LPKB)",
       "koordinat": {
-        "lat": null,
-        "lng": null,
-        "status": "missing"
+        "lat": -8.3039762,
+        "lng": 114.3354598,
+        "status": "verified"
       },
       "tipe_rusun": "Barak",
       "varian": "Sangat Kecil",
@@ -3284,9 +3284,9 @@
       "kabkota": "Kab. Probolinggo",
       "penerima": "Peserta Didik (LPKB)",
       "koordinat": {
-        "lat": null,
-        "lng": null,
-        "status": "missing"
+        "lat": -7.7772863,
+        "lng": 113.2506434,
+        "status": "verified"
       },
       "tipe_rusun": "Barak",
       "varian": "Sangat Kecil",
@@ -5557,7 +5557,7 @@
       "tahun_anggaran": 2018,
       "nama_paket": null,
       "nama_rusun": "Ponpes Mambaus Sholihin",
-      "alamat": "Jl. K.H. Syafi\u00c3\u00ad No. 07 Kel. Manyar Kec. Suci Kab. Gresik",
+      "alamat": "Jl. K.H. SyafiÃ­ No. 07 Kel. Manyar Kec. Suci Kab. Gresik",
       "kabkota": "Kab. Gresik",
       "penerima": "Peserta Didik (LPKB)",
       "koordinat": {
@@ -5653,7 +5653,7 @@
       "kabkota": "Kab. Jember",
       "penerima": "Peserta Didik (LPKB)",
       "koordinat": {
-        "lat": -8.1400830,
+        "lat": -8.140083,
         "lng": 113.739083,
         "status": "verified"
       },
@@ -6918,9 +6918,9 @@
       "kabkota": "Kab. Kediri",
       "penerima": "Peserta Didik (LPKB)",
       "koordinat": {
-        "lat": null,
-        "lng": null,
-        "status": "missing"
+        "lat": -7.9283492,
+        "lng": 111.9556951,
+        "status": "verified"
       },
       "tipe_rusun": "Barak",
       "varian": "Pendek",
@@ -7010,9 +7010,9 @@
       "kabkota": "Kab. Jombang",
       "penerima": "Peserta Didik (LPKB)",
       "koordinat": {
-        "lat": null,
-        "lng": null,
-        "status": "missing"
+        "lat": -7.519618,
+        "lng": 112.23708,
+        "status": "verified"
       },
       "tipe_rusun": "Barak",
       "varian": "Panjang",
@@ -8092,7 +8092,7 @@
       "penerima": "Peserta Didik (LPKB)",
       "koordinat": {
         "lat": -8.088056,
-        "lng": 111.917250,
+        "lng": 111.91725,
         "status": "verified"
       },
       "tipe_rusun": "Barak",

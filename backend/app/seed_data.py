@@ -90,6 +90,28 @@ def seed_database():
                 db.commit()
                 print(f"✅ Successfully imported {len(rusun_list)} rusun records to PostgreSQL!")
 
+        # Sync update koordinat dari rusun_data.json ke PostgreSQL
+        if json_path:
+            with open(json_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                rusun_list = data.get("rusun", [])
+                synced_count = 0
+                for item in rusun_list:
+                    coords = item.get("koordinat", {}) or {}
+                    lat = coords.get("lat")
+                    lng = coords.get("lng")
+                    status_coord = coords.get("status", "missing")
+                    if lat is not None and lng is not None:
+                        r_db = db.query(RusunMaster).filter(RusunMaster.id == item.get("id")).first()
+                        if r_db and (r_db.latitude != lat or r_db.longitude != lng or r_db.status_koordinat != status_coord):
+                            r_db.latitude = lat
+                            r_db.longitude = lng
+                            r_db.status_koordinat = status_coord
+                            synced_count += 1
+                if synced_count > 0:
+                    db.commit()
+                    print(f"✅ Berhasil menyinkronkan {synced_count} koordinat rusun ke PostgreSQL!")
+
         # 3. Seed Sample Proyek Ongoing (e.g. 2026/tnialpasuruan)
         sample_proyek = db.query(ProyekOngoing).filter(
             ProyekOngoing.tahun == 2026,
