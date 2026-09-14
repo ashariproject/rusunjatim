@@ -70,20 +70,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
         await loadData();
-        initializeTabs();
-        initializeMap();
-        if (document.getElementById('formMap')) {
-            initializeFormMap();
-            loadMissingCoordinatesForm();
-            loadSavedData();
-        }
+
+        // 1. Populasi filter dropdown, angka statistik, dan tabel data pertama kali
         populateFilters();
         updateStatistics();
         renderTable();
-        initCharts(); // Init charts
+
+        // 2. Inisialisasi peta Leaflet, tab, grafik, dan listener
+        initializeTabs();
+        initializeMap();
+        initCharts();
         attachEventListeners();
     } catch (e) {
-        console.error(e);
+        console.error('Inisialisasi utama error:', e);
     }
 });
 
@@ -108,8 +107,10 @@ function initializeTabs() {
     const tabContents = document.querySelectorAll('.tab-content');
 
     tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
             const targetTabId = btn.dataset.tab;
+            if (!targetTabId) return; // Abaikan link eksternal seperti admin/proyek
+
             console.log('Tab clicked:', targetTabId); // Debug logging
 
             // Remove active class from all
@@ -476,15 +477,16 @@ function updateStatistics() {
         }
     });
 
-    const statTotalEl = document.getElementById('statTotal');
-    if (statTotalEl) {
-        statTotalEl.textContent = rusunData.length;
-    }
+    const setElemText = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+    };
 
-    document.getElementById('statMBR').textContent = mbr;
-    document.getElementById('statPesertaDidik').textContent = pesertaDidik;
-    document.getElementById('statPekerja').textContent = pekerjaIndustri;
-    document.getElementById('statASNTNIPOLRI').textContent = asnTniPolri;
+    setElemText('statTotal', rusunData.length);
+    setElemText('statMBR', mbr);
+    setElemText('statPesertaDidik', pesertaDidik);
+    setElemText('statPekerja', pekerjaIndustri);
+    setElemText('statASNTNIPOLRI', asnTniPolri);
 
     // Update Satker Legend
     updateSatkerLegend();
