@@ -6826,9 +6826,9 @@
       "kabkota": "Kab. Jember",
       "penerima": "Peserta Didik (LPKB)",
       "koordinat": {
-        "lat": null,
-        "lng": null,
-        "status": "missing"
+        "lat": -8.316661,
+        "lng": 113.545702,
+        "status": "verified"
       },
       "tipe_rusun": 40,
       "varian": 0,
