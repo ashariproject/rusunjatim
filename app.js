@@ -146,8 +146,11 @@ function initializeTabs() {
             // Update charts when switching to grafis tab
             if (targetTabId === 'grafis') {
                 setTimeout(() => {
+                    Object.values(charts).forEach(c => {
+                        if (c && typeof c.resize === 'function') c.resize();
+                    });
                     updateCharts(getFilteredData());
-                }, 100);
+                }, 80);
             }
         });
     });
@@ -903,63 +906,114 @@ function attachEventListeners() {
     // Fix map rendering when switching tabs - MOVED TO initializeTabs function to avoid duplicates
 }
 
-// ===== Initialize Charts =====
-// ===== Initialize Charts =====
+// ===== Initialize Charts (Professional & Proportional) =====
 function initCharts() {
-    console.log('Initializing charts...');
     if (typeof Chart === 'undefined') {
-        console.error('Chart.js not loaded');
+        console.warn('Chart.js not loaded');
         return;
     }
 
-    const chartConfig = (type, title) => ({
-        type: type,
-        data: { labels: [], datasets: [{ label: title, data: [], backgroundColor: '#0d6efd' }] },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            layout: {
-                padding: { top: 10, bottom: 0, left: 0, right: 0 }
-            },
-            plugins: {
-                legend: {
-                    display: type !== 'bar',
-                    // Responsive font size logic ideally, but setting a safe middle ground
-                    labels: { boxWidth: window.innerWidth < 768 ? 6 : 10, padding: 5, font: { size: window.innerWidth < 768 ? 9 : 11 } }
-                }
-            },
-            scales: type === 'bar' ? {
-                x: {
-                    ticks: {
-                        font: { size: window.innerWidth < 768 ? 8 : 10 },
-                        maxRotation: window.innerWidth < 768 ? 90 : 45,
-                        minRotation: window.innerWidth < 768 ? 90 : 0
-                    }
-                },
-                y: { ticks: { font: { size: window.innerWidth < 768 ? 8 : 10 } } }
-            } : {}
-        }
-    });
+    const defaultFont = { family: "'Plus Jakarta Sans', 'Inter', sans-serif", size: 10 };
+    const gridColor = 'rgba(148, 163, 184, 0.12)';
 
     try {
+        // 1. Chart Tahun Anggaran (Vertical Bar)
         if (document.getElementById('chartTahun')) {
-            charts.tahun = new Chart(document.getElementById('chartTahun'), chartConfig('bar', 'Jumlah Unit'));
+            charts.tahun = new Chart(document.getElementById('chartTahun'), {
+                type: 'bar',
+                data: { labels: [], datasets: [{ label: 'Jumlah Rusun Terbangun', data: [], backgroundColor: '#0284c7', borderRadius: 4, barPercentage: 0.75 }] },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', cornerRadius: 6, padding: 8 }
+                    },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { font: defaultFont, maxRotation: 45 } },
+                        y: { grid: { color: gridColor }, ticks: { font: defaultFont, precision: 0 } }
+                    }
+                }
+            });
         }
+
+        // 2. Chart Komposisi Tipe Rusun (Doughnut)
         if (document.getElementById('chartTipe')) {
             charts.tipe = new Chart(document.getElementById('chartTipe'), {
                 type: 'doughnut',
-                data: { labels: [], datasets: [{ data: [], backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'] }] },
-                options: { responsive: true, maintainAspectRatio: false }
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: ['#0284c7', '#059669', '#d97706', '#8b5cf6', '#e11d48', '#0891b2', '#64748b', '#ec4899', '#f97316', '#14b8a6'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '62%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 6, font: defaultFont } },
+                        tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', cornerRadius: 6, padding: 8 }
+                    }
+                }
             });
         }
+
+        // 3. Chart Asset Satker (Horizontal Bar)
         if (document.getElementById('chartSatker')) {
-            charts.satker = new Chart(document.getElementById('chartSatker'), chartConfig('bar', 'Jumlah Unit'));
+            charts.satker = new Chart(document.getElementById('chartSatker'), {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Jumlah Aset Rusun',
+                        data: [],
+                        backgroundColor: ['#059669', '#0284c7', '#6366f1', '#d97706'],
+                        borderRadius: 4,
+                        barPercentage: 0.65
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', cornerRadius: 6, padding: 8 }
+                    },
+                    scales: {
+                        x: { grid: { color: gridColor }, ticks: { font: defaultFont, precision: 0 } },
+                        y: { grid: { display: false }, ticks: { font: defaultFont } }
+                    }
+                }
+            });
         }
+
+        // 4. Chart Kondisi Bangunan (Doughnut)
         if (document.getElementById('chartKondisi')) {
             charts.kondisi = new Chart(document.getElementById('chartKondisi'), {
-                type: 'pie',
-                data: { labels: [], datasets: [{ data: [], backgroundColor: ['#28a745', '#ffc107', '#dc3545', '#6c757d'] }] },
-                options: { responsive: true, maintainAspectRatio: false }
+                type: 'doughnut',
+                data: {
+                    labels: ['Baik', 'Rusak Ringan', 'Rusak Sedang'],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: ['#059669', '#f59e0b', '#e11d48'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '62%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 6, font: defaultFont } },
+                        tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', cornerRadius: 6, padding: 8 }
+                    }
+                }
             });
         }
 
@@ -969,80 +1023,102 @@ function initCharts() {
     }
 }
 
-// ===== Update Charts =====
+// ===== Update Charts (Sync Data & KPI Metrics) =====
 function updateCharts(data) {
-    console.log('Updating charts with data length:', data ? data.length : 0);
-    if (!data) return;
+    if (!data || data.length === 0) return;
+
+    // 1. Update KPI Infografis Highlights
+    const totalRusun = data.length;
+    let totalUnitHunian = 0;
+    let pesertaDidikCount = 0;
+    let kondisiBaikCount = 0;
+
+    data.forEach(r => {
+        const units = parseInt(r.jumlah_unit);
+        if (!isNaN(units)) totalUnitHunian += units;
+
+        const penerima = String(r.penerima || '');
+        if (penerima.includes('Peserta Didik')) pesertaDidikCount++;
+
+        const kondisi = String(r.kondisi_bangunan || '').toUpperCase();
+        if (kondisi === 'BAIK') kondisiBaikCount++;
+    });
+
+    const setElem = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+    };
+
+    setElem('kpiTotalRusun', totalRusun.toLocaleString('id-ID'));
+    setElem('kpiTotalUnit', totalUnitHunian.toLocaleString('id-ID'));
+    setElem('kpiPesertaDidik', pesertaDidikCount.toLocaleString('id-ID'));
+    const pctBaik = totalRusun > 0 ? ((kondisiBaikCount / totalRusun) * 100).toFixed(1) + '%' : '0%';
+    setElem('kpiKondisiBaik', pctBaik);
 
     // Helper to count frequencies
     const countBy = (arr, key) => {
         return arr.reduce((acc, curr) => {
-            const val = curr[key] || 'Tidak Diketahui';
+            const val = curr[key] || 'Lainnya';
             acc[val] = (acc[val] || 0) + 1;
             return acc;
         }, {});
     };
 
-    // Kabkota
-    // Kabkota - Sort and Top 10
-    // Tahun (Chronological Sort)
+    // 2. Update Chart Tahun Anggaran
     if (charts.tahun) {
-        // Prepare data with normalization
         const normalizedData = data.map(item => {
             let year = item.tahun_anggaran;
-            // Merge 'Stimulus 2009' into '2009'
             if (year && typeof year === 'string' && year.includes('Stimulus 2009')) {
                 return { ...item, tahun_anggaran: '2009' };
             }
             return item;
         });
 
-        let tahunCounts = countBy(normalizedData, 'tahun_anggaran');
+        const tahunCounts = countBy(normalizedData, 'tahun_anggaran');
+        const sortedYears = Object.entries(tahunCounts).sort((a, b) => {
+            const yA = parseInt(a[0]);
+            const yB = parseInt(b[0]);
+            if (isNaN(yA)) return 1;
+            if (isNaN(yB)) return -1;
+            return yA - yB;
+        });
 
-        // Convert to array and sort chronologically
-        const sorted = Object.entries(tahunCounts)
-            .sort((a, b) => {
-                const yearA = parseInt(a[0]);
-                const yearB = parseInt(b[0]);
-                if (isNaN(yearA)) return 1;
-                if (isNaN(yearB)) return -1;
-                return yearA - yearB;
-            });
-
-        charts.tahun.data.labels = sorted.map(([label]) => label);
-        charts.tahun.data.datasets[0].data = sorted.map(([, count]) => count);
-        charts.tahun.data.datasets[0].label = 'Jumlah Unit per Tahun';
+        charts.tahun.data.labels = sortedYears.map(([y]) => y);
+        charts.tahun.data.datasets[0].data = sortedYears.map(([, count]) => count);
         charts.tahun.update();
     }
 
-    // Tipe
+    // 3. Update Chart Tipe Rusun
     if (charts.tipe) {
         const tipeCounts = countBy(data, 'tipe_rusun');
-        charts.tipe.data.labels = Object.keys(tipeCounts);
-        charts.tipe.data.datasets[0].data = Object.values(tipeCounts);
+        const sortedTipe = Object.entries(tipeCounts).sort(([, a], [, b]) => b - a).slice(0, 8);
+        charts.tipe.data.labels = sortedTipe.map(([t]) => t);
+        charts.tipe.data.datasets[0].data = sortedTipe.map(([, count]) => count);
         charts.tipe.update();
     }
 
-    // Satker
-    // Satker - Sort and Top 10
+    // 4. Update Chart Satker
     if (charts.satker) {
-        let satkerCounts = countBy(data, 'asset_satker');
-
-        const sortedSatker = Object.entries(satkerCounts)
-            .sort(([, a], [, b]) => b - a)
-            .slice(0, 10);
-
-        charts.satker.data.labels = sortedSatker.map(([label]) => label);
+        const satkerCounts = countBy(data, 'asset_satker');
+        const sortedSatker = Object.entries(satkerCounts).sort(([, a], [, b]) => b - a);
+        charts.satker.data.labels = sortedSatker.map(([s]) => s);
         charts.satker.data.datasets[0].data = sortedSatker.map(([, count]) => count);
-        charts.satker.data.datasets[0].label = 'Jumlah Unit (Top 10)';
         charts.satker.update();
     }
 
-    // Kondisi
+    // 5. Update Chart Kondisi Bangunan
     if (charts.kondisi) {
-        const kondisiCounts = countBy(data, 'kondisi_bangunan');
-        charts.kondisi.data.labels = Object.keys(kondisiCounts);
-        charts.kondisi.data.datasets[0].data = Object.values(kondisiCounts);
+        let baik = 0, ringan = 0, sedang = 0;
+        data.forEach(r => {
+            const k = String(r.kondisi_bangunan || '').toUpperCase();
+            if (k === 'BAIK') baik++;
+            else if (k.includes('RINGAN')) ringan++;
+            else if (k.includes('SEDANG')) sedang++;
+            else baik++;
+        });
+
+        charts.kondisi.data.labels = ['Baik', 'Rusak Ringan', 'Rusak Sedang'];
+        charts.kondisi.data.datasets[0].data = [baik, ringan, sedang];
         charts.kondisi.update();
     }
 }
