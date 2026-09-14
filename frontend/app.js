@@ -11,7 +11,7 @@ let currentFilters = {
     tipe: '',
     penerima: '', // Ensure this exists
     satker: '', // New filter
-    coordStatus: ['verified', 'need_validation'],
+    coordStatus: ['verified', 'need_validation', 'missing'],
     searchQuery: ''
 };
 
@@ -72,13 +72,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadData();
         initializeTabs();
         initializeMap();
-        initializeFormMap();
+        if (document.getElementById('formMap')) {
+            initializeFormMap();
+            loadMissingCoordinatesForm();
+            loadSavedData();
+        }
         populateFilters();
         updateStatistics();
         renderTable();
         initCharts(); // Init charts
-        loadMissingCoordinatesForm();
-        loadSavedData();
         attachEventListeners();
     } catch (e) {
         console.error(e);
@@ -419,15 +421,17 @@ function getFilteredData() {
             return false;
         }
 
-        // Filter by coordinate status
-        const hasCoords = rusun.koordinat && rusun.koordinat.lat && rusun.koordinat.lng;
-        let status = 'missing';
-        if (hasCoords) {
-            status = rusun.koordinat.status || 'verified';
-        }
-
-        if (!currentFilters.coordStatus.includes(status)) {
-            return false;
+        // Filter by coordinate status if checkboxes exist
+        const hasCheckboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]').length > 0;
+        if (hasCheckboxes) {
+            const hasCoords = rusun.koordinat && rusun.koordinat.lat && rusun.koordinat.lng;
+            let status = 'missing';
+            if (hasCoords) {
+                status = rusun.koordinat.status || 'verified';
+            }
+            if (!currentFilters.coordStatus.includes(status)) {
+                return false;
+            }
         }
 
         return true;
@@ -879,8 +883,10 @@ function attachEventListeners() {
     document.getElementById('exportExcel').addEventListener('click', exportToExcel);
 
     // Form listeners
-    document.getElementById('saveCoord').addEventListener('click', saveCoordinate);
-    document.getElementById('exportUpdatedData').addEventListener('click', exportUpdatedData);
+    const btnSaveCoord = document.getElementById('saveCoord');
+    if (btnSaveCoord) btnSaveCoord.addEventListener('click', saveCoordinate);
+    const btnExportUpdatedData = document.getElementById('exportUpdatedData');
+    if (btnExportUpdatedData) btnExportUpdatedData.addEventListener('click', exportUpdatedData);
 
     // Fix map rendering when switching tabs - MOVED TO initializeTabs function to avoid duplicates
 }

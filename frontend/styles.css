@@ -718,7 +718,7 @@ html.dark .data-table tr.missing-coord {
     margin-top: auto;
 }
 
-/* Leaflet Popup Pines Micro-Card */
+/* Leaflet Popup Pines Micro-Card (Proporsional) */
 .leaflet-popup-content-wrapper {
     background: var(--bg-card) !important;
     color: var(--text-body) !important;
@@ -726,16 +726,170 @@ html.dark .data-table tr.missing-coord {
     box-shadow: var(--shadow-md) !important;
     border: 1px solid var(--border-subtle) !important;
     padding: 0 !important;
+    overflow: hidden !important;
 }
 
 .leaflet-popup-content {
-    margin: 0.65rem !important;
+    margin: 0 !important;
+    padding: 0.65rem !important;
     font-size: 0.75rem !important;
     line-height: 1.35 !important;
+    width: 290px !important;
+    box-sizing: border-box !important;
+}
+
+.popup-content {
+    width: 100%;
+    overflow: hidden;
+}
+
+.popup-image-container {
+    width: 100%;
+    height: 160px;
+    background: var(--bg-muted);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--border-subtle);
+}
+
+.popup-image-container .loading-text {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.popup-image, .popup-image.rusun-photo {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 160px !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    border-radius: var(--radius-sm);
+    display: block;
+    aspect-ratio: 16 / 9;
+}
+
+.popup-details h3 {
+    font-size: 0.825rem;
+    font-weight: 700;
+    color: var(--text-heading);
+    margin-bottom: 0.35rem;
+    line-height: 1.25;
+}
+
+.popup-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.715rem;
+    margin-bottom: 0.45rem;
+}
+
+.popup-table tr td {
+    padding: 0.15rem 0.2rem;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.popup-table tr td:first-child {
+    color: var(--text-muted);
+    font-weight: 600;
+    width: 32%;
+    white-space: nowrap;
+}
+
+.popup-table tr td:last-child {
+    color: var(--text-body);
+}
+
+.popup-actions {
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+    margin-top: 0.35rem;
+}
+
+.popup-actions .btn-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.685rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.2rem 0.45rem;
+    background: var(--primary-light);
+    color: var(--primary);
+    border: 1px solid var(--primary-border);
+    border-radius: var(--radius-sm);
+    transition: all 0.15s ease;
+}
+
+.popup-actions .btn-link:hover {
+    background: var(--primary);
+    color: #ffffff;
+}
+
+.popup-actions .btn-link-pdf {
+    background: var(--emerald-light);
+    color: var(--emerald);
+    border-color: rgba(5, 150, 105, 0.3);
+}
+
+.popup-actions .btn-link-pdf:hover {
+    background: var(--emerald);
+    color: #ffffff;
 }
 
 .leaflet-popup-tip {
     background: var(--bg-card) !important;
+}
+
+/* Pines Style Collapsible Dropdown for Filter & Statistik */
+.filter-dropdown {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    margin-top: 0.4rem;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.filter-dropdown summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-heading);
+    cursor: pointer;
+    background: var(--bg-muted);
+    user-select: none;
+    list-style: none;
+}
+
+.filter-dropdown summary::-webkit-details-marker {
+    display: none;
+}
+
+.filter-dropdown summary .dropdown-arrow {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+}
+
+.filter-dropdown[open] summary .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.filter-dropdown-body {
+    padding: 0.5rem 0.6rem;
+    border-top: 1px solid var(--border-subtle);
 }
 
 /* ===== Pines UI Proyek & Timeline Styles ===== */
