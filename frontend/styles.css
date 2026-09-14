@@ -760,6 +760,31 @@ html.dark .data-table tr.missing-coord {
     box-sizing: border-box !important;
 }
 
+.popup-image-container.empty-photo {
+    height: 80px !important;
+    min-height: 80px !important;
+    max-height: 80px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--bg-muted) !important;
+    border: 1px dashed var(--border-subtle) !important;
+    border-radius: var(--radius-sm) !important;
+    margin: 0 0 0.45rem 0 !important;
+    padding: 0.5rem !important;
+    box-sizing: border-box !important;
+    color: var(--text-muted) !important;
+    font-size: 0.725rem !important;
+    text-align: center !important;
+}
+
+.popup-image-container.empty-photo strong {
+    color: var(--text-muted) !important;
+    font-weight: 600 !important;
+    font-size: 0.725rem !important;
+}
+
 .popup-image-container .loading-text {
     font-size: 0.7rem;
     color: var(--text-muted);

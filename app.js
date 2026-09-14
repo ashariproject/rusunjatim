@@ -201,6 +201,20 @@ function updateMapMarkers() {
     console.log('Markers updated:', markers.length);
 }
 
+// Mapping ID Rusun yang memiliki file foto
+const KNOWN_RUSUN_PHOTOS = {
+    19: "19.jpg", 138: "138.jpg", 159: "159.jpg", 164: "164.jpg", 199: "199.jpg", 
+    206: "206.jpg", 218: "218.jpg", 220: "220.JPG", 244: "244.jpg", 249: "249.jpeg", 
+    251: "251.JPG", 265: "265.jpg", 271: "271.jpg", 272: "272.JPG", 273: "273.jpg", 
+    274: "274.jpg", 275: "275.JPG", 277: "277.jpg", 279: "279.jpg", 280: "280.jpg", 
+    281: "281.jpg", 289: "289.jpg", 296: "296.jpg", 314: "314.jpg", 327: "327.jpg", 
+    333: "333.jpg", 341: "341.jpg", 342: "342.jpg", 343: "343.jpg", 350: "350.jpg", 
+    351: "351.jpg", 352: "352.JPG", 353: "353.JPG", 354: "354.JPG", 355: "355.JPG", 
+    357: "357.jpg", 359: "359.jpg", 360: "360.jpg", 363: "363.JPG", 365: "365.jpg", 
+    366: "366.jpg", 367: "367.jpg", 368: "368.jpg", 369: "369.jpg", 370: "370.jpg", 
+    371: "371.JPG", 372: "372.jpg", 373: "373.JPG", 374: "374.JPG", 375: "375.JPG"
+};
+
 // ===== Create Marker =====
 function createMarker(rusun) {
     const { lat, lng, status } = rusun.koordinat;
@@ -216,16 +230,34 @@ function createMarker(rusun) {
 
     const marker = L.marker([lat, lng], { icon });
 
-    // Create popup content - NO inline event handlers, use data attribute for id
-    const popupContent = `
-        <div class="popup-content">
+    // Deteksi ketersediaan foto secara instan
+    const photoFileName = KNOWN_RUSUN_PHOTOS[rusun.id] || (rusun.foto || rusun.foto_utama);
+
+    let photoHtml = '';
+    if (photoFileName) {
+        photoHtml = `
             <div class="popup-image-container">
                 <span class="loading-text" style="color: #94a3b8; font-size: 0.8rem;">Memuat foto...</span>
                 <img data-rusun-id="${rusun.id}"
+                     data-photo-file="${photoFileName}"
                      alt="${rusun.nama_rusun}" 
                      class="popup-image rusun-photo"
                      style="display: none;">
             </div>
+        `;
+    } else {
+        photoHtml = `
+            <div class="popup-image-container empty-photo">
+                <span style="font-size: 1.35rem; margin-bottom: 0.2rem; opacity: 0.65;">📷</span>
+                <strong>Data Foto belum tersedia</strong>
+            </div>
+        `;
+    }
+
+    // Create popup content
+    const popupContent = `
+        <div class="popup-content">
+            ${photoHtml}
             <div class="popup-details">
                 <h3>${rusun.nama_rusun || 'Tidak ada nama'}</h3>
                 <table class="popup-table">
@@ -278,16 +310,10 @@ function createMarker(rusun) {
         const el = popup.getElement();
         if (!el) return;
 
-        const img = el.querySelector('.rusun-photo');
-        if (!img) return;
-
-        const rusunId = img.dataset.rusunId;
-        const loader = img.parentElement.querySelector('.loading-text');
-
         // Show PDF profile button if PDF exists
         const pdfLink = el.querySelector('[data-pdf-link]');
         if (pdfLink) {
-            fetch('profile/' + rusunId + '.pdf', { method: 'HEAD' })
+            fetch('profile/' + rusun.id + '.pdf', { method: 'HEAD' })
                 .then(res => { 
                     if (res.ok) {
                         pdfLink.style.display = 'inline-flex';
@@ -297,34 +323,27 @@ function createMarker(rusun) {
                 .catch(() => { });
         }
 
-        img.onload = function () {
-            img.style.display = 'block';
-            if (loader) loader.style.display = 'none';
-            popup.update();
-        };
+        const img = el.querySelector('.rusun-photo');
+        if (img) {
+            const photoFile = img.dataset.photoFile;
+            const loader = img.parentElement.querySelector('.loading-text');
 
-        img.onerror = function () {
-            // Try uppercase extension first
-            if (!img.dataset.retried) {
-                img.dataset.retried = 'true';
-                img.src = 'images/rusun/' + rusunId + '.JPG';
-            } else {
-                // Both failed - show compact error state
-                img.style.display = 'none';
-                if (loader) {
-                    loader.innerHTML = '<span style="font-size: 1.25rem; display: block; margin-bottom: 0.2rem; opacity: 0.65;">📷</span><span>Data Foto belum tersedia</span>';
-                    loader.style.color = 'var(--text-muted)';
-                    loader.style.fontSize = '0.725rem';
-                    loader.style.fontWeight = '600';
-                    loader.style.textAlign = 'center';
-                }
-                img.parentElement.style.height = '85px';
+            img.onload = function () {
+                img.style.display = 'block';
+                if (loader) loader.style.display = 'none';
                 popup.update();
-            }
-        };
+            };
 
-        // Now set src to trigger loading
-        img.src = 'images/rusun/' + rusunId + '.jpg';
+            img.onerror = function () {
+                img.style.display = 'none';
+                img.parentElement.classList.add('empty-photo');
+                img.parentElement.innerHTML = '<span style="font-size: 1.35rem; margin-bottom: 0.2rem; opacity: 0.65;">📷</span><strong>Data Foto belum tersedia</strong>';
+                popup.update();
+            };
+
+            // Load exact image
+            img.src = 'images/rusun/' + photoFile;
+        }
     });
 
     return marker;
