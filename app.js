@@ -262,7 +262,11 @@ function createMarker(rusun) {
         </div>
     `;
 
-    marker.bindPopup(popupContent, { maxWidth: 300 });
+    marker.bindPopup(popupContent, { 
+        maxWidth: 320,
+        minWidth: 280,
+        className: 'rusun-leaflet-popup'
+    });
 
     // Use Leaflet's popupopen event to attach image handlers AFTER DOM is ready
     marker.on('popupopen', function () {
@@ -280,13 +284,19 @@ function createMarker(rusun) {
         const pdfLink = el.querySelector('[data-pdf-link]');
         if (pdfLink) {
             fetch('profile/' + rusunId + '.pdf', { method: 'HEAD' })
-                .then(res => { if (res.ok) pdfLink.style.display = 'inline-flex'; })
+                .then(res => { 
+                    if (res.ok) {
+                        pdfLink.style.display = 'inline-flex';
+                        popup.update();
+                    }
+                })
                 .catch(() => { });
         }
 
         img.onload = function () {
             img.style.display = 'block';
             if (loader) loader.style.display = 'none';
+            popup.update();
         };
 
         img.onerror = function () {
@@ -295,14 +305,14 @@ function createMarker(rusun) {
                 img.dataset.retried = 'true';
                 img.src = 'images/rusun/' + rusunId + '.JPG';
             } else {
-                // Both failed - show error state
+                // Both failed - show compact error state
                 img.style.display = 'none';
                 if (loader) {
-                    loader.innerText = 'Foto tidak tersedia';
-                    loader.style.color = '#9ca3af';
+                    loader.innerText = 'Foto belum tersedia';
+                    loader.style.color = 'var(--text-muted)';
                 }
-                img.parentElement.style.minHeight = 'auto';
-                img.parentElement.style.padding = '1rem';
+                img.parentElement.style.height = '50px';
+                popup.update();
             }
         };
 

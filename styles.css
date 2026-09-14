@@ -739,22 +739,25 @@ html.dark .data-table tr.missing-coord {
 }
 
 .popup-content {
-    width: 100%;
-    overflow: hidden;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .popup-image-container {
-    width: 100%;
-    height: 160px;
-    background: var(--bg-muted);
+    width: 100% !important;
+    height: 155px !important;
+    margin: 0 0 0.5rem 0 !important;
     border-radius: var(--radius-sm);
     overflow: hidden;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 0.5rem;
     border: 1px solid var(--border-subtle);
+    background: var(--bg-muted);
+    box-sizing: border-box !important;
 }
 
 .popup-image-container .loading-text {
@@ -763,48 +766,60 @@ html.dark .data-table tr.missing-coord {
     font-weight: 500;
 }
 
-.popup-image, .popup-image.rusun-photo {
+.popup-image-container img.popup-image,
+.popup-image-container img.rusun-photo {
     width: 100% !important;
     height: 100% !important;
     max-width: 100% !important;
-    max-height: 160px !important;
+    max-height: 155px !important;
     object-fit: cover !important;
     object-position: center !important;
-    border-radius: var(--radius-sm);
-    display: block;
-    aspect-ratio: 16 / 9;
+    display: block !important;
+    margin: 0 !important;
+    border: none !important;
+}
+
+.popup-details {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .popup-details h3 {
     font-size: 0.825rem;
     font-weight: 700;
     color: var(--text-heading);
-    margin-bottom: 0.35rem;
+    margin: 0 0 0.35rem 0 !important;
     line-height: 1.25;
+    word-break: break-word;
 }
 
 .popup-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.715rem;
-    margin-bottom: 0.45rem;
+    width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    margin: 0 0 0.45rem 0 !important;
+    box-sizing: border-box !important;
 }
 
 .popup-table tr td {
-    padding: 0.15rem 0.2rem;
-    vertical-align: top;
-    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.2rem 0.25rem !important;
+    font-size: 0.715rem !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    word-break: break-word !important;
 }
 
 .popup-table tr td:first-child {
-    color: var(--text-muted);
-    font-weight: 600;
-    width: 32%;
-    white-space: nowrap;
+    width: 82px !important;
+    color: var(--text-muted) !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
 }
 
 .popup-table tr td:last-child {
-    color: var(--text-body);
+    color: var(--text-body) !important;
+    font-weight: 500 !important;
 }
 
 .popup-actions {
