@@ -1654,7 +1654,33 @@ html.dark .timeline-box {
 .btn-sm {
     padding: 0.2rem 0.5rem;
     font-size: 0.7rem;
+    width: auto;
 }
+
+.btn-doc-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    background: #2563eb;
+    color: #ffffff !important;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    width: auto;
+    box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25);
+}
+
+.btn-doc-link:hover {
+    background: #1d4ed8;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(37, 99, 235, 0.35);
+}
+
 
 /* Custom Table for Proyek */
 .custom-table {
@@ -1713,4 +1739,29 @@ html.dark .custom-table th {
     max-width: 520px;
     padding: 1.25rem;
     box-shadow: var(--shadow-md);
+}
+
+/* Layout Container & Grid */
+.container {
+    width: 100%;
+    max-width: 1560px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+.layout-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+    gap: 0.75rem;
+}
+
+.layout-grid > * {
+    min-width: 0;
+}
+
+@media (max-width: 1024px) {
+    .layout-grid {
+        grid-template-columns: 1fr;
+    }
 }

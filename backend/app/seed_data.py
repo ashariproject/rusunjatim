@@ -182,6 +182,8 @@ def seed_database():
                 if item.get("bukti_dukung"):
                     catatan_full += f"\n[Bukti Dukung: {item['bukti_dukung']}]"
 
+                doc_link = item.get("link_dokumen") or (f"/uploads/documents/{item['bukti_dukung']}" if item.get("bukti_dukung") else None)
+
                 # Tambah ke Timeline Events
                 tl_event = TimelineEvent(
                     proyek_id=sample_proyek.id,
@@ -190,7 +192,7 @@ def seed_database():
                     judul=f"#{item['no']} {item['judul']}",
                     catatan=catatan_full,
                     progres_saat_ini=0.0,
-                    lampiran_url=f"/uploads/documents/{item['bukti_dukung']}" if item.get("bukti_dukung") else None,
+                    lampiran_url=doc_link,
                     keywords=item.get("keywords")
                 )
                 db.add(tl_event)
@@ -204,7 +206,7 @@ def seed_database():
                     pengirim=item.get("pengirim") or "Kementerian PKP / TNI AL",
                     perihal=item.get("perihal") or item["judul"],
                     keywords=item.get("keywords"),
-                    file_path=f"/uploads/documents/{item['bukti_dukung']}" if item.get("bukti_dukung") else None,
+                    file_path=doc_link,
                     status_disposisi="Disetujui" if ("SK" in item["fase"] or "SPP" in (item.get("nomor_dokumen") or "")) else "Masuk"
                 )
                 db.add(surat_entry)

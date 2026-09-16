@@ -17,7 +17,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Rapat, Notulen, Pertemuan, Usulan, Pimpinan, KSAL, Menteri PKP",
     "jenis_surat": "Notulen Rapat",
     "pengirim": "Kementerian PKP & Mabes TNI AL",
-    "perihal": "Pertemuan Awal Menteri PKP dengan KSAL Terkait Rencana Pembangunan Rusun TNI AL"
+    "perihal": "Pertemuan Awal Menteri PKP dengan KSAL Terkait Rencana Pembangunan Rusun TNI AL",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgD4Cvk0ZRRyTKFWOhuiAnO4AbtzP65Az5So96za_d5rItU?e=UnUeZt"
   },
   {
     "no": 2,
@@ -30,7 +31,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Peninjauan Lapangan, Lahan, Survei, Notulen, Kunjungan Kerja, TNI AL, Kodaeral V",
     "jenis_surat": "Laporan Peninjauan",
     "pengirim": "Tim Gabungan Kementerian PKP & TNI AL",
-    "perihal": "Peninjauan Lahan Bersama Lokasi Rencana Pembangunan Rusun TNI AL Kab. Pasuruan"
+    "perihal": "Peninjauan Lahan Bersama Lokasi Rencana Pembangunan Rusun TNI AL Kab. Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgCI-Au_hhrbRp74-SJvbu00Afi0GRUVLLv2z9V0mzJlFuA?e=1fWNAg"
   },
   {
     "no": 3,
@@ -43,7 +45,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Rapat, Notulen, Undangan, Persyaratan, Lahan, Kesiapan Lahan, PLN, RTRW, Pemkab Pasuruan",
     "jenis_surat": "Notulen Rapat / Undangan",
     "pengirim": "Ditjen Perumahan Perkotaan",
-    "perihal": "Pembahasan Hasil Peninjauan Lahan dan Kesiapan Dokumen Usulan Rusun TNI AL Pasuruan"
+    "perihal": "Pembahasan Hasil Peninjauan Lahan dan Kesiapan Dokumen Usulan Rusun TNI AL Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgB2dXAKmznKRI8eUoEhIdRyASwGXTzcQATaBr4RZQrVNWE?e=IDS25Y"
   },
   {
     "no": 4,
@@ -56,7 +59,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Anggaran, DIPA, KAK, RAB, Instruksi, Disposisi, Perencanaan",
     "jenis_surat": "Instruksi Anggaran",
     "pengirim": "Kasubdit Wilayah II Dit. Pembangunan Perumahan Perkotaan",
-    "perihal": "Instruksi Penyusunan KAK dan RAB Dokumen Pendukung DIPA Rusun TNI AL Pasuruan"
+    "perihal": "Instruksi Penyusunan KAK dan RAB Dokumen Pendukung DIPA Rusun TNI AL Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgB7By2j3-6JQrLiCpGyOfEmAV3kDh95nB-oGQcVG7EAIpw?e=3OezC6"
   },
   {
     "no": 5,
@@ -69,7 +73,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Anggaran, DIPA, KAK, RAB, Perintah, Disposisi, DED, Fisik",
     "jenis_surat": "Perintah DIPA",
     "pengirim": "Direktorat Pembangunan Perumahan Perkotaan",
-    "perihal": "Penyusunan Dokumen Pendukung DIPA Penyelenggaraan Rusun TNI AL Kab. Pasuruan"
+    "perihal": "Penyusunan Dokumen Pendukung DIPA Penyelenggaraan Rusun TNI AL Kab. Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgA4vhmpcug7Q6BjIJiS2ufPAXEQ1Sf3-aWjl0FjoqpHtc0?e=I1H0gs"
   },
   {
     "no": 6,
@@ -82,7 +87,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Timeline, Laporan, Surat, Notulen, Rencana Kerja, PPK, Satker",
     "jenis_surat": "Laporan Timeline",
     "pengirim": "PPK Rumah Susun dan Rumah Khusus",
-    "perihal": "Penyampaian Timeline Rencana Pelaksanaan Pembangunan Rusun TNI AL Pasuruan"
+    "perihal": "Penyampaian Timeline Rencana Pelaksanaan Pembangunan Rusun TNI AL Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgAxRgvPT0N_RKrY09TW_rmXAY7Eom1azs-u_OscAYaSBXE?e=CbQN9G"
   },
   {
     "no": 7,
@@ -95,7 +101,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, Justifikasi Teknis, MYC, Anggaran, DIPA, Dokumen Teknis, Multi Years",
     "jenis_surat": "Justifikasi Teknis",
     "pengirim": "Satuan Kerja PKP Jawa Timur",
-    "perihal": "Justifikasi Teknis Pembangunan Rumah Susun TNI AL Pasuruan Multi Years Contract (MYC)"
+    "perihal": "Justifikasi Teknis Pembangunan Rumah Susun TNI AL Pasuruan Multi Years Contract (MYC)",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgAW-yIJzPZFTaZXVoF_OVz0AUGwclK8R_As3AbTq3DZT6U?e=62gJCC"
   },
   {
     "no": 8,
@@ -108,7 +115,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Rapat, Notulen, Koordinasi, Dokumen Usulan, Kodaeral V, Persyaratan, BP3KP",
     "jenis_surat": "Notulen Koordinasi",
     "pengirim": "BP3KP Jawa IV & Kodaeral V Surabaya",
-    "perihal": "Koordinasi Pembahasan Pemenuhan Dokumen Usulan Pembangunan Rusun TNI AL Pasuruan"
+    "perihal": "Koordinasi Pembahasan Pemenuhan Dokumen Usulan Pembangunan Rusun TNI AL Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgDeqcKsNh5-RZBzEBdNRaLnAdqbvE7DNenA0kZ3-nupCiE?e=rdQiNO"
   },
   {
     "no": 9,
@@ -121,7 +129,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, Undangan, Rapat, Notulen, Kemhan, TNI, Kuathan, Tindak Lanjut",
     "jenis_surat": "Undangan Rapat",
     "pengirim": "Direktur Fasilitas dan Jasa Ditjen Kuathan Kemhan",
-    "perihal": "Undangan Rapat Tindak Lanjut Pembangunan Rusun di Lingkungan Kemhan/TNI"
+    "perihal": "Undangan Rapat Tindak Lanjut Pembangunan Rusun di Lingkungan Kemhan/TNI",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgDcFTWLh2RhSY8gx7AjD9naAbXR4IoBnMB0fPCDq_i14jA?e=kruwkn"
   },
   {
     "no": 10,
@@ -134,7 +143,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Anggaran, MYC, DIPA, DJKP, Nota Dinas, Penyesuaian Anggaran",
     "jenis_surat": "Nota Dinas Anggaran",
     "pengirim": "Direktorat Penyiapan Lahan dan PSU Kawasan Permukiman",
-    "perihal": "Penyesuaian Komposisi Anggaran MYC DJKP Pembangunan Rusun TNI AL Pasuruan"
+    "perihal": "Penyesuaian Komposisi Anggaran MYC DJKP Pembangunan Rusun TNI AL Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgCqZRd4d9GEQr-jito5w6RMAQgbyba1zDQA6bu8HN_-9GQ?e=vZ2C8f"
   },
   {
     "no": 11,
@@ -147,7 +157,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Rapat, Notulen, Undangan, Rekomtek, SPTJM, E-Katalog, Regulasi, Wisma Arunika",
     "jenis_surat": "Notulen Rapat",
     "pengirim": "Direktur Penyiapan Lahan dan PSU Ditjen Kawasan Permukiman",
-    "perihal": "Rapat Koordinasi Persiapan Pembangunan Rusun pada Ditjen Kawasan Permukiman"
+    "perihal": "Rapat Koordinasi Persiapan Pembangunan Rusun pada Ditjen Kawasan Permukiman",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgCetkLnlaC-Qr0-lSxd2JYpAcKiy2KIZaldI4wqO1rvhGQ?e=STEitr"
   },
   {
     "no": 12,
@@ -160,7 +171,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Peninjauan Lapangan, Lahan, Notulen, Kodaeral V, Survei, Morokrembangan, SPBU",
     "jenis_surat": "Laporan Peninjauan",
     "pengirim": "Tim BP3KP Jawa IV & Kodaeral V",
-    "perihal": "Peninjauan Lapangan Lokasi Rusun TNI AL Kompleks Tony Soekaton Surabaya"
+    "perihal": "Peninjauan Lapangan Lokasi Rusun TNI AL Kompleks Tony Soekaton Surabaya",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgBKfsqxGc5oT5YA6m9uV-8pAajugwU0hiXZU5VFlZ7Vsew?e=nX2glh"
   },
   {
     "no": 13,
@@ -173,7 +185,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Rapat, Notulen, Vidcon, Menteri PKP, Kesiapan Lahan, Kunjungan Kerja, TNI AL, Pasuruan",
     "jenis_surat": "Notulen Vidcon",
     "pengirim": "Kementerian Perumahan dan Kawasan Permukiman",
-    "perihal": "Vidcon Kunjungan Kerja Menteri PKP Bersama TNI AL Terkait Kesiapan Lahan Rusun"
+    "perihal": "Vidcon Kunjungan Kerja Menteri PKP Bersama TNI AL Terkait Kesiapan Lahan Rusun",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgBkVa6zns_oR4e_w0FHf7OvASEv201n0O4hK8wLTpaTcSI?e=udmBSz"
   },
   {
     "no": 14,
@@ -186,7 +199,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "SK, Penetapan, Surat Keputusan, DIPA, KPA, PPK, Pejabat Perbendaharaan, Satker",
     "jenis_surat": "Surat Keputusan (SK)",
     "pengirim": "Menteri PKP / Dirjen Teknis",
-    "perihal": "Pengangkatan KPA, KPB, PPK, dan Pejabat Perbendaharaan Satker Kementerian PKP"
+    "perihal": "Pengangkatan KPA, KPB, PPK, dan Pejabat Perbendaharaan Satker Kementerian PKP",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgBKYyGZ6gvqTKd4bupz3FKaAUkdpTOQnXkgzYBo_C0emnM?e=0MAV0E"
   },
   {
     "no": 15,
@@ -199,7 +213,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, Permohonan, Usulan, TNI AL, KSAL, Aslog, Persyaratan, Surat Masuk",
     "jenis_surat": "Surat Permohonan Usulan",
     "pengirim": "A.n. KSAL - Asisten Logistik",
-    "perihal": "Permohonan Bantuan Pembangunan Rumah Susun TNI AL Kab. Pasuruan"
+    "perihal": "Permohonan Bantuan Pembangunan Rumah Susun TNI AL Kab. Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgC_34cCc-qOT6wcu4764iiFASLZT5YGnShFHN9Utodk6Y0?e=ni6607"
   },
   {
     "no": 16,
@@ -212,7 +227,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, Surat Jawaban, Bupati Pasuruan, Sekda, Persyaratan, Lahan Grati, Surat Masuk",
     "jenis_surat": "Surat Jawaban / Tanggapan",
     "pengirim": "Bupati Pasuruan d.h. Sekretaris Daerah",
-    "perihal": "Tanggapan atas Permohonan Dukungan Pembangunan Rusun TNI AL di Grati Pasuruan"
+    "perihal": "Tanggapan atas Permohonan Dukungan Pembangunan Rusun TNI AL di Grati Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgCzsJdQ1edvR5JSkWhxKmh9Ae3v9bbwpjHALDbcmXrNmqI?e=ONvuaH"
   },
   {
     "no": 17,
@@ -225,7 +241,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Nota Dinas, Surat, Dispensasi Kontrak, Arahan, DJKP, Kontrak, Surat Keluar",
     "jenis_surat": "Nota Dinas",
     "pengirim": "Direktur Penyiapan Lahan dan PSU Kawasan Permukiman",
-    "perihal": "Permohonan Arahan Terkait Dispensasi Pelaksanaan Kontrak Kegiatan Pembangunan Rusun"
+    "perihal": "Permohonan Arahan Terkait Dispensasi Pelaksanaan Kontrak Kegiatan Pembangunan Rusun",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgCCSoMUzcGAR6ULlChucQnOAT4GtnTQWtwc8I5RMFdmJRs?e=i9a6bK"
   },
   {
     "no": 18,
@@ -238,7 +255,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, Undangan, Rapat, Audiensi, Readiness Criteria, Bupati Pasuruan, Notulen",
     "jenis_surat": "Undangan Audiensi",
     "pengirim": "Direktur Penyiapan Lahan dan PSU",
-    "perihal": "Audiensi Pemenuhan Readiness Criteria Usulan Rusun TNI AL dengan Bupati Pasuruan"
+    "perihal": "Audiensi Pemenuhan Readiness Criteria Usulan Rusun TNI AL dengan Bupati Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgBBKAEOzLqZR4vdiuQnLC0PAc_jeAFJPN9QaJoaPoDtNHk?e=AkD0Yg"
   },
   {
     "no": 19,
@@ -251,7 +269,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, Konfirmasi, Kodaeral V, BMN, Lahan Grati, Bupati Pasuruan, Persyaratan, Surat Masuk",
     "jenis_surat": "Surat Konfirmasi",
     "pengirim": "Komandan Kodaeral V Surabaya",
-    "perihal": "Konfirmasi Terkait Dukungan Bupati di Aset Tanah BMN TNI AL Grati Pasuruan"
+    "perihal": "Konfirmasi Terkait Dukungan Bupati di Aset Tanah BMN TNI AL Grati Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgBwtXmWeRZyT6rUAo3XHW1cAcEX_TJMRG7rYxLihiXm_tY?e=rPAvfl"
   },
   {
     "no": 20,
@@ -264,7 +283,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Verifikasi, BA Verifikasi, Vertek, Skor, Persyaratan, Lolos Verifikasi, Berita Acara",
     "jenis_surat": "Berita Acara Verifikasi",
     "pengirim": "Tim Verifikasi Usulan Bantuan Rusun",
-    "perihal": "Hasil Verifikasi Administrasi Usulan Bantuan Rusun TNI AL Pasuruan (Skor 79.17%)"
+    "perihal": "Hasil Verifikasi Administrasi Usulan Bantuan Rusun TNI AL Pasuruan (Skor 79.17%)",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgBnDdvEZ6nPSbaYKRuSJa_AAcUVyQbNlY8C83cxt2K1fLs?e=qeDJO0"
   },
   {
     "no": 21,
@@ -277,7 +297,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, SPP, Perintah Perencanaan, Dirjen KP, Kabalai, DED, Surat Masuk",
     "jenis_surat": "Surat Perintah Perencanaan",
     "pengirim": "Direktur Jenderal Kawasan Permukiman",
-    "perihal": "Perintah Perencanaan Pembangunan Rumah Susun TNI AL Kabupaten Pasuruan"
+    "perihal": "Perintah Perencanaan Pembangunan Rumah Susun TNI AL Kabupaten Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:b:/g/personal/satker_jatim_pkp_go_id/IQD7l1GGwihgRJKLlQALUJTqAZIO-NcAaLREKUwx_5xOB3w?e=GoAAFs"
   },
   {
     "no": 22,
@@ -290,7 +311,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, SPP, Perintah Perencanaan, Kabalai, Kasatker, DED, Surat Keluar",
     "jenis_surat": "Surat Perintah Perencanaan",
     "pengirim": "Kepala BP3KP Jawa IV",
-    "perihal": "Perintah Perencanaan Pembangunan Rumah Susun TNI AL Kab. Pasuruan"
+    "perihal": "Perintah Perencanaan Pembangunan Rumah Susun TNI AL Kab. Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:b:/g/personal/satker_jatim_pkp_go_id/IQDshyc6mde-Q6ScoulTpsbxARqRJojU5a8PnvBX6W82EQc?e=UyiB0E"
   },
   {
     "no": 23,
@@ -303,7 +325,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, Permohonan, Usulan, Menhan, Dirjen Kuathan, Menteri PKP, Surat Masuk",
     "jenis_surat": "Surat Permohonan Usulan",
     "pengirim": "A.n. Menteri Pertahanan RI - Dirjen Kuathan",
-    "perihal": "Permohonan Bantuan Pembangunan Rumah Susun TNI AL kepada Menteri PKP"
+    "perihal": "Permohonan Bantuan Pembangunan Rumah Susun TNI AL kepada Menteri PKP",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgDYB0_5k8wxRZTe_zumSkWpAW5dSEpnS9skDibwW0tjMr8?e=7dABk1"
   },
   {
     "no": 24,
@@ -316,7 +339,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, SPP, Perintah Perencanaan, Kasatker, PPK, DED, Surat Keluar",
     "jenis_surat": "Surat Perintah Perencanaan",
     "pengirim": "Kasatker PKP Provinsi Jawa Timur",
-    "perihal": "Perintah Perencanaan Pembangunan Rumah Susun TNI AL Kab. Pasuruan"
+    "perihal": "Perintah Perencanaan Pembangunan Rumah Susun TNI AL Kab. Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:b:/g/personal/satker_jatim_pkp_go_id/IQA48uMc3wq-TpA0BTmEVl-SAUaFkhONt_4G_CvVmykPmAw?e=3ZKisq"
   },
   {
     "no": 25,
@@ -329,7 +353,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Nota Dinas, Surat, Persetujuan KTJ, MYC, Menteri PKP, Anggaran, Kontrak Tahun Jamak",
     "jenis_surat": "Nota Dinas Persetujuan KTJ",
     "pengirim": "Menteri Perumahan dan Kawasan Permukiman",
-    "perihal": "Persetujuan Kontrak Tahun Jamak (MYC) Pembangunan Rusun Ditjen Kawasan Permukiman"
+    "perihal": "Persetujuan Kontrak Tahun Jamak (MYC) Pembangunan Rusun Ditjen Kawasan Permukiman",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:b:/g/personal/satker_jatim_pkp_go_id/IQAH9jwgIiH8Qbq2IZBRwfVTASe8RjZ3OnuCOv3HEZmhiVc?e=pIOT2G"
   },
   {
     "no": 26,
@@ -342,7 +367,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Kontrak, SPK, Sonbor, DED, Dokumen Teknis, Penyelidikan Tanah, Pengadaan",
     "jenis_surat": "Kontrak / SPK",
     "pengirim": "PPK Rumah Susun dan Rumah Khusus",
-    "perihal": "Kontrak Pekerjaan Penyelidikan Tanah (Sondir/Boring) dan Reviu DED Rusun TNI AL"
+    "perihal": "Kontrak Pekerjaan Penyelidikan Tanah (Sondir/Boring) dan Reviu DED Rusun TNI AL",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgD8AmuIgB--R6WGAO4PEFo1AUn2eUBSNWJZ9h8hsof_tbw?e=Cd74Pw"
   },
   {
     "no": 27,
@@ -355,7 +381,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, Perintah Pelaksanaan, SPP Fisik, DJKP, Pelaksanaan, Surat Masuk",
     "jenis_surat": "Surat Perintah Pelaksanaan",
     "pengirim": "Direktur Penyiapan Lahan dan PSU Kawasan Permukiman",
-    "perihal": "Perintah Pelaksanaan Pembangunan Rumah Susun TNI AL Kabupaten Pasuruan"
+    "perihal": "Perintah Pelaksanaan Pembangunan Rumah Susun TNI AL Kabupaten Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgCxKQT0amOKQbGGEd1Z46axAa2Hfm2AsVanKoUScOfGEvs?e=V8de3b"
   },
   {
     "no": 28,
@@ -368,7 +395,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, Permohonan, BPN, Status Tanah, Lahan, ATR/BPN, Persyaratan, Surat Keluar",
     "jenis_surat": "Surat Permohonan Keterangan",
     "pengirim": "Kepala BP3KP Jawa IV",
-    "perihal": "Permohonan Keterangan Status Tanah Lahan Rusun TNI AL Kabupaten Pasuruan"
+    "perihal": "Permohonan Keterangan Status Tanah Lahan Rusun TNI AL Kabupaten Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgAYMxRwR6MTQ5TJ9pYcrfFpAb9QJDWQPrfo_SBG-aBa4o8?e=PrWwkn"
   },
   {
     "no": 29,
@@ -381,7 +409,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, Permohonan, BPBD, Rawan Bencana, Kesiapan Lahan, Persyaratan, Surat Keluar",
     "jenis_surat": "Surat Permohonan Keterangan",
     "pengirim": "Kepala BP3KP Jawa IV",
-    "perihal": "Permohonan Keterangan Aman dari Rawan Bencana Lokasi Rusun TNI AL Pasuruan"
+    "perihal": "Permohonan Keterangan Aman dari Rawan Bencana Lokasi Rusun TNI AL Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgCDgTQV5k8TSbRV2tFAEwBSARd_v-3lxm1C9mv84GJQAyk?e=Et6RyM"
   },
   {
     "no": 30,
@@ -394,7 +423,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, Permohonan, Peil Banjir, Dinas SDA, Drainase, Persyaratan, Surat Keluar",
     "jenis_surat": "Surat Permohonan Keterangan",
     "pengirim": "Kepala BP3KP Jawa IV",
-    "perihal": "Permohonan Keterangan Peil Banjir pada Lokasi Rusun TNI AL Kabupaten Pasuruan"
+    "perihal": "Permohonan Keterangan Peil Banjir pada Lokasi Rusun TNI AL Kabupaten Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgDbrwpFcyNpToZ4mrb08AlNAdz6a30RJiI3koJrN13j5hk?e=F8nDmv"
   },
   {
     "no": 31,
@@ -407,7 +437,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, Surat Jawaban, BPN, Status Tanah, ATR/BPN, Persyaratan, Lahan, Surat Masuk",
     "jenis_surat": "Surat Jawaban Keterangan",
     "pengirim": "Kepala Kantor Pertanahan Kabupaten Pasuruan",
-    "perihal": "Surat Jawaban Keterangan Status Tanah Lahan Pembangunan Rusun TNI AL"
+    "perihal": "Surat Jawaban Keterangan Status Tanah Lahan Pembangunan Rusun TNI AL",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgAmvfBgSnrVQ4maFLu411SgAU1kfBBp4OMx_k4p3erorl8?e=6DOq6l"
   },
   {
     "no": 32,
@@ -420,7 +451,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Nota Dinas, Surat, Tanggapan SPP, Progres Konstruksi, Kabalai, Lapsu, Surat Keluar",
     "jenis_surat": "Nota Dinas Tanggapan",
     "pengirim": "Kepala BP3KP Jawa IV",
-    "perihal": "Tanggapan SPP Fisik dan Penyampaian Progres Penyiapan Konstruksi Rusun TNI AL"
+    "perihal": "Tanggapan SPP Fisik dan Penyampaian Progres Penyiapan Konstruksi Rusun TNI AL",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:b:/g/personal/satker_jatim_pkp_go_id/IQBrCObcC0FDS7CwkCQKiiK4ARzbamouZ_MoTOGFEaFTUSY?e=SWzKQ9"
   },
   {
     "no": 33,
@@ -433,7 +465,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Nota Dinas, Rapat, Notulen, Laporan Koordinasi, Konstruksi, Dirjen KP",
     "jenis_surat": "Nota Dinas Laporan Rapat",
     "pengirim": "Direktur Penyiapan Lahan dan PSU",
-    "perihal": "Laporan Hasil Rapat Koordinasi Progres Penyiapan Konstruksi Rusun TNI AL Pasuruan"
+    "perihal": "Laporan Hasil Rapat Koordinasi Progres Penyiapan Konstruksi Rusun TNI AL Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:b:/g/personal/satker_jatim_pkp_go_id/IQDx-NwfKbdlRL8VmjMPBKHMASkEIcb-3Q9RX1gMtN1H50Q?e=kX8b2P"
   },
   {
     "no": 34,
@@ -446,7 +479,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Nota Dinas, Rapat, Notulen, Konsultasi, Dirjen KP, Konstruksi",
     "jenis_surat": "Nota Dinas Laporan Rapat",
     "pengirim": "Direktur Penyiapan Lahan dan PSU",
-    "perihal": "Laporan Hasil Rapat Konsultasi Pembangunan Rusun TNI AL Kab. Pasuruan"
+    "perihal": "Laporan Hasil Rapat Konsultasi Pembangunan Rusun TNI AL Kab. Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:b:/g/personal/satker_jatim_pkp_go_id/IQADiEXDS4HuTbAda03DI8wyAScfP9Yq85mY2wisXM8aT3M?e=Kjg3Uh"
   },
   {
     "no": 35,
@@ -459,7 +493,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Nota Dinas, Rapat, Notulen, Kemhan, Kuathan, Pembahasan, TNI AL, Dirjen KP",
     "jenis_surat": "Nota Dinas Laporan Rapat",
     "pengirim": "Direktur Penyiapan Lahan dan PSU",
-    "perihal": "Laporan Pembahasan Rencana Pembangunan Rusun TNI AL Pasuruan bersama Kemhan"
+    "perihal": "Laporan Pembahasan Rencana Pembangunan Rusun TNI AL Pasuruan bersama Kemhan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:b:/g/personal/satker_jatim_pkp_go_id/IQDfPOKfaHmIQKXF1K5sx2GIAeRpWmGsxk9WMriThdrhIN4?e=mAG66p"
   },
   {
     "no": 36,
@@ -472,7 +507,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, Surat Keterangan, BPBD, Rawan Bencana, Gejugjati Lekok, Persyaratan, Surat Masuk",
     "jenis_surat": "Surat Keterangan Bencana",
     "pengirim": "BPBD Kabupaten Pasuruan",
-    "perihal": "Keterangan Rawan Bencana Desa Gejugjati Kecamatan Lekok Lokasi Rusun TNI AL"
+    "perihal": "Keterangan Rawan Bencana Desa Gejugjati Kecamatan Lekok Lokasi Rusun TNI AL",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgA-NsyrhARrRLDKN5VlS4B4ARbLNNLQIxgT2520Ly9u_M8?e=wgXLaL"
   },
   {
     "no": 37,
@@ -485,7 +521,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, SPPL, Lingkungan Hidup, Kodaeral V, Pernyataan, Persyaratan, Dokumen Lingkungan",
     "jenis_surat": "Surat Pernyataan SPPL",
     "pengirim": "Pemerintah TNI AL - Kodaeral V",
-    "perihal": "Pernyataan Kesanggupan Pengelolaan dan Pemantauan Lingkungan Hidup (SPPL)"
+    "perihal": "Pernyataan Kesanggupan Pengelolaan dan Pemantauan Lingkungan Hidup (SPPL)",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgCTGwPvTOtTSbEdIx8--OsAAYYmJyKNQqOGKH70r7j60_w?e=JaGtDO"
   },
   {
     "no": 38,
@@ -498,7 +535,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, Perintah Pelaksanaan, SPP Fisik, Kabalai BP3KP, Pelaksanaan, Surat Keluar",
     "jenis_surat": "Surat Perintah Pelaksanaan",
     "pengirim": "Kepala BP3KP Jawa IV",
-    "perihal": "Perintah Pelaksanaan Pembangunan Rumah Susun TNI AL Kabupaten Pasuruan"
+    "perihal": "Perintah Pelaksanaan Pembangunan Rumah Susun TNI AL Kabupaten Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgBhOdgBZDEVRrYGhdUceOcYAc6DLeMUf1ggsINANpYDGt8?e=lsmYky"
   },
   {
     "no": 39,
@@ -511,7 +549,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, Peil Banjir, Dinas SDA, Drainase, Banjir, Persyaratan, Surat Masuk",
     "jenis_surat": "Surat Keterangan Peil Banjir",
     "pengirim": "Dinas SDA, Bina Marga dan Bina Konstruksi Kab. Pasuruan",
-    "perihal": "Informasi Peil Banjir Lokasi Pembangunan Rusun TNI AL Kabupaten Pasuruan"
+    "perihal": "Informasi Peil Banjir Lokasi Pembangunan Rusun TNI AL Kabupaten Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgB_O0uXK-IOQ6Goi8dAbN1eAd2eeXd6C8DO52uPQ6noasY?e=UkKhtc"
   },
   {
     "no": 40,
@@ -524,7 +563,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, Komitmen, Kodaeral V, Persyaratan, Konstruksi, Grati Pasuruan, Surat Masuk",
     "jenis_surat": "Surat Pernyataan Komitmen",
     "pengirim": "Komandan Komando Daerah TNI AL V",
-    "perihal": "Pernyataan Komitmen Penyelesaian Persyaratan Konstruksi Rusun di Grati Pasuruan"
+    "perihal": "Pernyataan Komitmen Penyelesaian Persyaratan Konstruksi Rusun di Grati Pasuruan",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgDaY4S-AUVtR5UIpnLdfo00AcUqQNmXH5TlRkb91ouEHFo?e=4TlZfG"
   },
   {
     "no": 41,
@@ -537,7 +577,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Surat, Pernyataan, Kodaeral V, Tahap Rencana, Komitmen, Persyaratan, Surat Masuk",
     "jenis_surat": "Surat Pernyataan",
     "pengirim": "Komandan Komando Daerah TNI AL V",
-    "perihal": "Pernyataan Kegiatan Pembangunan Rumah Susun Masih Dalam Tahap Rencana"
+    "perihal": "Pernyataan Kegiatan Pembangunan Rumah Susun Masih Dalam Tahap Rencana",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgDaY4S-AUVtR5UIpnLdfo00AcUqQNmXH5TlRkb91ouEHFo?e=0aVlXs"
   },
   {
     "no": 42,
@@ -550,7 +591,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Nota Dinas, Surat, Penyampaian SPP, Kasatker, Pelaksanaan, Surat Keluar",
     "jenis_surat": "Nota Dinas",
     "pengirim": "Kepala Satker PKP Jawa Timur",
-    "perihal": "Penyampaian Surat Kepala BP3KP Jawa IV terkait Perintah Pelaksanaan Rusun TNI AL"
+    "perihal": "Penyampaian Surat Kepala BP3KP Jawa IV terkait Perintah Pelaksanaan Rusun TNI AL",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgAuy9xsqVbWRKnECmwB4IeDAQQtPpIfrICZWpofUJzKgUg?e=ZAHM5v"
   },
   {
     "no": 43,
@@ -563,7 +605,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "Berita Acara, Notulen, Nota Dinas, E-Purchasing, E-Katalog, Tim Teknis, Pengadaan",
     "jenis_surat": "Berita Acara E-Purchasing",
     "pengirim": "Ketua Tim Pelaksana E-Purchasing BP3KP IV",
-    "perihal": "Penyampaian BA Hasil Pemeriksaan oleh Tim Teknis Persiapan E-Purchasing Katalog"
+    "perihal": "Penyampaian BA Hasil Pemeriksaan oleh Tim Teknis Persiapan E-Purchasing Katalog",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:b:/g/personal/satker_jatim_pkp_go_id/IQCRRpubyJuTS64sgDOlUex8Aenfqp_SymB0iA6Ctd_Gs_o?e=cXDspZ"
   },
   {
     "no": 44,
@@ -576,7 +619,8 @@ const DEFAULT_TNI_AL_DATA = [
     "keywords": "SK, Surat Keputusan, Pokja, Penetapan, UKPBJ, Pengadaan, Lelang, Tender",
     "jenis_surat": "SK Penetapan Pokja",
     "pengirim": "Kepala UKPBJ Kementerian PKP",
-    "perihal": "Penetapan dan Penugasan Kelompok Kerja Pemilihan Jatim II UKPBJ-PKP TA. 2026"
+    "perihal": "Penetapan dan Penugasan Kelompok Kerja Pemilihan Jatim II UKPBJ-PKP TA. 2026",
+    "link_dokumen": "https://kemenpkp-my.sharepoint.com/:f:/g/personal/satker_jatim_pkp_go_id/IgBi7MDJZKTUT6-yK_UMIyxNAe-j9BrlOoeIhXclK0gz6I8?e=R4D9R2"
   }
 ];
 
@@ -763,7 +807,7 @@ async function initProyekDetailPage() {
                 pengirim: d.pengirim || 'Kementerian PKP / TNI AL',
                 perihal: d.perihal || d.judul,
                 keywords: d.keywords,
-                file_path: d.bukti_dukung
+                file_path: d.link_dokumen || d.bukti_dukung
             }));
         }
 
@@ -785,7 +829,7 @@ async function initProyekDetailPage() {
                 pengirim: d.pengirim || 'Kementerian PKP / TNI AL',
                 perihal: d.perihal || d.judul,
                 keywords: d.keywords,
-                file_path: d.bukti_dukung
+                file_path: d.link_dokumen || d.bukti_dukung
             }))
         };
         renderProyekDetail(currentProyekData);
@@ -809,7 +853,7 @@ function renderProyekDetail(p) {
     const elLokasi = document.getElementById('infoLokasi');
     if (elLokasi) elLokasi.innerHTML = `📍 ${p.lokasi_detail || 'Desa Gejugjati, Kecamatan Lekok, Kabupaten Pasuruan'}`;
 
-    // Pastikan timelines memiliki nomor urut dan keywords terpetakan
+    // Pastikan timelines memiliki nomor urut, link_dokumen, dan keywords
     allTimelines = (p.timelines || []).map((t, i) => {
         return {
             no: t.no || (i + 1),
@@ -819,11 +863,21 @@ function renderProyekDetail(p) {
             nomor_dokumen: t.nomor_dokumen || null,
             catatan: t.catatan || t.keterangan || '',
             bukti_dukung: t.bukti_dukung || t.lampiran_url || '',
+            link_dokumen: t.link_dokumen || t.lampiran_url || null,
             keywords: t.keywords || ''
         };
     });
 
-    allSuratList = p.surat_list || [];
+    allSuratList = (p.surat_list || []).map((s, idx) => ({
+        no: s.no || (idx + 1),
+        no_surat: s.no_surat,
+        tgl_surat: s.tgl_surat,
+        jenis_surat: s.jenis_surat,
+        pengirim: s.pengirim,
+        perihal: s.perihal,
+        keywords: s.keywords,
+        file_path: s.file_path || s.link_dokumen || null
+    }));
 
     applyTimelineFilterAndRender();
     renderSuratList(allSuratList);
@@ -1019,15 +1073,26 @@ function renderTimelineList(timelines) {
                     <!-- Multi-Keyword Tags -->
                     ${keywordsHtml}
 
-                    <!-- Bukti Dukung -->
-                    ${item.bukti_dukung ? `
-                        <div style="margin-top: 0.45rem; padding-top: 0.35rem; border-top: 1px dashed var(--border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.35rem;">
-                            <span style="font-size: 0.7rem; color: var(--text-muted); font-style: italic; max-width: 85%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${item.bukti_dukung}">
+                    <!-- Bukti Dukung & Tombol Tautan Dokumen Cloud -->
+                    ${item.link_dokumen ? `
+                        <div style="margin-top: 0.6rem; padding-top: 0.45rem; border-top: 1px dashed var(--border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                            <div style="display: flex; align-items: center; gap: 0.35rem; max-width: 65%;">
+                                <span style="font-size: 0.75rem;">📎</span>
+                                <span style="font-size: 0.7rem; color: var(--text-muted); font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${item.bukti_dukung}">
+                                    ${item.bukti_dukung}
+                                </span>
+                            </div>
+                            <a href="${item.link_dokumen}" target="_blank" rel="noopener noreferrer" class="btn-doc-link" title="Buka berkas resmi di SharePoint / Cloud Drive">
+                                📂 Buka Dokumen Drive ↗
+                            </a>
+                        </div>
+                    ` : (item.bukti_dukung ? `
+                        <div style="margin-top: 0.55rem; padding-top: 0.45rem; border-top: 1px dashed var(--border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.35rem;">
+                            <span style="font-size: 0.7rem; color: var(--text-muted); font-style: italic;">
                                 📎 ${item.bukti_dukung}
                             </span>
-                            <span class="badge badge-secondary" style="font-size: 0.65rem;">Bukti Terverifikasi</span>
                         </div>
-                    ` : ''}
+                    ` : '')}
 
                 </div>
             </div>
@@ -1167,28 +1232,26 @@ function renderSuratList(suratList) {
 
         return `
             <tr>
-                <td style="font-size: 0.725rem; white-space: nowrap;">
+                <td style="font-size: 0.725rem; white-space: nowrap; vertical-align: top;">
                     <span class="badge badge-secondary" style="font-size: 0.65rem; font-weight: 800;">#${idx + 1}</span><br>
                     <strong>${formatIndoDate(s.tgl_surat)}</strong>
                 </td>
-                <td>
-                    <strong style="font-size: 0.775rem; color: var(--text-heading);">${s.no_surat}</strong><br>
-                    <span class="badge badge-primary" style="font-size: 0.625rem; margin-top: 0.15rem;">${s.jenis_surat}</span>
+                <td style="vertical-align: top;">
+                    <strong style="font-size: 0.76rem; color: var(--text-heading); word-break: break-word;">${s.no_surat}</strong><br>
+                    <span class="badge badge-primary" style="font-size: 0.625rem; margin-top: 0.2rem;">${s.jenis_surat}</span>
                 </td>
-                <td>
-                    <div style="font-size: 0.75rem; color: var(--text-heading); font-weight: 500; line-height: 1.35;">
+                <td style="vertical-align: top;">
+                    <div style="font-size: 0.75rem; color: var(--text-heading); font-weight: 600; line-height: 1.35;">
                         ${s.perihal}
                     </div>
+                    ${s.pengirim ? `<div style="font-size: 0.685rem; color: var(--text-muted); margin-top: 0.2rem;">🏛️ <em>${s.pengirim}</em></div>` : ''}
                     ${kwHtml}
                 </td>
-                <td style="font-size: 0.725rem; color: var(--text-muted);">
-                    ${s.pengirim || '-'}
-                </td>
-                <td style="white-space: nowrap;">
+                <td style="white-space: nowrap; text-align: center; vertical-align: middle;">
                     ${s.file_path ? `
-                        <span class="badge badge-secondary" style="font-size: 0.65rem; padding: 0.2rem 0.4rem;" title="${s.file_path}">
-                            📄 Bukti Ada
-                        </span>
+                        <a href="${s.file_path}" target="_blank" rel="noopener noreferrer" class="btn-doc-link" style="font-size: 0.685rem; padding: 0.22rem 0.55rem;" title="Buka Dokumen Resmi di Cloud Drive / SharePoint">
+                            📂 Buka ↗
+                        </a>
                     ` : '<span style="color:var(--text-subtle); font-size:0.75rem;">-</span>'}
                 </td>
             </tr>
