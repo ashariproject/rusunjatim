@@ -90,8 +90,15 @@
             <div class="tab-content active" id="mapTab">
                 <div class="content-grid">
                     <!-- Filter Panel -->
-                    <aside class="filter-panel">
-                        <h3>Filter & Pencarian</h3>
+                    <aside class="filter-panel" id="filterSidebar">
+                        <div class="filter-panel-header">
+                            <h3>
+                                <span>🔍 Filter & Pencarian</span>
+                            </h3>
+                            <button id="toggleSidebarClose" class="sidebar-toggle-btn" title="Slide ke samping (Sembunyikan Panel Filter)">
+                                ◀
+                            </button>
+                        </div>
 
                         <!-- Search Lokasi (Selalu Tampil) -->
                         <div class="filter-section" style="margin-bottom: 0.35rem;">
@@ -164,6 +171,9 @@
 
                     <!-- Map Container -->
                     <div class="map-container">
+                        <button id="toggleSidebarOpen" class="map-floating-filter-btn" title="Buka Panel Filter & Pencarian">
+                            <span>🔍</span> <span>Filter & Pencarian</span>
+                        </button>
                         <div id="map"></div>
                     </div>
 

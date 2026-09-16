@@ -154,6 +154,32 @@ function initializeTabs() {
             }
         });
     });
+
+    // Toggle Sidebar (Slide ke Samping)
+    const contentGrid = document.querySelector('.content-grid');
+    const toggleClose = document.getElementById('toggleSidebarClose');
+    const toggleOpen = document.getElementById('toggleSidebarOpen');
+
+    function setSidebarCollapsed(collapsed) {
+        if (!contentGrid) return;
+        if (collapsed) {
+            contentGrid.classList.add('sidebar-collapsed');
+        } else {
+            contentGrid.classList.remove('sidebar-collapsed');
+        }
+        // Resize map smoothly to fit new full-screen width
+        setTimeout(() => {
+            if (map) map.invalidateSize();
+        }, 320);
+    }
+
+    if (toggleClose) {
+        toggleClose.addEventListener('click', () => setSidebarCollapsed(true));
+    }
+
+    if (toggleOpen) {
+        toggleOpen.addEventListener('click', () => setSidebarCollapsed(false));
+    }
 }
 
 // ===== Initialize Main Map =====
