@@ -1,2 +1,4 @@
 .vercel
 scratch/
+__pycache__/
+*.pyc

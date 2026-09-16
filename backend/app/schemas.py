@@ -94,6 +94,7 @@ class TimelineEventBase(BaseModel):
     catatan: Optional[str] = None
     progres_saat_ini: Optional[float] = None
     lampiran_url: Optional[str] = None
+    keywords: Optional[str] = None
 
 class TimelineEventCreate(TimelineEventBase):
     proyek_id: str
@@ -115,6 +116,7 @@ class PersuratanBase(BaseModel):
     pengirim: Optional[str] = None
     perihal: str
     status_disposisi: Optional[str] = "Masuk"
+    keywords: Optional[str] = None
 
 class PersuratanCreate(PersuratanBase):
     proyek_id: str

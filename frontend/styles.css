@@ -1528,6 +1528,40 @@ html.dark .card {
     border: 1px solid #fcd34d;
 }
 
+.badge-secondary {
+    background: var(--bg-muted);
+    color: var(--text-heading);
+    border: 1px solid var(--border-subtle);
+}
+
+.badge-danger {
+    background: linear-gradient(135deg, #ffe4e6 0%, #fecdd3 100%);
+    color: #9f1239;
+    border: 1px solid #fda4af;
+}
+
+.badge-keyword {
+    cursor: pointer;
+    transition: all 0.15s ease;
+    background: rgba(37, 99, 235, 0.08);
+    color: var(--primary);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    font-size: 0.675rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    user-select: none;
+}
+
+.badge-keyword:hover {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
 /* Timeline Components */
 .timeline-container {
     position: relative;

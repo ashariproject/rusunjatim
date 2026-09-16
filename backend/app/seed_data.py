@@ -10,10 +10,12 @@ from .auth import get_password_hash
 def seed_database():
     Base.metadata.create_all(bind=engine)
     
-    # Pastikan tipe kolom tahun_anggaran adalah VARCHAR(50) untuk multi-years budget (misal 2024-2025)
+    # Pastikan tipe kolom tahun_anggaran dan kolom keywords tersedia
     try:
         with engine.connect() as conn:
             conn.execute(text("ALTER TABLE rusun_master ALTER COLUMN tahun_anggaran TYPE VARCHAR(50);"))
+            conn.execute(text("ALTER TABLE timeline_events ADD COLUMN IF NOT EXISTS keywords VARCHAR(255);"))
+            conn.execute(text("ALTER TABLE persuratan ADD COLUMN IF NOT EXISTS keywords VARCHAR(255);"))
             conn.commit()
     except Exception:
         pass
@@ -116,11 +118,22 @@ def seed_database():
                     db.commit()
                     print(f"✅ Berhasil menyinkronkan {synced_count} koordinat rusun ke PostgreSQL!")
 
-        # 3. Seed Sample Proyek Ongoing (e.g. 2026/tnialpasuruan)
+        # 3. Seed Proyek Ongoing Rusun TNI AL Pasuruan & Data Kronologis Lengkap
+        try:
+            from .proyek_tni_al_data import TNI_AL_CHRONOLOGY_DATA
+        except ImportError:
+            TNI_AL_CHRONOLOGY_DATA = []
+
         sample_proyek = db.query(ProyekOngoing).filter(
             ProyekOngoing.tahun == 2026,
             ProyekOngoing.slug == "tnialpasuruan"
         ).first()
+
+        deskripsi_proyek = (
+            "Pembangunan Rumah Susun untuk Prajurit TNI AL Pasuruan berlokasi di Desa Gejugjati, "
+            "Kecamatan Lekok, Kabupaten Pasuruan. Saat ini dalam proses pembentukan Kelompok Kerja "
+            "Pemilihan Jatim II UKPBJ-PKP 2026 dan persiapan E-Purchasing katalog elektronik."
+        )
 
         if not sample_proyek:
             sample_proyek = ProyekOngoing(
@@ -129,33 +142,75 @@ def seed_database():
                 tahun=2026,
                 slug="tnialpasuruan",
                 kabkota="Kab. Pasuruan",
-                lokasi_detail="Desa Gejug Jati, Kecamatan Lekok, Kabupaten Pasuruan",
-                status_fase="Pengusulan & Kesiapan Lahan",
+                lokasi_detail="Desa Gejugjati, Kecamatan Lekok, Kabupaten Pasuruan",
+                status_fase="Penyiapan E-Purchasing / Pokja UKPBJ",
                 progres_fisik_persen=0.0,
-                pagu_anggaran=0,
+                pagu_anggaran=47995000000,
                 kontraktor=None,
                 konsultan=None,
-                deskripsi="Pembangunan Rumah Susun untuk Prajurit TNI AL Pasuruan berlokasi di Desa Gejug Jati, Kecamatan Lekok, Kabupaten Pasuruan. Saat ini dalam proses pemenuhan persyaratan kesiapan lahan dan administrasi usulan."
+                deskripsi=deskripsi_proyek
             )
             db.add(sample_proyek)
             db.commit()
             db.refresh(sample_proyek)
-            print("✅ Proyek TNI AL Pasuruan berhasil didaftarkan (data kronologis bersih/kosong).")
+            print("✅ Proyek TNI AL Pasuruan berhasil didaftarkan.")
         else:
             # Perbarui data eksisting
-            sample_proyek.lokasi_detail = "Desa Gejug Jati, Kecamatan Lekok, Kabupaten Pasuruan"
-            sample_proyek.status_fase = "Pengusulan & Kesiapan Lahan"
+            sample_proyek.lokasi_detail = "Desa Gejugjati, Kecamatan Lekok, Kabupaten Pasuruan"
+            sample_proyek.status_fase = "Penyiapan E-Purchasing / Pokja UKPBJ"
             sample_proyek.progres_fisik_persen = 0.0
-            sample_proyek.pagu_anggaran = 0
+            sample_proyek.pagu_anggaran = 47995000000
             sample_proyek.kontraktor = None
             sample_proyek.konsultan = None
-            sample_proyek.deskripsi = "Pembangunan Rumah Susun untuk Prajurit TNI AL Pasuruan berlokasi di Desa Gejug Jati, Kecamatan Lekok, Kabupaten Pasuruan. Saat ini dalam proses pemenuhan persyaratan kesiapan lahan dan administrasi usulan."
-            
-            # Kosongkan riwayat dummy agar siap diinput data riil berbasis waktu
+            sample_proyek.deskripsi = deskripsi_proyek
+            db.commit()
+
+        # Seed data kronologis (Timeline Events & Persuratan)
+        if TNI_AL_CHRONOLOGY_DATA:
+            # Bersihkan data lama untuk proyek ini
             db.query(TimelineEvent).filter(TimelineEvent.proyek_id == sample_proyek.id).delete()
             db.query(Persuratan).filter(Persuratan.proyek_id == sample_proyek.id).delete()
             db.commit()
-            print("✅ Data proyek TNI AL Pasuruan diperbarui: lokasi Desa Gejug Jati Lekok, pagu/kontraktor dinonaktifkan, data kronologis dikosongkan.")
+
+            for item in TNI_AL_CHRONOLOGY_DATA:
+                tgl = date.fromisoformat(item["tanggal"])
+                
+                # Format catatan lengkap
+                catatan_full = item["keterangan"]
+                if item.get("nomor_dokumen"):
+                    catatan_full = f"[No: {item['nomor_dokumen']}]\n" + catatan_full
+                if item.get("bukti_dukung"):
+                    catatan_full += f"\n[Bukti Dukung: {item['bukti_dukung']}]"
+
+                # Tambah ke Timeline Events
+                tl_event = TimelineEvent(
+                    proyek_id=sample_proyek.id,
+                    tanggal=tgl,
+                    fase=item["fase"],
+                    judul=f"#{item['no']} {item['judul']}",
+                    catatan=catatan_full,
+                    progres_saat_ini=0.0,
+                    lampiran_url=f"/uploads/documents/{item['bukti_dukung']}" if item.get("bukti_dukung") else None,
+                    keywords=item.get("keywords")
+                )
+                db.add(tl_event)
+
+                # Tambah ke Berkas Persuratan
+                surat_entry = Persuratan(
+                    proyek_id=sample_proyek.id,
+                    no_surat=item.get("nomor_dokumen") or f"DOK-{item['no']:02d}/{item['tanggal']}",
+                    tgl_surat=tgl,
+                    jenis_surat=item.get("jenis_surat") or item["fase"],
+                    pengirim=item.get("pengirim") or "Kementerian PKP / TNI AL",
+                    perihal=item.get("perihal") or item["judul"],
+                    keywords=item.get("keywords"),
+                    file_path=f"/uploads/documents/{item['bukti_dukung']}" if item.get("bukti_dukung") else None,
+                    status_disposisi="Disetujui" if ("SK" in item["fase"] or "SPP" in (item.get("nomor_dokumen") or "")) else "Masuk"
+                )
+                db.add(surat_entry)
+
+            db.commit()
+            print(f"✅ Berhasil menyuntikkan {len(TNI_AL_CHRONOLOGY_DATA)} kronologis & persuratan ke Rusun TNI AL Pasuruan!")
 
     except Exception as e:
         db.rollback()

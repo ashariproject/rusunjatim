@@ -99,6 +99,7 @@ class TimelineEvent(Base):
     catatan = Column(Text, nullable=True)
     progres_saat_ini = Column(Numeric(5, 2), nullable=True)
     lampiran_url = Column(String(255), nullable=True)
+    keywords = Column(String(255), nullable=True)  # contoh: "surat, notulen, rapat, persyaratan, lahan"
     created_by_id = Column(String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
@@ -116,6 +117,7 @@ class Persuratan(Base):
     jenis_surat = Column(String(100), nullable=False)  # Usulan Bupati, Rekomtek, BA Verifikasi, SK, Kontrak, BAST, dll.
     pengirim = Column(String(150), nullable=True)
     perihal = Column(Text, nullable=False)
+    keywords = Column(String(255), nullable=True)  # contoh: "surat, permohonan, kesiapan lahan"
     file_path = Column(String(255), nullable=True)
     status_disposisi = Column(String(50), default="Masuk")  # Masuk, Diproses, Disetujui, Arsip
     uploaded_by_id = Column(String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)

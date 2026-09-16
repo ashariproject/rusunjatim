@@ -79,6 +79,7 @@ def add_timeline_event(
         catatan=event_in.catatan,
         progres_saat_ini=event_in.progres_saat_ini,
         lampiran_url=event_in.lampiran_url,
+        keywords=event_in.keywords,
         created_by_id=current_user.id
     )
     

@@ -29,6 +29,7 @@ async def upload_persuratan_cepat(
     perihal: str = Form(...),
     pengirim: Optional[str] = Form(None),
     status_disposisi: Optional[str] = Form("Masuk"),
+    keywords: Optional[str] = Form(None),
     file: Optional[UploadFile] = File(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role(["admin", "verifikator", "surveyor"]))
@@ -53,6 +54,7 @@ async def upload_persuratan_cepat(
         jenis_surat=jenis_surat,
         pengirim=pengirim,
         perihal=perihal,
+        keywords=keywords,
         file_path=file_rel_path,
         status_disposisi=status_disposisi,
         uploaded_by_id=current_user.id
