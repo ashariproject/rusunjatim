@@ -230,15 +230,16 @@ function updateMapMarkers() {
 // Mapping ID Rusun yang memiliki file foto
 const KNOWN_RUSUN_PHOTOS = {
     19: "19.jpg", 127: "127.jpg", 138: "138.jpg", 159: "159.jpg", 164: "164.jpg", 199: "199.jpg", 
-    206: "206.jpg", 218: "218.jpg", 220: "220.JPG", 238: "238.jpg", 244: "244.jpg", 249: "249.jpeg", 
-    251: "251.JPG", 265: "265.jpg", 271: "271.jpg", 272: "272.JPG", 273: "273.jpg", 
+    205: "205.jpg", 206: "206.jpg", 218: "218.jpg", 220: "220.JPG", 238: "238.jpg", 244: "244.jpg", 
+    249: "249.jpeg", 251: "251.JPG", 265: "265.jpg", 271: "271.jpg", 272: "272.JPG", 273: "273.jpg", 
     274: "274.jpg", 275: "275.JPG", 277: "277.jpg", 279: "279.jpg", 280: "280.jpg", 
-    281: "281.jpg", 289: "289.jpg", 296: "296.jpg", 297: "297.jpg", 314: "314.jpg", 327: "327.jpg", 
-    333: "333.jpg", 341: "341.jpg", 342: "342.jpg", 343: "343.jpg", 350: "350.jpg", 
-    351: "351.jpg", 352: "352.JPG", 353: "353.JPG", 354: "354.JPG", 355: "355.JPG", 
-    357: "357.jpg", 359: "359.jpg", 360: "360.jpg", 363: "363.JPG", 365: "365.jpg", 
-    366: "366.jpg", 367: "367.jpg", 368: "368.jpg", 369: "369.jpg", 370: "370.jpg", 
-    371: "371.JPG", 372: "372.jpg", 373: "373.JPG", 374: "374.JPG", 375: "375.JPG"
+    281: "281.jpg", 286: "286.jpg", 289: "289.jpg", 296: "296.jpg", 297: "297.jpg", 
+    314: "314.jpg", 327: "327.jpg", 333: "333.jpg", 341: "341.jpg", 342: "342.jpg", 
+    343: "343.jpg", 350: "350.jpg", 351: "351.jpg", 352: "352.JPG", 353: "353.JPG", 
+    354: "354.JPG", 355: "355.JPG", 357: "357.jpg", 359: "359.jpg", 360: "360.jpg", 
+    363: "363.JPG", 365: "365.jpg", 366: "366.jpg", 367: "367.jpg", 368: "368.jpg", 
+    369: "369.jpg", 370: "370.jpg", 371: "371.JPG", 372: "372.jpg", 373: "373.JPG", 
+    374: "374.JPG", 375: "375.JPG"
 };
 
 // ===== Create Marker =====
@@ -263,12 +264,16 @@ function createMarker(rusun) {
     if (photoFileName) {
         photoHtml = `
             <div class="popup-image-container">
-                <span class="loading-text" style="color: #94a3b8; font-size: 0.8rem;">Memuat foto...</span>
-                <img data-rusun-id="${rusun.id}"
+                <img src="/images/rusun/${photoFileName}"
+                     data-rusun-id="${rusun.id}"
                      data-photo-file="${photoFileName}"
                      alt="${rusun.nama_rusun}" 
                      class="popup-image rusun-photo"
-                     style="display: none;">
+                     loading="lazy"
+                     title="Klik untuk melihat foto ukuran penuh"
+                     onclick="window.open(this.src, '_blank')"
+                     style="cursor: pointer;"
+                     onerror="this.style.display='none'; this.parentElement.classList.add('empty-photo'); this.parentElement.innerHTML='<span style=\\'font-size: 1.35rem; margin-bottom: 0.2rem; opacity: 0.65;\\'>📷</span><strong>Data Foto belum tersedia</strong>';">
             </div>
         `;
     } else {
@@ -318,7 +323,7 @@ function createMarker(rusun) {
                 </table>
                 <div class="popup-actions">
                     <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="btn-link">📍 Lihat di Google Maps</a>
-                    <a href="profile/${rusun.id}.pdf" target="_blank" class="btn-link btn-link-pdf" data-pdf-link style="display:none;">📄 Lihat Profil</a>
+                    <a href="/profile/${rusun.id}.pdf" target="_blank" class="btn-link btn-link-pdf" data-pdf-link style="display:none;">📄 Lihat Profil</a>
                 </div>
             </div>
         </div>
@@ -339,7 +344,7 @@ function createMarker(rusun) {
         // Show PDF profile button if PDF exists
         const pdfLink = el.querySelector('[data-pdf-link]');
         if (pdfLink) {
-            fetch('profile/' + rusun.id + '.pdf', { method: 'HEAD' })
+            fetch('/profile/' + rusun.id + '.pdf', { method: 'HEAD' })
                 .then(res => { 
                     if (res.ok) {
                         pdfLink.style.display = 'inline-flex';
@@ -351,24 +356,11 @@ function createMarker(rusun) {
 
         const img = el.querySelector('.rusun-photo');
         if (img) {
-            const photoFile = img.dataset.photoFile;
-            const loader = img.parentElement.querySelector('.loading-text');
-
-            img.onload = function () {
-                img.style.display = 'block';
-                if (loader) loader.style.display = 'none';
+            if (img.complete && img.naturalWidth > 0) {
                 popup.update();
-            };
-
-            img.onerror = function () {
-                img.style.display = 'none';
-                img.parentElement.classList.add('empty-photo');
-                img.parentElement.innerHTML = '<span style="font-size: 1.35rem; margin-bottom: 0.2rem; opacity: 0.65;">📷</span><strong>Data Foto belum tersedia</strong>';
-                popup.update();
-            };
-
-            // Load exact image
-            img.src = 'images/rusun/' + photoFile;
+            } else {
+                img.addEventListener('load', () => popup.update(), { once: true });
+            }
         }
     });
 

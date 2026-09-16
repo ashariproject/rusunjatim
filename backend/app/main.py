@@ -47,6 +47,10 @@ app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 if os.path.exists("images"):
     app.mount("/images", StaticFiles(directory="images"), name="images")
 
+# Mount Dokumen Profil PDF jika ada
+if os.path.exists("profile"):
+    app.mount("/profile", StaticFiles(directory="profile"), name="profile")
+
 @app.get("/api/health", tags=["Health"])
 def health_check():
     return {
