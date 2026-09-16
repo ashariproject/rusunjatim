@@ -12,6 +12,7 @@
     
     <!-- Custom CSS (Pines Compact) -->
     <link rel="stylesheet" href="/styles.css?v=2026-09-16-fresh-theme-1">
+    <link rel="stylesheet" href="styles.css?v=2026-09-16-fresh-theme-1">
 </head>
 <body>
 
@@ -26,16 +27,22 @@
                 </div>
             </div>
             
-            <div class="header-actions" style="display: flex; align-items: center; gap: 0.4rem;">
+            <div class="header-actions" id="proyekHeaderActions" style="display: flex; align-items: center; gap: 0.4rem;">
                 <button id="themeToggle" class="theme-toggle" title="Toggle Dark/Light Mode">
                     <span class="icon-light">🌞</span>
                     <span class="icon-dark" style="display: none;">🌙</span>
                 </button>
-                <button class="btn btn-primary" onclick="openQuickActionModal('kegiatan')">
+                <div id="userBadgeProyek" style="display: none; align-items: center; gap: 0.35rem; font-size: 0.725rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); padding: 0.2rem 0.6rem; border-radius: 9999px; color: #ffffff;">
+                    <span>👤</span> <strong id="userNameDisplay">admin</strong>
+                </div>
+                <button id="btnProyekKegiatan" class="btn btn-primary" onclick="openQuickActionModal('kegiatan')" style="display: none;">
                     ➕ Catat Kegiatan / Rapat
                 </button>
-                <button class="btn btn-outline" onclick="openQuickActionModal('surat')">
+                <button id="btnProyekSurat" class="btn btn-outline" onclick="openQuickActionModal('surat')" style="display: none;">
                     📄 Upload Surat
+                </button>
+                <button id="btnProyekLogout" class="btn btn-outline btn-sm" style="display: none; color: #f87171; border-color: rgba(239, 68, 68, 0.4);" onclick="handleProyekLogout()">
+                    🚪 Keluar
                 </button>
             </div>
         </div>
@@ -45,92 +52,121 @@
     <main class="main-content">
         <div class="container">
             
-            <!-- Proyek Summary Banner (Compact Pines Style) -->
-            <div class="card" style="margin-bottom: 0.75rem; border-left: 4px solid var(--primary);">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem;">
-                    <div>
-                        <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
-                            <span class="badge badge-primary" id="badgeTahun">TA 2026</span>
-                            <span class="badge badge-warning" id="badgeFase">Tahap: Usulan & Kesiapan Lahan</span>
-                            <span class="badge badge-info" id="badgeStatusLelang">Belum Lelang</span>
-                        </div>
-                        <h2 id="proyekNama" style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.25rem;">Pembangunan Rumah Susun TNI AL Pasuruan</h2>
-                        <p id="proyekDeskripsi" style="color: var(--text-muted); font-size: 0.775rem; max-width: 900px; line-height: 1.35;">
-                            Pembangunan Rumah Susun untuk Prajurit TNI AL Pasuruan berlokasi di Desa Gejug Jati, Kecamatan Lekok, Kabupaten Pasuruan. Saat ini dalam proses pemenuhan persyaratan kesiapan lahan dan administrasi usulan.
+            <!-- Login Box (If Not Logged In) -->
+            <div id="proyekLoginSection" style="max-width: 400px; margin: 3.5rem auto 0; display: block;">
+                <div class="card" style="box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1); border-top: 4px solid var(--primary); border-radius: 12px; padding: 1.5rem;">
+                    <div style="text-align: center; margin-bottom: 1.25rem;">
+                        <span style="font-size: 2.25rem; display: block; margin-bottom: 0.35rem;">🔐</span>
+                        <h2 style="font-size: 1.15rem; font-weight: 800; color: var(--text-heading);">Akses Proyek Ongoing</h2>
+                        <p style="font-size: 0.775rem; color: var(--text-muted); margin-top: 0.25rem; line-height: 1.4;">
+                            Halaman ini memuat data internal kronologis & persuratan proyek. Silakan login untuk melanjutkan.
                         </p>
                     </div>
 
-                    <!-- Ringkasan Lokasi Lahan -->
-                    <div style="background: var(--bg-muted); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.5rem 0.75rem; min-width: 260px;">
-                        <span style="font-size: 0.685rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Lokasi Rencana Rusun:</span>
-                        <div id="infoLokasi" style="font-weight: 700; font-size: 0.825rem; color: var(--text-heading); margin: 0.2rem 0;">
-                            📍 Desa Gejug Jati, Kecamatan Lekok, Kabupaten Pasuruan
+                    <form id="proyekLoginForm" onsubmit="handleProyekLogin(event)">
+                        <div style="margin-bottom: 0.75rem;">
+                            <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.25rem;">Username</label>
+                            <input type="text" id="proyekLoginUsername" class="search-input" placeholder="admin" value="admin" required>
                         </div>
-                        <span style="font-size: 0.7rem; color: var(--text-subtle);">Calon Penerima: Prajurit TNI AL Pasuruan</span>
-                    </div>
+                        <div style="margin-bottom: 0.85rem;">
+                            <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.25rem;">Password</label>
+                            <input type="password" id="proyekLoginPassword" class="search-input" placeholder="••••••••" value="admin12345" required>
+                        </div>
+                        <div id="proyekLoginError" style="color: var(--rose); font-size: 0.75rem; margin-bottom: 0.75rem; display: none; background: var(--rose-light); padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); border: 1px solid rgba(225,29,72,0.2);"></div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; font-weight: 700; padding: 0.5rem;">🔑 Masuk ke Proyek Ongoing</button>
+                    </form>
                 </div>
             </div>
 
-            <!-- Two Column Layout: Kronologis Berbasis Waktu vs Persuratan & Dokumen Pendukung -->
-            <div class="layout-grid" style="grid-template-columns: 1.2fr 0.8fr; gap: 0.75rem;">
-                
-                <!-- 1. Kronologis Kegiatan (Waktu adalah Utama) -->
-                <div class="card">
-                    <div class="card-title">
-                        <div style="display: flex; align-items: center; gap: 0.4rem;">
-                            <span>⏳ Kronologis Kegiatan & Progres</span>
-                            <span class="badge badge-primary" id="timelineCount">0 Kegiatan</span>
+            <!-- Proyek Details Content (Visible ONLY after login) -->
+            <div id="proyekMainContent" style="display: none;">
+                <!-- Proyek Summary Banner (Compact Pines Style) -->
+                <div class="card" style="margin-bottom: 0.75rem; border-left: 4px solid var(--primary);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
+                                <span class="badge badge-primary" id="badgeTahun">TA 2026</span>
+                                <span class="badge badge-warning" id="badgeFase">Tahap: Usulan & Kesiapan Lahan</span>
+                                <span class="badge badge-info" id="badgeStatusLelang">Belum Lelang</span>
+                            </div>
+                            <h2 id="proyekNama" style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.25rem;">Pembangunan Rumah Susun TNI AL Pasuruan</h2>
+                            <p id="proyekDeskripsi" style="color: var(--text-muted); font-size: 0.775rem; max-width: 900px; line-height: 1.35;">
+                                Pembangunan Rumah Susun untuk Prajurit TNI AL Pasuruan berlokasi di Desa Gejug Jati, Kecamatan Lekok, Kabupaten Pasuruan. Saat ini dalam proses pemenuhan persyaratan kesiapan lahan dan administrasi usulan.
+                            </p>
                         </div>
-                        <!-- Filter Kategori Cepat -->
-                        <div style="display: flex; gap: 0.25rem; font-size: 0.7rem;">
-                            <button class="btn btn-outline btn-sm filter-time-btn active" onclick="filterTimeline('all', this)">Semua</button>
-                            <button class="btn btn-outline btn-sm filter-time-btn" onclick="filterTimeline('Rapat', this)">🗣️ Rapat</button>
-                            <button class="btn btn-outline btn-sm filter-time-btn" onclick="filterTimeline('Surat', this)">📩 Surat</button>
-                            <button class="btn btn-outline btn-sm filter-time-btn" onclick="filterTimeline('Persyaratan', this)">📋 Persyaratan</button>
-                        </div>
-                    </div>
 
-                    <!-- Timeline Feed -->
-                    <div class="timeline-container" id="timelineList" style="margin-top: 0.5rem;">
-                        <div style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); background: var(--bg-muted); border-radius: var(--radius-sm); border: 1px dashed var(--border-subtle);">
-                            <span style="font-size: 2rem; display: block; margin-bottom: 0.5rem;">📭</span>
-                            <strong style="color: var(--text-heading); font-size: 0.85rem;">Belum ada riwayat kegiatan tercatat</strong>
-                            <p style="font-size: 0.75rem; margin-top: 0.25rem;">Klik tombol "➕ Catat Kegiatan / Rapat" di atas untuk mencatat rapat, diskusi, pertemuan, atau pemenuhan persyaratan.</p>
+                        <!-- Ringkasan Lokasi Lahan -->
+                        <div style="background: var(--bg-muted); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.5rem 0.75rem; min-width: 260px;">
+                            <span style="font-size: 0.685rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Lokasi Rencana Rusun:</span>
+                            <div id="infoLokasi" style="font-weight: 700; font-size: 0.825rem; color: var(--text-heading); margin: 0.2rem 0;">
+                                📍 Desa Gejug Jati, Kecamatan Lekok, Kabupaten Pasuruan
+                            </div>
+                            <span style="font-size: 0.7rem; color: var(--text-subtle);">Calon Penerima: Prajurit TNI AL Pasuruan</span>
                         </div>
-                    </div>
-                </div>
-
-                <!-- 2. Dokumen Persuratan & Data Pendukung -->
-                <div class="card">
-                    <div class="card-title">
-                        <div style="display: flex; align-items: center; gap: 0.4rem;">
-                            <span>📁 Berkas Persuratan & Data Pendukung</span>
-                            <span class="badge badge-primary" id="suratCount">0 Berkas</span>
-                        </div>
-                        <button class="btn btn-outline btn-sm" onclick="openQuickActionModal('surat')">➕ Upload</button>
-                    </div>
-
-                    <div style="overflow-x: auto; margin-top: 0.35rem;">
-                        <table class="custom-table" id="tableSurat">
-                            <thead>
-                                <tr>
-                                    <th>Tanggal & No. Surat</th>
-                                    <th>Jenis & Perihal</th>
-                                    <th>Pihak / Pengirim</th>
-                                    <th>Berkas</th>
-                                </tr>
-                            </thead>
-                            <tbody id="suratTableBody">
-                                <tr>
-                                    <td colspan="4" style="text-align: center; padding: 2rem 1rem; color: var(--text-muted);">
-                                        Belum ada dokumen persuratan yang diunggah.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
                     </div>
                 </div>
 
+                <!-- Two Column Layout: Kronologis Berbasis Waktu vs Persuratan & Dokumen Pendukung -->
+                <div class="layout-grid" style="grid-template-columns: 1.2fr 0.8fr; gap: 0.75rem;">
+                    
+                    <!-- 1. Kronologis Kegiatan (Waktu adalah Utama) -->
+                    <div class="card">
+                        <div class="card-title">
+                            <div style="display: flex; align-items: center; gap: 0.4rem;">
+                                <span>⏳ Kronologis Kegiatan & Progres</span>
+                                <span class="badge badge-primary" id="timelineCount">0 Kegiatan</span>
+                            </div>
+                            <!-- Filter Kategori Cepat -->
+                            <div style="display: flex; gap: 0.25rem; font-size: 0.7rem;">
+                                <button class="btn btn-outline btn-sm filter-time-btn active" onclick="filterTimeline('all', this)">Semua</button>
+                                <button class="btn btn-outline btn-sm filter-time-btn" onclick="filterTimeline('Rapat', this)">🗣️ Rapat</button>
+                                <button class="btn btn-outline btn-sm filter-time-btn" onclick="filterTimeline('Surat', this)">📩 Surat</button>
+                                <button class="btn btn-outline btn-sm filter-time-btn" onclick="filterTimeline('Persyaratan', this)">📋 Persyaratan</button>
+                            </div>
+                        </div>
+
+                        <!-- Timeline Feed -->
+                        <div class="timeline-container" id="timelineList" style="margin-top: 0.5rem;">
+                            <div style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); background: var(--bg-muted); border-radius: var(--radius-sm); border: 1px dashed var(--border-subtle);">
+                                <span style="font-size: 2rem; display: block; margin-bottom: 0.5rem;">📭</span>
+                                <strong style="color: var(--text-heading); font-size: 0.85rem;">Belum ada riwayat kegiatan tercatat</strong>
+                                <p style="font-size: 0.75rem; margin-top: 0.25rem;">Klik tombol "➕ Catat Kegiatan / Rapat" di atas untuk mencatat rapat, diskusi, pertemuan, atau pemenuhan persyaratan.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Dokumen Persuratan & Data Pendukung -->
+                    <div class="card">
+                        <div class="card-title">
+                            <div style="display: flex; align-items: center; gap: 0.4rem;">
+                                <span>📁 Berkas Persuratan & Data Pendukung</span>
+                                <span class="badge badge-primary" id="suratCount">0 Berkas</span>
+                            </div>
+                            <button class="btn btn-outline btn-sm" onclick="openQuickActionModal('surat')">➕ Upload</button>
+                        </div>
+
+                        <div style="overflow-x: auto; margin-top: 0.35rem;">
+                            <table class="custom-table" id="tableSurat">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal & No. Surat</th>
+                                        <th>Jenis & Perihal</th>
+                                        <th>Pihak / Pengirim</th>
+                                        <th>Berkas</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="suratTableBody">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; padding: 2rem 1rem; color: var(--text-muted);">
+                                            Belum ada dokumen persuratan yang diunggah.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
             </div>
 
         </div>
@@ -239,6 +275,11 @@
     </div>
 
     <!-- Script Integrasi Proyek (Pines Handler) -->
-    <script src="/proyek.js?v=2026-09-03-4"></script>
+    <script src="/proyek.js?v=2026-09-16-auth-1"></script>
+    <script>
+        if (typeof handleProyekLogin === 'undefined') {
+            document.write('<script src="proyek.js?v=2026-09-16-auth-1"><\/script>');
+        }
+    </script>
 </body>
 </html>

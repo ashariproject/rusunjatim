@@ -21,10 +21,10 @@ def seed_database():
     db: Session = SessionLocal()
     
     try:
-        # 1. Seed Admin User
+        # 1. Seed / Update Admin User
+        admin_pwd = os.getenv("DEFAULT_ADMIN_PASSWORD", "admin12345")
         admin_user = db.query(User).filter(User.username == "admin").first()
         if not admin_user:
-            admin_pwd = os.getenv("DEFAULT_ADMIN_PASSWORD", "AdminRusun2026!")
             admin_user = User(
                 username="admin",
                 email="admin@rusunjatim.my.id",
@@ -36,7 +36,11 @@ def seed_database():
             db.add(admin_user)
             db.commit()
             db.refresh(admin_user)
-            print("✅ Default Admin User created (admin / AdminRusun2026!)")
+            print("✅ Default Admin User created (admin / admin12345)")
+        else:
+            admin_user.password_hash = get_password_hash(admin_pwd)
+            db.commit()
+            print("✅ Admin User password updated to admin12345")
 
         # 2. Seed Master Rusun from rusun_data.json
         candidate_paths = [
