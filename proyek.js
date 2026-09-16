@@ -855,29 +855,47 @@ function renderProyekDetail(p) {
 
     // Pastikan timelines memiliki nomor urut, link_dokumen, dan keywords
     allTimelines = (p.timelines || []).map((t, i) => {
+        const itemNo = t.no || (i + 1);
+        const defaultItem = DEFAULT_TNI_AL_DATA.find(d => d.no === itemNo) || DEFAULT_TNI_AL_DATA[i] || {};
+        const resolvedLink = (t.link_dokumen && t.link_dokumen.startsWith('http')) 
+            ? t.link_dokumen 
+            : ((t.lampiran_url && t.lampiran_url.startsWith('http')) 
+                ? t.lampiran_url 
+                : (defaultItem.link_dokumen || null));
+
         return {
-            no: t.no || (i + 1),
-            tanggal: t.tanggal,
-            fase: t.fase || 'Kegiatan',
-            judul: t.judul,
-            nomor_dokumen: t.nomor_dokumen || null,
-            catatan: t.catatan || t.keterangan || '',
-            bukti_dukung: t.bukti_dukung || t.lampiran_url || '',
-            link_dokumen: t.link_dokumen || t.lampiran_url || null,
-            keywords: t.keywords || ''
+            no: itemNo,
+            tanggal: t.tanggal || defaultItem.tanggal,
+            fase: t.fase || defaultItem.fase || 'Kegiatan',
+            judul: t.judul || defaultItem.judul,
+            nomor_dokumen: t.nomor_dokumen || defaultItem.nomor_dokumen || null,
+            catatan: t.catatan || t.keterangan || defaultItem.keterangan || '',
+            bukti_dukung: t.bukti_dukung || defaultItem.bukti_dukung || '',
+            link_dokumen: resolvedLink,
+            keywords: t.keywords || defaultItem.keywords || ''
         };
     });
 
-    allSuratList = (p.surat_list || []).map((s, idx) => ({
-        no: s.no || (idx + 1),
-        no_surat: s.no_surat,
-        tgl_surat: s.tgl_surat,
-        jenis_surat: s.jenis_surat,
-        pengirim: s.pengirim,
-        perihal: s.perihal,
-        keywords: s.keywords,
-        file_path: s.file_path || s.link_dokumen || null
-    }));
+    allSuratList = (p.surat_list || []).map((s, idx) => {
+        const suratNo = s.no || (idx + 1);
+        const defaultItem = DEFAULT_TNI_AL_DATA.find(d => d.no === suratNo) || DEFAULT_TNI_AL_DATA[idx] || {};
+        const resolvedPath = (s.file_path && s.file_path.startsWith('http'))
+            ? s.file_path
+            : ((s.link_dokumen && s.link_dokumen.startsWith('http'))
+                ? s.link_dokumen
+                : (defaultItem.link_dokumen || null));
+
+        return {
+            no: suratNo,
+            no_surat: s.no_surat || defaultItem.nomor_dokumen || `DOK-${String(suratNo).padStart(2, '0')}/${s.tgl_surat || defaultItem.tanggal}`,
+            tgl_surat: s.tgl_surat || defaultItem.tanggal,
+            jenis_surat: s.jenis_surat || defaultItem.jenis_surat || defaultItem.fase,
+            pengirim: s.pengirim || defaultItem.pengirim || 'Kementerian PKP / TNI AL',
+            perihal: s.perihal || defaultItem.perihal || defaultItem.judul,
+            keywords: s.keywords || defaultItem.keywords || '',
+            file_path: resolvedPath
+        };
+    });
 
     applyTimelineFilterAndRender();
     renderSuratList(allSuratList);
