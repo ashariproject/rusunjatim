@@ -1,0 +1,8 @@
+{
+  "name": "monitoring-rusun-unitri",
+  "version": "1.0.0",
+  "description": "Monitoring penghunian Rusun UNITRI - BP3KP Jawa IV",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "dependencies": { "express": "4.21.2" }
+}

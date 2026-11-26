@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monitoring Penghunian UNITRI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=Archivo+Narrow:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: tenang, administratif, seperti lembar kerja monitoring Balai
+   IDEA: lembar as-built drawing yang "hidup" — denah ABD diberi warna keterhunian
+   PICTURE: denah skematik per lantai, unit berwarna sesuai status, bisa diklik
+   COLOUR and TYPE: kertas putih, garis tinta biru gambar kerja, status teal/kuning/merah; Archivo + Archivo Narrow
+   LAYOUT: angka kunci di atas, denah besar + panel unit di kanan, tab penghuni/rekap/riwayat */
+:root{color-scheme:light dark;
+--bg:light-dark(#fbfbf8,#0f1419);--paper:light-dark(#ffffff,#161d24);--ink:light-dark(#1b2430,#e6e9ec);--mute:light-dark(#5d6873,#9aa6b1);
+--line:light-dark(#2f4f74,#8fb0d6);--rule:light-dark(#dfe3e6,#2a333c);
+--penuh:#0f7b6c;--sebagian:#f2c14e;--kosong:light-dark(#ffffff,#1d252d);--rusak:#d64545;--non:light-dark(#eceff1,#222b33);--sel:#ff5a1f}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Archivo,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:"Archivo Narrow",Archivo,sans-serif;line-height:1.1;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,3.4vw,40px);font-weight:600}h2{font-size:22px;font-weight:600}h3{font-size:17px}
+.band{padding:clamp(18px,3vw,36px) max(4vw,16px)}.wrap{max-width:1240px;margin:0 auto}
+header.band{border-bottom:2px solid var(--line);background:var(--paper)}
+.top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between}
+.sub{color:var(--mute);font-size:14px;margin-top:6px}
+.who{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px}
+.badge{border:1.5px solid var(--line);color:var(--line);border-radius:4px;padding:3px 9px;font-weight:600;font-size:13px}
+button,select,input,textarea{font:inherit;font-size:16px;color:inherit}
+button{min-height:44px;padding:0 16px;border-radius:6px;border:1.5px solid var(--ink);background:var(--paper);cursor:pointer;font-weight:600}
+button.pri{background:var(--ink);color:var(--paper)}button.ghost{border-color:var(--rule)}button.danger{border-color:var(--rusak);color:var(--rusak)}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,.u:focus-visible{outline:3px solid var(--sel);outline-offset:2px}
+input,select,textarea{min-height:44px;border:1.5px solid var(--rule);border-radius:6px;padding:8px 10px;background:var(--paper);width:100%}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border:1.5px solid var(--line);background:var(--paper);margin-top:18px}
+.kpi{padding:14px 16px;border-left:1px solid var(--rule)}.kpi:first-child{border-left:0}
+.kpi b{display:block;font:600 clamp(26px,3vw,36px)/1 "Archivo Narrow",sans-serif}.kpi span{font-size:13px;color:var(--mute)}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin:22px 0 14px;border-bottom:1.5px solid var(--rule)}
+.tabs button{border:0;border-bottom:3px solid transparent;border-radius:0;background:none;color:var(--mute)}
+.tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--sel)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:start}
+.card{background:var(--paper);border:1.5px solid var(--rule);border-radius:8px;padding:16px}
+.lts{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.lts button[aria-pressed=true]{background:var(--line);color:var(--paper);border-color:var(--line)}
+.plan svg{width:100%;height:auto;display:block}
+.u{cursor:pointer}.u text{pointer-events:none}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px;color:var(--mute);margin-top:10px}
+.sw{display:inline-block;width:14px;height:14px;border:1.5px solid var(--line);vertical-align:-2px;margin-right:6px}
+.det dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:10px 0;font-size:15px}.det dt{color:var(--mute)}.det dd{margin:0}
+.occ{list-style:none;padding:0;margin:8px 0}.occ li{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--rule);font-size:15px}
+.occ small{color:var(--mute);display:block}.occ button{min-height:36px;padding:0 10px;font-size:13px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin:6px 0}
+label{font-size:13px;color:var(--mute);display:block}
+.note{font-size:13px;color:var(--mute)}
+table{width:100%;border-collapse:collapse;font-size:15px}th,td{padding:9px 8px;border-bottom:1px solid var(--rule);text-align:left}
+th{font-size:13px;color:var(--mute);font-weight:600}td.n,th.n{text-align:right;white-space:nowrap}
+.bar{height:10px;background:var(--non);border-radius:5px;overflow:hidden;min-width:80px}.bar i{display:block;height:100%;background:var(--penuh)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.filters>*{flex:1 1 180px}
+.scroll{overflow-x:auto}
+#login{position:fixed;inset:0;background:color-mix(in srgb,var(--bg) 92%,transparent);display:grid;place-items:center;padding:16px;z-index:9}
+#login .card{max-width:440px;width:100%}#login button{width:100%;margin-top:8px;text-align:left}
+.hidden{display:none!important}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:6px;font-size:14px;opacity:0;transition:opacity .2s}
+.toast.on{opacity:1}
+@media(prefers-reduced-motion:reduce){.toast{transition:none}}
+@media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi:nth-child(3){border-left:0}.kpi:nth-child(n+3){border-top:1px solid var(--rule)}
+table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px}.stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:8em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:7.5em;margin-inline-start:-8em;white-space:normal;color:var(--mute)}.stack td:empty{display:none}}
+</style><script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script></head>
+<body>
+<div id="login" class="hidden"><div class="card">
+  <h2>Masuk — Monitoring Penghunian Rusun UNITRI</h2>
+  <p class="note">BP3KP Jawa IV</p>
+  <form id="loginF"><label for="lU">Username</label><input id="lU" autocomplete="username" autocapitalize="none" required>
+  <label for="lP" style="margin-top:10px">Password</label><input id="lP" type="password" autocomplete="current-password" required>
+  <p id="lE" role="alert" style="color:var(--rusak);min-height:1.4em;margin:8px 0"></p>
+  <button class="pri" style="width:100%;text-align:center">Masuk</button></form>
+</div></div>
+
+<header class="band"><div class="wrap">
+  <div class="top">
+    <div><h1>Keterhunian Rusun UNITRI</h1>
+      <div class="sub">Asrama Wiyata 3 Lantai · Jl. Jaten, Jedong, Wagir, Kab. Malang · Pemantauan BP3KP Jawa IV</div></div>
+    <div class="who"><span class="badge" id="roleBadge"></span><button class="ghost" id="logout">Keluar</button></div>
+  </div>
+  <div class="kpis" id="kpis"></div>
+  <p class="note" style="margin:8px 0 0">Saat ini berisi data contoh (dummy), bukan data penghuni sebenarnya.</p>
+</div></header>
+
+<main class="band"><div class="wrap">
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <section id="v-denah"><div class="grid">
+    <div class="card plan"><div class="lts" id="lts"></div><div id="svg"></div>
+      <div class="legend"><span><i class="sw" style="background:var(--penuh)"></i>Terisi penuh</span><span><i class="sw" style="background:var(--sebagian)"></i>Terisi sebagian</span><span><i class="sw" style="background:var(--kosong)"></i>Kosong</span><span><i class="sw" style="background:var(--rusak)"></i>Rusak / tidak layak</span><span><i class="sw" style="background:var(--non)"></i>Ruang non-hunian</span></div>
+      <p class="note">Skematik dari As-Built Drawing Arsitektur (AR-01-01 s.d. AR-01-03). Kamar standar 4 orang, kamar difabel 2 orang.</p></div>
+    <aside class="card det" id="det"></aside>
+  </div></section>
+  <section id="v-penghuni" class="hidden"><div class="card" id="pList"></div></section>
+  <section id="v-rekap" class="hidden"><div class="card" id="rekap"></div></section>
+  <section id="v-log" class="hidden"><div class="card" id="log"></div></section>
+  <section id="v-akun" class="hidden"><div class="card" id="akun"></div></section>
+</div></main>
+<div class="toast" id="toast"></div>
+
+<script>
+{
+const ROLES={admin:'Admin Balai',pengelola:'Pengelola',viewer:'Pimpinan / Viewer'};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=id=>document.getElementById(id);
+const SOUTH={1:['tangga','u','u','R. Serbaguna','Lobby','R. Pengelola','u','u','tangga'],2:['tangga','u','u','u','R. Bersama','u','u','u','tangga'],3:['tangga','u','u','u','R. Bersama','u','u','u','tangga']};
+let S={units:[],res:[],log:[]},me=null,role=null,tab='denah',lt=1,sel=null,showOut=false,q='',fl='',users=[];
+const toast=m=>{const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2600)};
+async function api(url,opt={}){const r=await fetch(url,{credentials:'same-origin',headers:{'Content-Type':'application/json'},...opt,body:opt.body?JSON.stringify(opt.body):undefined});
+  let d={};try{d=await r.json()}catch(e){}
+  if(r.status===401&&url!=='/api/login'){showLogin();throw new Error(d.error||'Sesi berakhir')}
+  if(!r.ok)throw new Error(d.error||'Terjadi kesalahan');return d}
+async function load(){S=await api('/api/state');if(role==='admin')users=await api('/api/users');render()}
+async function act(fn,ok){try{await fn();if(ok)toast(ok);await load()}catch(e){toast(e.message)}}
+function showLogin(){me=null;role=null;$('login').classList.remove('hidden');setTimeout(()=>$('lU')&&$('lU').focus(),50)}
+function start(u){me=u;role=u.role;tab='denah';sel=null;$('login').classList.add('hidden');load()}
+const active=uid=>S.res.filter(p=>p.unit===uid&&!p.keluar);
+const status=u=>{if(u.kondisi==='Rusak')return'rusak';const n=active(u.id).length;return n===0?'kosong':n>=u.kap?'penuh':'sebagian'};
+const fmt=d=>d?new Date(d).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}):'—';
+function stats(f){const us=S.units.filter(f||(()=>true));const st={penuh:0,sebagian:0,kosong:0,rusak:0};let occ=0,kap=0;
+  us.forEach(u=>{st[status(u)]++;if(u.kondisi!=='Rusak'){kap+=u.kap}occ+=active(u.id).length});return{n:us.length,st,occ,kap,terisi:st.penuh+st.sebagian}}
+
+function kpis(){const s=stats(),pct=s.kap?Math.round(s.occ/s.kap*100):0;
+  $('kpis').innerHTML=[[`${s.terisi}/${s.n}`,'unit terisi'],[`${pct}%`,`keterhunian orang (${s.occ}/${s.kap})`],[s.st.kosong,'unit kosong'],[s.st.rusak,'unit rusak / tidak layak']].map(([b,l])=>`<div class="kpi"><b>${esc(b)}</b><span>${esc(l)}</span></div>`).join('')}
+function plan(){const X0=30,W=100,yN=50,yC=170,yS=260,H=120;let g='';
+  const fill={penuh:'var(--penuh)',sebagian:'var(--sebagian)',kosong:'var(--kosong)',rusak:'var(--rusak)'};
+  g+=`<rect x="${X0}" y="${yN}" width="${W*9}" height="${yS+H-yN}" fill="none" stroke="var(--line)" stroke-width="3"/>`;
+  g+=`<rect x="${X0}" y="${yC}" width="${W*9}" height="${yS-yC}" fill="var(--paper)" stroke="var(--line)" stroke-width="1"/>`;
+  if(lt>1)g+=`<rect x="${X0+W*2.5}" y="${yC+18}" width="${W*4}" height="${yS-yC-36}" fill="none" stroke="var(--line)" stroke-dasharray="6 5"/><line x1="${X0+W*2.5}" y1="${yC+18}" x2="${X0+W*6.5}" y2="${yS-18}" stroke="var(--line)" stroke-dasharray="6 5" opacity=".5"/><line x1="${X0+W*6.5}" y1="${yC+18}" x2="${X0+W*2.5}" y2="${yS-18}" stroke="var(--line)" stroke-dasharray="6 5" opacity=".5"/><text x="${X0+W*4.5}" y="${yC+50}" text-anchor="middle" font-size="13" fill="var(--mute)">VOID</text>`;
+  g+=`<text x="${X0+W*1.2}" y="${(yC+yS)/2+5}" text-anchor="middle" font-size="14" fill="var(--mute)">Selasar</text><text x="${X0+W*7.8}" y="${(yC+yS)/2+5}" text-anchor="middle" font-size="14" fill="var(--mute)">Selasar</text>`;
+  SOUTH[lt].forEach((s,b)=>{if(s==='u')return;const x=X0+b*W;
+    if(s==='tangga'){const L=b===0,sw=56,tx=L?x:x+W-sw,ax=L?x+sw:x,aw=W-sw,ph=74;
+      // tangga U (dua bordes): dua lajur anak tangga, dinding tengah, bordes di sisi luar, panah naik
+      const fw=(sw-8)/2,ld=26,top=yS+4,bot=yS+H-ld,st=(bot-top)/9,l1=tx+3,l2=tx+sw-3-fw,mx=tx+sw/2;
+      g+=`<rect x="${tx}" y="${yS}" width="${sw}" height="${H}" fill="var(--paper)" stroke="var(--line)"/>`+
+        `<rect x="${tx+3}" y="${bot}" width="${sw-6}" height="${ld-3}" fill="var(--non)" stroke="var(--line)" stroke-width=".8"/>`+
+        `<rect x="${mx-1.5}" y="${top}" width="3" height="${bot-top}" fill="var(--line)"/>`;
+      for(let i=0;i<=9;i++){const y=top+i*st;g+=`<line x1="${l1}" y1="${y}" x2="${l1+fw}" y2="${y}" stroke="var(--line)" stroke-width=".8"/><line x1="${l2}" y1="${y}" x2="${l2+fw}" y2="${y}" stroke="var(--line)" stroke-width=".8"/>`}
+      g+=`<polyline points="${l1+fw/2},${top+6} ${l1+fw/2},${bot+ld/2-1} ${l2+fw/2},${bot+ld/2-1} ${l2+fw/2},${top+6}" fill="none" stroke="var(--sel)" stroke-width="1.4"/>`+
+        `<circle cx="${l1+fw/2}" cy="${top+6}" r="2.5" fill="var(--sel)"/><path d="M${l2+fw/2-4},${top+12} L${l2+fw/2},${top+5} L${l2+fw/2+4},${top+12}" fill="none" stroke="var(--sel)" stroke-width="1.4"/>`;
+      g+=`<rect x="${ax}" y="${yS}" width="${aw}" height="${ph}" fill="var(--non)" stroke="var(--line)"/><text x="${ax+aw/2}" y="${yS+ph/2+4}" text-anchor="middle" font-size="11" fill="var(--mute)">Dapur</text>`+
+        `<rect x="${ax}" y="${yS+ph}" width="${aw}" height="${H-ph}" fill="var(--non)" stroke="var(--line)"/><line x1="${ax}" y1="${yS+ph}" x2="${ax+aw}" y2="${yS+H}" stroke="var(--line)" opacity=".5"/><line x1="${ax+aw}" y1="${yS+ph}" x2="${ax}" y2="${yS+H}" stroke="var(--line)" opacity=".5"/>`+
+        `<text x="${tx+sw/2}" y="${yS+H+18}" text-anchor="middle" font-size="12" fill="var(--mute)">Tangga</text><text x="${ax+aw/2}" y="${yS+H+18}" text-anchor="middle" font-size="12" fill="var(--mute)">Shaft</text>`}
+    else{g+=`<rect x="${x}" y="${yS}" width="${W}" height="${H}" fill="var(--non)" stroke="var(--line)"/><text x="${x+W/2}" y="${yS+H/2+5}" text-anchor="middle" font-size="13" fill="var(--mute)">${esc(s)}</text>`;
+      if(s==='Lobby'||s==='R. Bersama')g+=`<rect x="${x+10}" y="${yS+H}" width="${W-20}" height="34" fill="var(--non)" stroke="var(--line)" stroke-width="1.5"/><text x="${x+W/2}" y="${yS+H+22}" text-anchor="middle" font-size="13" fill="var(--mute)">Teras</text>`}});
+  S.units.filter(u=>u.lt===lt).forEach(u=>{const x=X0+u.bay*W,y=u.row==='N'?yN:yS,st=status(u),n=active(u.id).length,dark=st==='penuh'||st==='rusak',tc=dark?'#fff':'var(--ink)',on=sel===u.id;
+    const by=u.row==='N'?y-18:y+H;
+    g+=`<g class="u" tabindex="0" role="button" data-u="${esc(u.id)}" aria-label="${esc(u.id)}, ${esc(st)}, ${n} dari ${u.kap}">`+
+      `<rect x="${x+30}" y="${by}" width="40" height="18" fill="var(--paper)" stroke="var(--line)"/>`+
+      `<rect x="${x+2}" y="${y+2}" width="${W-4}" height="${H-4}" fill="${fill[st]}" stroke="${on?'var(--sel)':'var(--line)'}" stroke-width="${on?4:1.5}"/>`+
+      `<text x="${x+W/2}" y="${y+24}" text-anchor="middle" font-size="13" font-weight="600" fill="${tc}">${esc(u.id)}</text>`+
+      `<text x="${x+W/2}" y="${y+H/2+12}" text-anchor="middle" font-size="26" font-weight="800" fill="${tc}">${st==='rusak'?'×':n+'/'+u.kap}</text>`+
+      (u.tipe==='Difabel'?`<text x="${x+W/2}" y="${y+H-12}" text-anchor="middle" font-size="11" font-weight="600" fill="${tc}">DIFABEL</text>`:'')+`</g>`});
+  $('svg').innerHTML=`<svg viewBox="0 0 960 430" role="img" aria-label="Denah lantai ${lt}">${g}</svg>`;
+  $('lts').innerHTML=[1,2,3].map(i=>{const s=stats(u=>u.lt===i);return`<button data-lt="${i}" aria-pressed="${i===lt}">Lantai ${i} · ${s.occ}/${s.kap}</button>`}).join('')}
+
+function detail(){const u=S.units.find(x=>x.id===sel);const d=$('det');
+  if(!u){const s=stats(x=>x.lt===lt);d.innerHTML=`<h2>Lantai ${lt}</h2><p class="note">Klik salah satu unit pada denah untuk melihat detailnya.</p><dl><dt>Unit</dt><dd>${s.n}</dd><dt>Terisi penuh</dt><dd>${s.st.penuh}</dd><dt>Sebagian</dt><dd>${s.st.sebagian}</dd><dt>Kosong</dt><dd>${s.st.kosong}</dd><dt>Rusak</dt><dd>${s.st.rusak}</dd><dt>Penghuni</dt><dd>${s.occ} dari ${s.kap} tempat</dd></dl>`;return}
+  const occ=active(u.id),st=status(u);
+  let h=`<h2>Unit ${esc(u.id)}</h2><dl><dt>Tipe</dt><dd>${esc(u.tipe)}</dd><dt>Kapasitas</dt><dd>${u.kap} orang</dd><dt>Terisi</dt><dd>${occ.length} orang (${esc(st)})</dd><dt>Kondisi</dt><dd>${esc(u.kondisi)}</dd>${u.cat?`<dt>Catatan</dt><dd>${esc(u.cat)}</dd>`:''}</dl>`;
+  if(role==='viewer')h+=`<p class="note">Nama penghuni hanya terlihat oleh Admin Balai dan Pengelola.</p>`;
+  else{h+=`<h3>Penghuni</h3><ul class="occ">${occ.map(p=>`<li><span>${esc(p.nama)}<small>${esc(p.nid)} · masuk ${fmt(p.masuk)}</small></span><button class="ghost" data-out="${esc(p.id)}">Keluarkan</button></li>`).join('')||'<li class="note">Belum ada penghuni.</li>'}</ul>`;
+    if(u.kondisi!=='Rusak'&&occ.length<u.kap)h+=`<form id="addF"><div class="row"><div><label for="fN">Nama</label><input id="fN" required></div><div><label for="fI">ID / NIM</label><input id="fI" required></div></div><div class="row"><div><label for="fM">Tanggal masuk</label><input id="fM" type="date" required value="${new Date().toISOString().slice(0,10)}"></div><div style="align-self:end"><button class="pri" style="width:100%">Tambah</button></div></div></form>`;
+    h+=`<h3 style="margin-top:16px">Kondisi unit</h3><form id="kF"><div class="row"><div><label for="fK">Kondisi</label><select id="fK"><option${u.kondisi==='Baik'?' selected':''}>Baik</option><option${u.kondisi==='Rusak'?' selected':''}>Rusak</option></select></div>${role==='admin'?`<div><label for="fKap">Kapasitas</label><input id="fKap" type="number" min="1" max="8" value="${u.kap}"></div>`:''}</div><label for="fC">Catatan</label><textarea id="fC" rows="2">${esc(u.cat)}</textarea><button style="margin-top:8px;width:100%">Simpan kondisi</button></form>`}
+  d.innerHTML=h}
+
+function plist(){if(role==='viewer'){$('pList').innerHTML=`<h2>Daftar penghuni</h2><p class="note">Data pribadi penghuni hanya untuk Admin Balai dan Pengelola. Lihat jumlah per unit di tab Denah atau Rekap.</p>`;return}
+  const ql=q.toLowerCase();const rows=S.res.filter(p=>(showOut||!p.keluar)&&(!fl||p.unit.startsWith('L'+fl))&&(!ql||(p.nama+' '+p.nid+' '+p.unit).toLowerCase().includes(ql))).sort((a,b)=>a.unit.localeCompare(b.unit)||a.nama.localeCompare(b.nama));
+  $('pList').innerHTML=`<h2>Daftar penghuni</h2><div class="filters" style="margin-top:12px"><input id="q" placeholder="Cari nama, ID, atau unit" value="${esc(q)}" aria-label="Cari"><select id="fl" aria-label="Lantai"><option value="">Semua lantai</option>${[1,2,3].map(i=>`<option value="${i}"${fl==i?' selected':''}>Lantai ${i}</option>`).join('')}</select><label style="display:flex;gap:8px;align-items:center;font-size:15px;color:var(--ink)"><input type="checkbox" id="so" style="width:20px;min-height:20px"${showOut?' checked':''}> Tampilkan yang sudah keluar</label></div>
+  <p class="note">${rows.length} penghuni</p><table class="stack"><thead><tr><th>Unit</th><th>Nama</th><th>ID / NIM</th><th>Masuk</th><th>Keluar</th></tr></thead><tbody>${rows.map(p=>`<tr><td><a href="#" data-go="${esc(p.unit)}">${esc(p.unit)}</a></td><td>${esc(p.nama)}</td><td>${esc(p.nid)}</td><td>${fmt(p.masuk)}</td><td>${p.keluar?fmt(p.keluar):''}</td></tr>`).join('')}</tbody></table>`;
+  const qi=$('q');if(qi&&qi._f){}}
+
+function rekap(){const R=[1,2,3].map(i=>({l:'Lantai '+i,...stats(u=>u.lt===i)}));R.push({l:'Total',...stats()});
+  const pc=r=>r.kap?Math.round(r.occ/r.kap*100):0;
+  $('rekap').innerHTML=`<h2>Rekap keterhunian</h2><p class="note">Per ${fmt(new Date())}. Kapasitas dihitung dari unit yang layak huni (unit rusak tidak dihitung).</p><div class="scroll"><table><thead><tr><th>Lantai</th><th class="n">Unit</th><th class="n">Penuh</th><th class="n">Sebagian</th><th class="n">Kosong</th><th class="n">Rusak</th><th class="n">Penghuni</th><th class="n">Kapasitas</th><th class="n">%</th><th></th></tr></thead><tbody>${R.map(r=>`<tr${r.l==='Total'?' style="font-weight:700"':''}><td>${r.l}</td><td class="n">${r.n}</td><td class="n">${r.st.penuh}</td><td class="n">${r.st.sebagian}</td><td class="n">${r.st.kosong}</td><td class="n">${r.st.rusak}</td><td class="n">${r.occ}</td><td class="n">${r.kap}</td><td class="n">${pc(r)}%</td><td><div class="bar"><i style="width:${pc(r)}%"></i></div></td></tr>`).join('')}</tbody></table></div>
+  <button id="copy" style="margin-top:14px">Salin rekap (untuk Excel)</button> <span class="note">Tempel ke Excel untuk lampiran laporan triwulan.</span>`;
+  $('rekap')._rows=R.map(r=>[r.l,r.n,r.st.penuh,r.st.sebagian,r.st.kosong,r.st.rusak,r.occ,r.kap,pc(r)+'%'].join('\t'))}
+
+function logv(){$('log').innerHTML=`<h2>Riwayat perubahan</h2><p class="note">Setiap perubahan oleh Admin atau Pengelola tercatat di sini.</p><table class="stack"><thead><tr><th>Waktu</th><th>Oleh</th><th>Perubahan</th></tr></thead><tbody>${S.log.slice(0,200).map(l=>`<tr><td style="white-space:nowrap">${new Date(l.t).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'})}</td><td>${esc(l.who)}</td><td>${esc(l.msg)}</td></tr>`).join('')}</tbody></table>`}
+
+function tabs(){const T=[['denah','Denah'],['penghuni','Penghuni'],['rekap','Rekap']];if(role!=='viewer')T.push(['log','Riwayat']);T.push(['akun',role==='admin'?'Pengaturan':'Akun saya']);
+  if(!T.some(t=>t[0]===tab))tab='denah';
+  $('tabs').innerHTML=T.map(([k,l])=>`<button role="tab" data-t="${k}" aria-selected="${k===tab}">${l}</button>`).join('');
+  ['denah','penghuni','rekap','log','akun'].forEach(k=>$('v-'+k).classList.toggle('hidden',k!==tab))}
+
+function akun(){let h=`<h2>${role==='admin'?'Pengaturan':'Akun saya'}</h2>
+  <h3 style="margin-top:14px">Ganti password saya</h3><form id="pwSelf" style="max-width:420px"><div class="row"><div><label for="pL">Password lama</label><input id="pL" type="password" autocomplete="current-password" required></div><div><label for="pB">Password baru</label><input id="pB" type="password" autocomplete="new-password" minlength="6" required></div></div><button>Simpan password</button></form>`;
+  if(role==='admin'){h+=`<h3 style="margin-top:22px">Akun &amp; hak akses</h3><div class="scroll"><table><thead><tr><th>Username</th><th>Nama</th><th>Peran</th><th>Atur password</th></tr></thead><tbody>${users.map(u=>`<tr><td>${esc(u.username)}</td><td>${esc(u.nama)}</td><td>${esc(ROLES[u.role]||u.role)}</td><td>${u.username===me.username?'<span class="note">lewat form di atas</span>':`<form class="pwOther" data-user="${esc(u.username)}" style="display:flex;gap:6px"><input type="password" placeholder="Password baru" minlength="6" required aria-label="Password baru ${esc(u.username)}"><button>Set</button></form>`}</td></tr>`).join('')}</tbody></table></div>
+    <p class="note">Pengelola: ubah penghuni, kondisi &amp; catatan unit. Pimpinan/Viewer: hanya lihat angka, tanpa nama penghuni dan riwayat.</p>
+    <h3 style="margin-top:22px">Data</h3><p class="note">Saat ini berisi data contoh (dummy). Sebelum data asli diisi pengelola, kosongkan dulu.</p>
+    <div id="rst"><button class="ghost" id="reset">Buat ulang data contoh</button> <button class="danger" id="kosong">Kosongkan semua penghuni</button></div>`}
+  $('akun').innerHTML=h}
+
+function render(){if(!me)return;$('roleBadge').textContent=me.nama+' · '+(ROLES[role]||role);kpis();tabs();
+  if(tab==='denah'){plan();detail()}if(tab==='penghuni')plist();if(tab==='rekap')rekap();if(tab==='log')logv();if(tab==='akun')akun()}
+
+document.addEventListener('click',e=>{const t=e.target.closest('button,a,[data-u]');if(!t||(t.tagName==='BUTTON'&&t.closest('form')))return;
+  if(t.id==='logout'){api('/api/logout',{method:'POST'}).finally(showLogin);return}
+  if(t.dataset.t){tab=t.dataset.t;render();return}
+  if(t.dataset.lt){lt=+t.dataset.lt;sel=null;render();return}
+  if(t.dataset.u){sel=sel===t.dataset.u?null:t.dataset.u;plan();detail();return}
+  if(t.dataset.go){e.preventDefault();sel=t.dataset.go;lt=+sel[1];tab='denah';render();return}
+  if(t.dataset.out){act(()=>api(`/api/residents/${encodeURIComponent(t.dataset.out)}/keluar`,{method:'POST'}),'Penghuni dikeluarkan');return}
+  if(t.id==='copy'){navigator.clipboard.writeText(['Lantai\tUnit\tPenuh\tSebagian\tKosong\tRusak\tPenghuni\tKapasitas\t%',...$('rekap')._rows].join('\n')).then(()=>toast('Rekap disalin'),()=>toast('Gagal menyalin — blok tabel lalu salin manual'));return}
+  if(t.id==='reset'||t.id==='kosong'){const k=t.id==='kosong';$('rst').innerHTML=`<p>${k?'Semua penghuni & catatan unit akan dihapus. Lanjutkan?':'Data saat ini diganti data contoh. Lanjutkan?'}</p><button class="danger" id="${k?'kosong2':'reset2'}">Ya, lanjutkan</button> <button class="ghost" id="cancel">Batal</button>`;return}
+  if(t.id==='cancel'){akun();return}
+  if(t.id==='reset2'){sel=null;act(()=>api('/api/reset-dummy',{method:'POST'}),'Data contoh dibuat ulang');return}
+  if(t.id==='kosong2'){sel=null;act(()=>api('/api/kosongkan',{method:'POST'}),'Data dikosongkan')}});
+document.addEventListener('keydown',e=>{const g=e.target.closest&&e.target.closest('[data-u]');if(g&&(e.key==='Enter'||e.key===' ')){e.preventDefault();g.dispatchEvent(new MouseEvent('click',{bubbles:true}))}});
+document.addEventListener('submit',async e=>{e.preventDefault();const f=e.target;
+  if(f.id==='loginF'){$('lE').textContent='';try{start(await api('/api/login',{method:'POST',body:{username:$('lU').value,password:$('lP').value}}));$('lP').value=''}catch(err){$('lE').textContent=err.message}return}
+  if(f.id==='pwSelf'){act(()=>api(`/api/users/${encodeURIComponent(me.username)}/password`,{method:'PUT',body:{lama:$('pL').value,baru:$('pB').value}}),'Password diganti');return}
+  if(f.classList.contains('pwOther')){const u=f.dataset.user;act(()=>api(`/api/users/${encodeURIComponent(u)}/password`,{method:'PUT',body:{baru:f.querySelector('input').value}}),'Password '+u+' diganti');return}
+  const u=S.units.find(x=>x.id===sel);if(!u)return;
+  if(f.id==='addF')act(()=>api('/api/residents',{method:'POST',body:{unit:u.id,nama:$('fN').value,nid:$('fI').value,masuk:$('fM').value}}),'Penghuni ditambahkan');
+  if(f.id==='kF')act(()=>api(`/api/units/${encodeURIComponent(u.id)}`,{method:'PUT',body:{kondisi:$('fK').value,cat:$('fC').value,...($('fKap')?{kap:+$('fKap').value}:{})}}),'Kondisi disimpan')});
+document.addEventListener('input',e=>{if(e.target.id==='q'){q=e.target.value;const pos=e.target.selectionStart;plist();const n=$('q');n.focus();n.setSelectionRange(pos,pos)}});
+document.addEventListener('change',e=>{if(e.target.id==='fl'){fl=e.target.value;plist()}if(e.target.id==='so'){showOut=e.target.checked;plist()}});
+api('/api/me').then(start).catch(()=>showLogin());
+}
+</script>
+</body>
+</html>

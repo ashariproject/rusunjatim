@@ -1,0 +1,11 @@
+services:
+  monitoring-unitri:
+    build: .
+    container_name: monitoring-unitri
+    restart: unless-stopped
+    ports:
+      - "3080:3000"        # ganti 3080 bila port sudah dipakai aplikasi lain
+    volumes:
+      - ./data:/app/data   # database (db.json) & kunci sesi tersimpan di sini — ikut di-backup
+    environment:
+      - TZ=Asia/Jakarta

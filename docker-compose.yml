@@ -69,6 +69,22 @@ services:
     networks:
       - rusun-network
 
+  # 5. Monitoring Penghunian Rusun UNITRI (Node.js + Express)
+  monitoring-unitri:
+    build:
+      context: ./monitoring-unitri-server
+      dockerfile: Dockerfile
+    container_name: monitoring_unitri
+    restart: unless-stopped
+    ports:
+      - "${MONITORING_PORT:-3080}:3000"
+    volumes:
+      - ./monitoring-unitri-server/data:/app/data
+    environment:
+      - TZ=Asia/Jakarta
+    networks:
+      - rusun-network
+
 networks:
   rusun-network:
     name: rusun_network
