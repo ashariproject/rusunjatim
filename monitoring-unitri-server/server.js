@@ -127,7 +127,9 @@ const only = (...roles) => (req, res, next) => roles.includes(req.user.role) ? n
 
 // pembatas percobaan login sederhana
 const fails = new Map();
-app.post('/api/login', (req, res) => {
+const router = express.Router();
+
+router.post('/api/login', (req, res) => {
   const ip = req.ip, f = fails.get(ip) || { n: 0, until: 0 };
   if (f.until > Date.now()) return res.status(429).json({ error: 'Terlalu banyak percobaan. Coba lagi beberapa menit lagi.' });
   const { username = '', password = '' } = req.body || {};
@@ -140,10 +142,10 @@ app.post('/api/login', (req, res) => {
   res.cookie('sesi', makeToken(user.username), { httpOnly: true, sameSite: 'lax', secure: req.secure, maxAge: SESSION_HOURS * 3600e3, path: '/' });
   res.json({ username: user.username, role: user.role, nama: user.nama });
 });
-app.post('/api/logout', (req, res) => { res.clearCookie('sesi', { path: '/' }); res.json({ ok: true }); });
-app.get('/api/me', auth, (req, res) => res.json({ username: req.user.username, role: req.user.role, nama: req.user.nama }));
+router.post('/api/logout', (req, res) => { res.clearCookie('sesi', { path: '/' }); res.json({ ok: true }); });
+router.get('/api/me', auth, (req, res) => res.json({ username: req.user.username, role: req.user.role, nama: req.user.nama }));
 
-app.get('/api/state', auth, (req, res) => {
+router.get('/api/state', auth, (req, res) => {
   const viewer = req.user.role === 'viewer';
   res.json({
     units: DB.units,
@@ -156,7 +158,7 @@ const unitOf = id => DB.units.find(u => u.id === id);
 const activeIn = uid => DB.res.filter(p => p.unit === uid && !p.keluar).length;
 const clean = (s, n) => String(s ?? '').trim().slice(0, n);
 
-app.post('/api/residents', auth, only('admin', 'pengelola'), (req, res) => {
+router.post('/api/residents', auth, only('admin', 'pengelola'), (req, res) => {
   const u = unitOf(req.body.unit);
   if (!u) return res.status(400).json({ error: 'Unit tidak ditemukan' });
   if (u.kondisi === 'Rusak') return res.status(400).json({ error: 'Unit berstatus rusak' });
@@ -167,14 +169,14 @@ app.post('/api/residents', auth, only('admin', 'pengelola'), (req, res) => {
   DB.res.push(p); addLog(req.user, `${nama} masuk ke ${u.id}`); save();
   res.json(p);
 });
-app.post('/api/residents/:id/keluar', auth, only('admin', 'pengelola'), (req, res) => {
+router.post('/api/residents/:id/keluar', auth, only('admin', 'pengelola'), (req, res) => {
   const p = DB.res.find(x => x.id === req.params.id && !x.keluar);
   if (!p) return res.status(404).json({ error: 'Penghuni tidak ditemukan' });
   p.keluar = new Date().toISOString().slice(0, 10);
   addLog(req.user, `${p.nama} keluar dari ${p.unit}`); save();
   res.json(p);
 });
-app.put('/api/units/:id', auth, only('admin', 'pengelola'), (req, res) => {
+router.put('/api/units/:id', auth, only('admin', 'pengelola'), (req, res) => {
   const u = unitOf(req.params.id);
   if (!u) return res.status(404).json({ error: 'Unit tidak ditemukan' });
   const ch = [];
@@ -189,8 +191,8 @@ app.put('/api/units/:id', auth, only('admin', 'pengelola'), (req, res) => {
 });
 
 // akun
-app.get('/api/users', auth, only('admin'), (req, res) => res.json(DB.users.map(u => ({ username: u.username, role: u.role, nama: u.nama }))));
-app.put('/api/users/:username/password', auth, (req, res) => {
+router.get('/api/users', auth, only('admin'), (req, res) => res.json(DB.users.map(u => ({ username: u.username, role: u.role, nama: u.nama }))));
+router.put('/api/users/:username/password', auth, (req, res) => {
   const target = DB.users.find(u => u.username === req.params.username);
   if (!target) return res.status(404).json({ error: 'Akun tidak ditemukan' });
   const self = target.username === req.user.username;
@@ -202,16 +204,22 @@ app.put('/api/users/:username/password', auth, (req, res) => {
   addLog(req.user, `Password akun ${target.username} diganti`); save();
   res.json({ ok: true });
 });
-app.post('/api/reset-dummy', auth, only('admin'), (req, res) => {
+router.post('/api/reset-dummy', auth, only('admin'), (req, res) => {
   Object.assign(DB, dummyData());
   addLog(req.user, 'Data contoh dibuat ulang'); save();
   res.json({ ok: true });
 });
-app.post('/api/kosongkan', auth, only('admin'), (req, res) => {
+router.post('/api/kosongkan', auth, only('admin'), (req, res) => {
   DB.units = buildUnits(); DB.res = []; DB.nextId = 1;
   addLog(req.user, 'Semua data penghuni dikosongkan (siap isi data asli)'); save();
   res.json({ ok: true });
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
+router.use(express.static(path.join(__dirname, 'public')));
+router.get('*', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+
+// Dukung akses dari root (/) maupun subpath (/penghunian/unitri)
+app.use('/penghunian/unitri', router);
+app.use('/', router);
+
 app.listen(PORT, () => console.log(`Monitoring Rusun UNITRI berjalan di port ${PORT}`));
